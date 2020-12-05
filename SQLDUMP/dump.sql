@@ -2,28 +2,19 @@
 
 -- DROP TABLE public."Personel";
 
+SET default_tablespace = pg_default;
+
 CREATE TABLE public."Personel"
 (
-    "Tur" integer,
-    "TCKN" character varying(20) COLLATE pg_catalog."default" NOT NULL,
-    "Soyad" character varying(50) COLLATE pg_catalog."default",
-    "Nakliyeci_TCKN" character varying(20) COLLATE pg_catalog."default" NOT NULL,
-    "Koordinator_TCKN" character varying(20) COLLATE pg_catalog."default" NOT NULL,
-    "Ad" character varying(50) COLLATE pg_catalog."default",
-    "Tel_No" character varying(20) COLLATE pg_catalog."default",
-    CONSTRAINT "Personel_pkey" PRIMARY KEY ("TCKN", "Nakliyeci_TCKN", "Koordinator_TCKN"),
-    CONSTRAINT "Personel_TCKN_key" UNIQUE ("TCKN")
+    "personal_tipi" character varying(25),
+    "tckn" character varying(11) COLLATE pg_catalog."default" NOT NULL,
+    "soyad" character varying(50) COLLATE pg_catalog."default",
+    "ad" character varying(50) COLLATE pg_catalog."default",
+    "tel_no" character varying(20) COLLATE pg_catalog."default",
+    CONSTRAINT "personel_pkey" PRIMARY KEY ("tckn"),
+    CONSTRAINT "personel_tckn_key" UNIQUE ("tckn")
 )
 
-TABLESPACE pg_default;
-
-ALTER TABLE public."Personel"
-    OWNER to postgres;
-    
-    
-    
-    
-    
     
  -- Table: public.Cekirdek
 
@@ -31,23 +22,13 @@ ALTER TABLE public."Personel"
 
 CREATE TABLE public."Cekirdek"
 (
-    "Koken" character varying(50) COLLATE pg_catalog."default",
-    "Miktar" integer,
-    "Tur" character varying(50) COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT "Cekirdek_pkey" PRIMARY KEY ("Tur")
+    "koken" character varying(50) COLLATE pg_catalog."default",
+    "miktar" integer,
+    "tur" character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT "cekirdek_pkey" PRIMARY KEY ("tur")
 )
 
-TABLESPACE pg_default;
 
-ALTER TABLE public."Cekirdek"
-    OWNER to postgres;
-    
-    
-    
-    
-    
-  
-  
   
 -- Table: public.Arac
 
@@ -55,36 +36,20 @@ ALTER TABLE public."Cekirdek"
 
 CREATE TABLE public."Arac"
 (
-    "Kapasite" integer,
-    "Plaka" character varying(20) COLLATE pg_catalog."default" NOT NULL,
-    "Sofor_TCKN" character varying(20) COLLATE pg_catalog."default",
-    CONSTRAINT "Arac_pkey" PRIMARY KEY ("Plaka"),
-    CONSTRAINT "Arac_Sofor_TCKN_fkey" FOREIGN KEY ("Sofor_TCKN")
-        REFERENCES public."Personel" ("TCKN") MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-        NOT VALID
+    "kapasite" integer,
+    "plaka" character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    "sofor_tckn" character varying(20) COLLATE pg_catalog."default",
+    CONSTRAINT "arac_pkey" PRIMARY KEY ("plaka"),
+    CONSTRAINT "arac_sofor_tckn_fkey" FOREIGN KEY ("sofor_tckn")
+        REFERENCES public."Personel" ("tckn") MATCH SIMPLE
 )
 
-TABLESPACE pg_default;
-
-ALTER TABLE public."Arac"
-    OWNER to postgres;
 -- Index: sofor_tckn_fkey
 
 -- DROP INDEX public.sofor_tckn_fkey;
 
-CREATE INDEX sofor_tckn_fkey
-    ON public."Arac" USING btree
-    ("Sofor_TCKN" COLLATE pg_catalog."default" ASC NULLS LAST)
-    TABLESPACE pg_default;
-  
-  
-  
-  
-  
-  
-  
+CREATE INDEX sofor_tckn_fkey ON public."Arac"("sofor_tckn");
+
 
 
 
@@ -94,38 +59,19 @@ CREATE INDEX sofor_tckn_fkey
 
 CREATE TABLE public."Paket_Kahve"
 (
-    "Gramaj" integer,
-    "SKT" date,
-    "Tur" character varying(50) COLLATE pg_catalog."default",
-    CONSTRAINT "Paket_Kahve_Tur_fkey" FOREIGN KEY ("Tur")
-        REFERENCES public."Cekirdek" ("Tur") MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+    "gramaj" integer,
+    "skt" date,
+    "tur" character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT "paket_kahve_tur_fkey" FOREIGN KEY ("tur")
+        REFERENCES public."Cekirdek" ("tur") MATCH SIMPLE
 )
 
-TABLESPACE pg_default;
-
-ALTER TABLE public."Paket_Kahve"
-    OWNER to postgres;
 -- Index: Tur
 
 -- DROP INDEX public."Tur";
 
-CREATE INDEX "Tur"
-    ON public."Paket_Kahve" USING btree
-    ("Tur" COLLATE pg_catalog."default" ASC NULLS LAST)
-    TABLESPACE pg_default;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+CREATE INDEX "tur" ON public."Paket_Kahve"("tur");
+
     
 -- Table: public.Uretici
 
@@ -133,23 +79,13 @@ CREATE INDEX "Tur"
 
 CREATE TABLE public."Uretici"
 (
-    "Ad" character varying(50) COLLATE pg_catalog."default",
-    "Soyad" character varying(50) COLLATE pg_catalog."default",
-    "TCKN" character varying(20) COLLATE pg_catalog."default" NOT NULL,
-    "Koy" character varying(50) COLLATE pg_catalog."default",
-    "Tel_No" character varying(20) COLLATE pg_catalog."default",
-    CONSTRAINT "Uretici_pkey" PRIMARY KEY ("TCKN")
+    "ad" character varying(50) COLLATE pg_catalog."default",
+    "soyad" character varying(50) COLLATE pg_catalog."default",
+    "tckn" character varying(11) COLLATE pg_catalog."default" NOT NULL,
+    "koy" character varying(50) COLLATE pg_catalog."default",
+    "tel_no" character varying(20) COLLATE pg_catalog."default",
+    CONSTRAINT "uretici_pkey" PRIMARY KEY ("tckn")
 )
-
-TABLESPACE pg_default;
-
-ALTER TABLE public."Uretici"
-    OWNER to postgres;
-    
-    
-    
-    
-    
     
     
     
@@ -159,107 +95,59 @@ ALTER TABLE public."Uretici"
 
 CREATE TABLE public."Islem_Turu"
 (
-    "Sorumlu_Koordinator_TCKN" character varying(20) COLLATE pg_catalog."default",
-    "Tur_ID" integer NOT NULL,
-    CONSTRAINT "Islem_Turu_pkey" PRIMARY KEY ("Tur_ID"),
-    CONSTRAINT "Islem_Turu_Sorumlu_Koordinator_TCKN_fkey" FOREIGN KEY ("Sorumlu_Koordinator_TCKN")
-        REFERENCES public."Personel" ("TCKN") MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+    "sorumlu_koordinator_tckn" character varying(20) COLLATE pg_catalog."default",
+    "tur_id" integer NOT NULL,
+    CONSTRAINT "islem_turu_pkey" PRIMARY KEY ("tur_id"),
+    CONSTRAINT "islem_turu_sorumlu_koordinator_tckn_fkey" FOREIGN KEY ("sorumlu_koordinator_tckn")
+        REFERENCES public."Personel" ("tckn") MATCH SIMPLE
 )
 
-TABLESPACE pg_default;
-
-ALTER TABLE public."Islem_Turu"
-    OWNER to postgres;
 -- Index: sorumlu_koordinator_tckn_fkey
 
 -- DROP INDEX public.sorumlu_koordinator_tckn_fkey;
 
-CREATE INDEX sorumlu_koordinator_tckn_fkey
-    ON public."Islem_Turu" USING btree
-    ("Sorumlu_Koordinator_TCKN" COLLATE pg_catalog."default" ASC NULLS LAST)
-    TABLESPACE pg_default;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+CREATE INDEX sorumlu_koordinator_tckn_fkey ON public."Islem_Turu"("sorumlu_koordinator_tckn")
+
 -- Table: public.Satin_Alir
 
 -- DROP TABLE public."Satin_Alir";
 
 CREATE TABLE public."Satin_Alir"
 (
-    "Odeme_Tarihi" date,
-    "Odeme_Miktari" integer,
-    "Aciklama" character varying(200) COLLATE pg_catalog."default",
-    "Uretici_TCKN" character varying(20) COLLATE pg_catalog."default",
-    "Urun_Miktari" integer,
-    CONSTRAINT "Satin_Alir_Uretici_TCKN_fkey" FOREIGN KEY ("Uretici_TCKN")
-        REFERENCES public."Uretici" ("TCKN") MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+    "odeme_tarihi" date,
+    "odeme_miktari" integer,
+    "aciklama" character varying(200) COLLATE pg_catalog."default",
+    "uretici_tckn" character varying(20) COLLATE pg_catalog."default",
+    "urun_miktari" integer,
+    CONSTRAINT "satin_alir_uretici_tckn_fkey" FOREIGN KEY ("uretici_tckn")
+        REFERENCES public."Uretici" ("tckn") MATCH SIMPLE
 )
 
-TABLESPACE pg_default;
-
-ALTER TABLE public."Satin_Alir"
-    OWNER to postgres;
 -- Index: uretici_tckn_fkey
 
 -- DROP INDEX public.uretici_tckn_fkey;
 
-CREATE INDEX uretici_tckn_fkey
-    ON public."Satin_Alir" USING btree
-    ("Uretici_TCKN" COLLATE pg_catalog."default" ASC NULLS LAST)
-    TABLESPACE pg_default;
-    
-    
-    
-    
-    
-    
+CREATE INDEX uretici_tckn_fkey ON public."Satin_Alir" USING btree("uretici_tckn");
+
 -- Table: public.Ogutme
 
 -- DROP TABLE public."Ogutme";
 
 CREATE TABLE public."Ogutme"
 (
-    "Tur_ID" integer,
-    "Giren_Miktar" integer,
-    "Cikan_Miktar" integer,
-    "Islem_Suresi" integer,
-    CONSTRAINT "Ogutme_Tur_ID_fkey" FOREIGN KEY ("Tur_ID")
-        REFERENCES public."Islem_Turu" ("Tur_ID") MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+    "tur_id" integer,
+    "giren_miktar" integer,
+    "cikan_miktar" integer,
+    "islem_suresi" integer,
+    CONSTRAINT "ogutme_tur_id_fkey" FOREIGN KEY ("tur_id")
+        REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE
 )
 
-TABLESPACE pg_default;
-
-ALTER TABLE public."Ogutme"
-    OWNER to postgres;
 -- Index: islem_turu_fkey
 
 -- DROP INDEX public.islem_turu_fkey;
 
-CREATE INDEX islem_turu_fkey
-    ON public."Ogutme" USING btree
-    ("Tur_ID" ASC NULLS LAST)
-    TABLESPACE pg_default;
-    
-    
-
-
+CREATE INDEX islem_turu_fkey ON public."Ogutme" USING btree("tur_id");
 
 
 -- Table: public.Kavurma
@@ -268,28 +156,19 @@ CREATE INDEX islem_turu_fkey
 
 CREATE TABLE public."Kavurma"
 (
-    "Tur_ID" integer,
-    "Giren_Miktar" integer,
-    "Cikan_Miktar" integer,
-    "Islem_Suresi" integer,
-    CONSTRAINT "Kavurma_Tur_ID_fkey" FOREIGN KEY ("Tur_ID")
-        REFERENCES public."Islem_Turu" ("Tur_ID") MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+    "tur_id" integer,
+    "giren_miktar" integer,
+    "cikan_miktar" integer,
+    "islem_suresi" integer,
+    CONSTRAINT "kavurma_tur_id_fkey" FOREIGN KEY ("tur_id")
+        REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE
 )
 
-TABLESPACE pg_default;
-
-ALTER TABLE public."Kavurma"
-    OWNER to postgres;
 -- Index: turid_fkey
 
 -- DROP INDEX public.turid_fkey;
 
-CREATE INDEX turid_fkey
-    ON public."Kavurma" USING btree
-    ("Tur_ID" ASC NULLS LAST)
-    TABLESPACE pg_default;
+CREATE INDEX turid_fkey ON public."Kavurma" USING btree("tur_id");
     
     
     
@@ -300,22 +179,11 @@ CREATE INDEX turid_fkey
 
 CREATE TABLE public."Alici"
 (
-    "Sirket_Adi" character varying(50) COLLATE pg_catalog."default",
-    "Sirket_ID" character varying(50) COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT "Alici_pkey" PRIMARY KEY ("Sirket_ID")
+    "sirket_adi" character varying(50) COLLATE pg_catalog."default",
+    "sirket_id" character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT "Alici_pkey" PRIMARY KEY ("sirket_id")
 )
 
-TABLESPACE pg_default;
-
-ALTER TABLE public."Alici"
-    OWNER to postgres;
-    
-    
-    
-    
-    
-    
-    
     
 -- Table: public.Satis
 
@@ -323,31 +191,30 @@ ALTER TABLE public."Alici"
 
 CREATE TABLE public."Satis"
 (
-    "Ucret" integer,
-    "Tarih" date,
-    "Miktar" integer,
-    "Alici_Sirket_ID" character varying(50) COLLATE pg_catalog."default",
-    CONSTRAINT "Satis_Alici_Sirket_ID_fkey" FOREIGN KEY ("Alici_Sirket_ID")
-        REFERENCES public."Alici" ("Sirket_ID") MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+    "ucret" integer,
+    "tarih" date,
+    "miktar" integer,
+    "alici_sirket_id" character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT "satis_alici_sirket_id_fkey" FOREIGN KEY ("alici_sirket_id")
+        REFERENCES public."Alici" ("sirket_id") MATCH SIMPLE
 )
 
-TABLESPACE pg_default;
-
-ALTER TABLE public."Satis"
-    OWNER to postgres;
 -- Index: sirket_id_fk
 
 -- DROP INDEX public.sirket_id_fk;
 
-CREATE INDEX sirket_id_fk
-    ON public."Satis" USING btree
-    ("Alici_Sirket_ID" COLLATE pg_catalog."default" ASC NULLS LAST)
-    TABLESPACE pg_default;    
+CREATE INDEX sirket_id_fk ON public."Satis" USING btree("alici_sirket_id");
     
-    
-    
+CREATE TABLE public."Login"(
+    "tckn" character varying(11) COLLATE pg_catalog."default" NOT NULL,
+    "passcode" character varying(25),
+    "personel_tipi" character varying(25),
+     unique("passcode"),
+     CONSTRAINT "tckn_fkey" FOREIGN KEY ("tckn")
+        REFERENCES public."Personel" ("tckn") MATCH SIMPLE
+)
+
+CREATE INDEX tckn_fkey ON public."Personel" USING btree("tckn")
     
     
     
