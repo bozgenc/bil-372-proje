@@ -15,7 +15,9 @@ CREATE TABLE public."Personel"
     CONSTRAINT "personel_tckn_key" UNIQUE ("tckn")
 )
 
-    
+Select * from public."Personel"
+/*INSERT INTO public."Personel"(personel_tipi, tckn, soyad, ad, tel_no) values ('nakliyeci', '22222', 'ozyer', 't', '12345');
+*/
  -- Table: public.Cekirdek
 
 -- DROP TABLE public."Cekirdek";
@@ -209,12 +211,10 @@ CREATE TABLE public."Login"(
     "tckn" character varying(11) COLLATE pg_catalog."default" NOT NULL,
     "passcode" character varying(25),
     "personel_tipi" character varying(25),
-     unique("passcode"),
-     CONSTRAINT "tckn_fkey" FOREIGN KEY ("tckn")
-        REFERENCES public."Personel" ("tckn") MATCH SIMPLE
+    unique("passcode"),
+    primary key(tckn)
 )
 
-CREATE INDEX tckn_fkey ON public."Personel" USING btree("tckn")
     
     
     
