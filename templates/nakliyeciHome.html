@@ -33,6 +33,73 @@
 		       value="Cancel">
 		<input type="hidden" id="isInsert" name="isInsert" value="0">
 
+		<br>
+
+	<h1>Satın Alımlar</h1>
+	<div class="container" id="product_table">
+		<div class="row border">
+			<div class="col-sm">
+				(ID)
+			</div>
+			<div class="col-sm">
+				Üretici
+			</div>
+			<div class="col-sm">
+				Ödeme Miktarı
+			</div>
+			<div class="col-sm">
+				Ödeme Tarihi
+			</div>
+			<div class="col-sm">
+				Ürün Miktarı
+			</div>
+			<div class="col-sm">
+				Açıklama
+			</div>
+			<div class="col-sm">
+				Kullanılan Araç
+			</div>
+			<div class="col-sm">
+				Operations
+			</div>
+		</div>
+		{% for purchase in purchaseList %}
+		<div class="row border">
+			<div class="col-sm">
+				{{ purchase.id }}
+			</div>
+			<div class="col-sm">
+				{{ purchase.id }}
+			</div>
+			<div class="col-sm">
+				{{ purchase.odeme_miktari }}
+			</div>
+			<div class="col-sm">
+				{{ purchase.odeme_tarihi }}
+			</div>
+			<div class="col-sm">
+				{{ purchase.urun_miktari }}
+			</div>
+			<div class="col-sm">
+				{{ purchase.aciklama }}
+			</div>
+			<div class="col-sm">
+				{{ purchase.plaka }}
+			</div>
+			<div class="col-sm">
+				<a href="#"><span
+						class="fa fa-pencil"
+						style="color: black"
+				></span></a>
+				<a href="#"><span class="fa fa-trash" style="color: red"></span></a>
+			</div>
+		</div>
+		{% endfor %}
+
+		</tbody>
+		</table>
+	</div>
+
 	</form>
 
 </div>

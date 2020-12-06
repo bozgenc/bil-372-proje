@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 
 app = Flask(__name__, template_folder="/Users/baranozgenc/Desktop/proje/Bil372Proje/templates")
@@ -80,21 +81,23 @@ def nakliyeciHome():
         res = db.session.execute(query)
         res = res.fetchall()
         uretici_tckn = res[0].tckn
+        today = datetime.today()
 
-        insertQuery = "INSERT INTO public.\"Satin_Alir\"(uretici_tckn, aciklama, odeme_miktari ,urun_miktari, plaka) VALUES ('" + uretici_tckn + "' , '" + aciklama + "' , '" + odeme + "' ,'" + miktar + "', '" + arac + "')"
+        insertQuery = "INSERT INTO public.\"Satin_Alir\"(uretici_tckn, odeme_tarihi,aciklama, odeme_miktari ,urun_miktari, plaka) VALUES ('" + uretici_tckn + "' , '" + str(today) + "' ,'" + aciklama + "' , '" + odeme + "' ,'" + miktar + "', '" + arac + "')"
         db.engine.execute(insertQuery)
 
 
     queryUretici = "SELECT * FROM public.\"Uretici\""
     temp = db.session.execute(queryUretici)
-
     queryArac = "SELECT * FROM public.\"Arac\""
     temp2 = db.session.execute(queryArac)
+    queryAll = "SELECT * FROM public.\"Satin_Alir\""
+    temp3 = db.session.execute(queryAll)
 
     uList = temp.fetchall()
     aList = temp2.fetchall()
-
-    return render_template("nakliyeciHome.html", ureticiList=uList, aracList=aList)
+    purchaseList = temp3.fetchall()
+    return render_template("nakliyeciHome.html", ureticiList=uList, aracList=aList, purchaseList=purchaseList)
 
 
 @app.route("/")
