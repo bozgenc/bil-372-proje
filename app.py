@@ -2,9 +2,9 @@ from flask import Flask, render_template, request,flash
 from flask_sqlalchemy import SQLAlchemy
 
 
-app = Flask(__name__, template_folder="/Users/baranozgenc/Desktop/proje/Bil372Proje/templates")
+app = Flask(__name__, template_folder="Users\elifg\PycharmProjects\Bil372Proje\templates")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:12345@localhost:5432/projeDB"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:12345@localhost:5432/ProjeDB"
 db = SQLAlchemy(app)
 
 
@@ -63,6 +63,43 @@ def login():
 @app.route("/")
 def home():
     return render_template("index.html")
+@app.route('/uretici',  methods=['POST', 'GET'])
+def uretici():
+    if request.method == "POST":
+        ad = request.form['ad']
+        soyad = request.form['soyad']
+        tckn = request.form['tckn']
+        koy = request.form['koy']
+        tel_no = request.form['tel_no']
+
+        query = "INSERT INTO \"Uretici\"(ad, soyad, tckn, koy, tel_no) VALUES ('" + ad + "' , '" + soyad + "', '" + tckn + "','" + koy + "','" + tel_no + "')"
+        result = db.engine.execute(query)
+        db.session.add(result)
+        db.session.commit()
+        return render_template("uretici.html")
+    else:
+        all_data = "Select * from public.\"Uretici\""
+        result = db.engine.execute(all_data)
+        return render_template("uretici.html", feat=result)
+
+@app.route('/satis',  methods=['POST', 'GET'])
+def  satis():
+    if request.method == "POST":
+        ucret =  request.form['ucret']
+        tarih =  request.form['tarih']
+        miktar = request.form['miktar']
+        alici_sirket_id = request.form['alıcı_sirket_id']
+
+        query = "INSERT INTO \"Satis\"(ucret, tarih, miktar, alici_sirket_id) VALUES ('" + ucret + "' , '" + tarih + "', '" + miktar + "','" + alici_sirket_id + "')"
+        result = db.engine.execute(query)
+        db.session.add(result)
+        db.session.commit()
+        return render_template("satis.html")
+    else:
+        all_data = "Select * from public.\"Satis\""
+        result = db.engine.execute(all_data)
+        return render_template("satis.html", feat=result)
+
 
 
 if __name__ == "__main__":
