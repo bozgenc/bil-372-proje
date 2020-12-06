@@ -73,17 +73,16 @@ def home():
 @app.route('/uretici',  methods=['POST', 'GET'])
 def uretici():
     if request.method == "POST":
-        ad = request.form['ad']
-        soyad = request.form['soyad']
+        ad_soyad = request.form['ad']
         tckn = request.form['tckn']
         koy = request.form['koy']
         tel_no = request.form['tel_no']
 
-        query = "INSERT INTO \"Uretici\"(ad, soyad, tckn, koy, tel_no) VALUES ('" + ad + "' , '" + soyad + "', '" + tckn + "','" + koy + "','" + tel_no + "')"
+        query = "INSERT INTO \"Uretici\"(ad_soyad, tckn, koy, tel_no) VALUES ('" + ad_soyad + "', '" + tckn + "','" + koy + "','" + tel_no + "')"
         result = db.engine.execute(query)
-        db.session.add(result)
-        db.session.commit()
-        return render_template("uretici.html")
+
+        return render_template("uretici.html", feat=result)
+
     else:
         all_data = "Select * from public.\"Uretici\""
         result = db.engine.execute(all_data)
