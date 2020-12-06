@@ -74,6 +74,7 @@ def nakliyeciHome():
         miktar = request.form['miktar']
         arac = request.form['arac']
         odeme = request.form['odeme']
+        id = request.form['isInsert']
 
         query = "SELECT * FROM public.\"Uretici\" WHERE ad_soyad =  '" + uretici + "'"
         res = db.session.execute(query)
@@ -81,8 +82,13 @@ def nakliyeciHome():
         uretici_tckn = res[0].tckn
         today = datetime.today()
 
-        insertQuery = "INSERT INTO public.\"Satin_Alir\"(uretici_tckn, odeme_tarihi,aciklama, odeme_miktari ,urun_miktari, plaka) VALUES ('" + uretici_tckn + "' , '" + str(today) + "' ,'" + aciklama + "' , '" + odeme + "' ,'" + miktar + "', '" + arac + "')"
-        db.engine.execute(insertQuery)
+        if int(id) == 0:
+            insertQuery = "INSERT INTO public.\"Satin_Alir\"(uretici_tckn, odeme_tarihi,aciklama, odeme_miktari ,urun_miktari, plaka) VALUES ('" + uretici_tckn + "' , '" + str(today) + "' ,'" + aciklama + "' , '" + odeme + "' ,'" + miktar + "', '" + arac + "')"
+            db.engine.execute(insertQuery)
+
+        else:
+            query_update = "UPDATE public.\"Satin_Alir\" SET uretici_tckn = '" + uretici_tckn + "', odeme_miktari = '" + odeme + "', odeme_tarihi = '" + str(today) + "', urun_miktari = '" + str(miktar) + "', plaka = '" + arac + "'  WHERE id = '" + str(id) + "'"
+            db.engine.execute(query_update)
 
 
     queryUretici = "SELECT * FROM public.\"Uretici\""

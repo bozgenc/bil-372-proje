@@ -90,6 +90,7 @@
 				<a href="#"><span
 						class="fa fa-pencil"
 						style="color: black"
+						onClick="update('{{purchase.id}}', '{{purchase.ad_soyad}}', '{{purchase.odeme_miktari}}', '{{purchase.urun_miktari}}', '{{purchase.aciklama}}', '{{purchase.plaka}}')"
 				></span></a>
 				<a href="/nakliyeciHome_delete/{{ purchase.id }}"><span class="fa fa-trash" style="color: red"></span></a>
 			</div>
@@ -103,4 +104,6 @@
 	</form>
 
 </div>
+
+<script type="text/javascript" src="{{ url_for('static',filename='nakliyeciHome.js') }}"></script>
 {% endblock %}
