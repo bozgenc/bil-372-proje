@@ -2,9 +2,10 @@ from flask import Flask, render_template, request,flash
 from flask_sqlalchemy import SQLAlchemy
 
 
-app = Flask(__name__, template_folder="/Users/baranozgenc/Desktop/proje/Bil372Proje/templates")
+app = Flask(__name__, template_folder="C:\\Users\\user\\Documents\\GitHub\\Bil372Proje\\templates")
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:12345@localhost:5432/projeDB"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:vampirler@localhost:5432/dbV2"
 db = SQLAlchemy(app)
 
 
@@ -26,6 +27,31 @@ def register():
             result = db.engine.execute(query)
 
     return render_template("register.html",)
+
+
+@app.route('/cekirdek', methods=['GET', 'POST'])
+def cekirdek():
+    if request.method == 'POST':
+        miktar = request.form['miktar']
+        tur = request.form['tur']
+        koken = request.form['koken']
+        query = "INSERT INTO Cekirdek(koken, miktar, tur) VALUES ('" + koken + "' , '" + miktar + "', '" + tur + "')"
+        result = db.engine.execute(query)
+
+    return render_template("cekirdek.html", )
+
+
+
+@app.route('/paket', methods=['GET', 'POST'])
+def paket():
+    if request.method == 'POST':
+        gramaj = request.form['gramaj']
+        tur = request.form['tur']
+        skt = request.form['skt']
+        query = "INSERT INTO Paket_Kahve(gramaj, skt, tur) VALUES ('" + gramaj + "' , '" + skt + "', '" + tur + "')"
+        result = db.engine.execute(query)
+
+    return render_template("paket.html", )
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -60,9 +86,27 @@ def login():
         return render_template("login.html")
 
 
+
+
+
+
+
+
+
+
+
 @app.route("/")
 def home():
     return render_template("index.html")
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":

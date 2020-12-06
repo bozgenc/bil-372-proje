@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<h1>Paket</h1>
+
+<div class="container">
+	<form action="/paket" method="POST">
+
+		<label for="gramaj">Gramaj:</label>
+		<input type="text" id="gramaj" name="gramaj" placeholder="Gramaj" required="required" maxlength="11">
+
+		<label for="tur">Tur:</label>
+		<input type="tur" id="tur" name="tur" placeholder="Tur" required="required" >
+
+		<label for="skt">SKT:</label>
+		<input type="skt" id="skt" name="skt" placeholder="SKT" required="required">
+
+
+		<input type="submit" class="btn btn-success" value="Submit">
+		<input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
+		       value="Cancel">
+		<input type="hidden" id="isInsert" name="isInsert" value="0">
+
+	</form>
+
+</div>
+
+{% endblock %}
