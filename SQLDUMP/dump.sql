@@ -15,9 +15,7 @@ CREATE TABLE public."Personel"
     CONSTRAINT "personel_tckn_key" UNIQUE ("tckn")
 )
 
-Select * from public."Personel"
-/*INSERT INTO public."Personel"(personel_tipi, tckn, soyad, ad, tel_no) values ('nakliyeci', '22222', 'ozyer', 't', '12345');
-*/
+
  -- Table: public.Cekirdek
 
 -- DROP TABLE public."Cekirdek";
@@ -81,7 +79,8 @@ CREATE INDEX "tur" ON public."Paket_Kahve"("tur");
 
 CREATE TABLE public."Uretici"
 (
-    "ad_soyad" character varying(100) COLLATE pg_catalog."default",
+    "ad" character varying(50) COLLATE pg_catalog."default",
+    "soyad" character varying(50) COLLATE pg_catalog."default",
     "tckn" character varying(11) COLLATE pg_catalog."default" NOT NULL,
     "koy" character varying(50) COLLATE pg_catalog."default",
     "tel_no" character varying(20) COLLATE pg_catalog."default",
@@ -120,9 +119,6 @@ CREATE TABLE public."Satin_Alir"
     "aciklama" character varying(200) COLLATE pg_catalog."default",
     "uretici_tckn" character varying(20) COLLATE pg_catalog."default",
     "urun_miktari" integer,
-    "plaka" character varying(10),
-    "id" serial not null,
-    primary key(id),
     CONSTRAINT "satin_alir_uretici_tckn_fkey" FOREIGN KEY ("uretici_tckn")
         REFERENCES public."Uretici" ("tckn") MATCH SIMPLE
 )
@@ -143,8 +139,6 @@ CREATE TABLE public."Ogutme"
     "giren_miktar" integer,
     "cikan_miktar" integer,
     "islem_suresi" integer,
-    "id" serial not null,
-    primary key(id),
     CONSTRAINT "ogutme_tur_id_fkey" FOREIGN KEY ("tur_id")
         REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE
 )
@@ -166,27 +160,9 @@ CREATE TABLE public."Kavurma"
     "giren_miktar" integer,
     "cikan_miktar" integer,
     "islem_suresi" integer,
-    "id" serial not null,
-    primary key(id),
     CONSTRAINT "kavurma_tur_id_fkey" FOREIGN KEY ("tur_id")
         REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE
 )
--- Table: public.IslemSonu
-
--- DROP TABLE public."Islem_Sonu";
-
-CREATE TABLE public."Islem_Sonu"(
-    "id" serial not null,
-    primary key(id),
-    "tur_id" integer,
-    CONSTRAINT "islemsonu_tur_id_fkey" FOREIGN KEY ("tur_id")
-        REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE
-)
--- Index: turid_fkey
-
--- DROP INDEX public.turid_fkey;
-
-CREATE INDEX turid_fkey2 ON public."Islem_Sonu" USING btree("tur_id");
 
 -- Index: turid_fkey
 
@@ -233,10 +209,12 @@ CREATE TABLE public."Login"(
     "tckn" character varying(11) COLLATE pg_catalog."default" NOT NULL,
     "passcode" character varying(25),
     "personel_tipi" character varying(25),
-    unique("passcode"),
-    primary key(tckn)
+     unique("passcode"),
+     CONSTRAINT "tckn_fkey" FOREIGN KEY ("tckn")
+        REFERENCES public."Personel" ("tckn") MATCH SIMPLE
 )
 
+CREATE INDEX tckn_fkey ON public."Personel" USING btree("tckn")
 
 
 
