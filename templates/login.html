@@ -1,0 +1,33 @@
+{% extends "baseForLogin.html" %}
+{% block title %} Login {% endblock %}
+{% block content %}
+<h1>Login</h1>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<div class="container">
+	<form action="/login" method="POST">
+
+		<label for="tckn">T.C:</label>
+		<input type="text" id="tckn" name="tckn" placeholder="T.C." required="required" maxlength="11">
+
+		<label for="password">Password:</label>
+		<input type="password" id="password" name="password" placeholder="Password" required="required" >
+
+		<input type="submit" class="btn btn-success" value="Submit">
+		<input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
+		       value="Cancel">
+		<input type="hidden" id="isInsert" name="isInsert" value="0">
+
+	</form>
+
+</div>
+{% endblock %}
