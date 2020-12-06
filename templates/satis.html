@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %} Home Page {% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+         <div class="col md-12">
+             <h2><b>Satış</b> Sayfası</h2>
+             <table class="table table-hover table-dark">
+                 <tr>
+                     <th>Ücret</th>
+                        <th>Tarih</th>
+                        <th>Miktar</th>
+                        <th>Alıcı Şirket ID</th>
+
+                    </tr>
+                     {% for row in feat %}
+                     <tr>
+                         <th>{{row.ucret}}</th>
+                         <th>{{row.tarih}}</th>
+                         <th>{{row.miktar}}</th>
+                         <th>{{row.alici_sirket_id}}</th>
+                          <td>
+                             <a href="/updatesatis/{{ row.alici_sirket_id }}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{row.manufacturer_id}}">Edit</a>
+                             <a href="/satisuretici/{{ row.alici_sirket_id }}" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#modaldelete{{row.manufacturer_id}}" >Delete</a>
+                         </td>
+                     </tr>
+                      {% endfor %}
+                 </table>
+            <div class="modal-header">
+                <h4 class="modal-title">Yeni Satış</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="/satis" autocomplete="on" method="POST">
+                     <div class="form-group">
+                            <label>Ucret :</label>
+                                <input type="text" id="ucret" name="ucret" required="">
+                     </div>
+                        <div class="form-group">
+                            <label>Tarih:</label>
+                            <input type="datetime-local" id="tarih" name="tarih" required="required">
+                        </div>
+                        <div class="form-group">
+                            <label>Miktar:</label>
+                            <input type="text" id="miktar" name="miktar" required="required">
+                        </div>
+                        <div class="form-group">
+                            <label>Alıcı Şirket ID:</label>
+                            <input type="text" id="alici_sirket_id" name="alici_sirket_id" required="required">
+                        </div>
+
+                                        <input type="submit" class="btn btn-success" value="Submit">
+		                        <input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
+		                        value="Cancel">
+                                    </form>
+                    </div>
+        </div>
+</div>
+</div>
+{% endblock %}
