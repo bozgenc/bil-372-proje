@@ -55,14 +55,12 @@ def login():
                 passwordFlag = True
             if passwordFlag:
                 if userrole == "koordinator":
-                    return render_template("index.html")
+                    return redirect(url_for("/"), code=303)
                 elif userrole == "nakliyeci":
                     return redirect(url_for("nakliyeciHome"), code=303)
             else:
                 flash("Password is incorrect, please try again!")
                 return render_template("login.html")
-                #else:
-                    #return render_template("admin.html")
 
     else:
         return render_template("login.html")
@@ -77,7 +75,7 @@ def nakliyeciHome():
         arac = request.form['arac']
         odeme = request.form['odeme']
 
-        query = "SELECT * FROM public.\"Uretici\" WHERE ad_soyad =  '" + uretici + "' "
+        query = "SELECT * FROM public.\"Uretici\" WHERE ad_soyad =  '" + uretici + "'"
         res = db.session.execute(query)
         res = res.fetchall()
         uretici_tckn = res[0].tckn
@@ -91,7 +89,26 @@ def nakliyeciHome():
     temp = db.session.execute(queryUretici)
     queryArac = "SELECT * FROM public.\"Arac\""
     temp2 = db.session.execute(queryArac)
-    queryAll = "SELECT * FROM public.\"Satin_Alir\""
+    queryAll = "SELECT public.\"Satin_Alir\".id, public.\"Satin_Alir\".odeme_miktari, public.\"Satin_Alir\".odeme_tarihi, public.\"Satin_Alir\".urun_miktari, public.\"Satin_Alir\".aciklama, public.\"Satin_Alir\".plaka, public.\"Uretici\".ad_soyad FROM( public.\"Satin_Alir\" INNER JOIN public.\"Uretici\" ON public.\"Satin_Alir\".uretici_tckn = public.\"Uretici\".tckn)"
+    temp3 = db.session.execute(queryAll)
+
+    uList = temp.fetchall()
+    aList = temp2.fetchall()
+    purchaseList = temp3.fetchall()
+    return render_template("nakliyeciHome.html", ureticiList=uList, aracList=aList, purchaseList=purchaseList)
+
+
+@app.route("/nakliyeciHome_delete/<int:id>", methods=['GET','POST'])
+def nakliyeciHomeDelete(id):
+    if request.method == 'GET':
+        query = "DELETE FROM public.\"Satin_Alir\" WHERE id = '" + str(id) + "'"
+        db.engine.execute(query)
+
+    queryUretici = "SELECT * FROM public.\"Uretici\""
+    temp = db.session.execute(queryUretici)
+    queryArac = "SELECT * FROM public.\"Arac\""
+    temp2 = db.session.execute(queryArac)
+    queryAll = "SELECT public.\"Satin_Alir\".id, public.\"Satin_Alir\".odeme_miktari, public.\"Satin_Alir\".odeme_tarihi, public.\"Satin_Alir\".urun_miktari, public.\"Satin_Alir\".aciklama, public.\"Satin_Alir\".plaka, public.\"Uretici\".ad_soyad FROM( public.\"Satin_Alir\" INNER JOIN public.\"Uretici\" ON public.\"Satin_Alir\".uretici_tckn = public.\"Uretici\".tckn)"
     temp3 = db.session.execute(queryAll)
 
     uList = temp.fetchall()

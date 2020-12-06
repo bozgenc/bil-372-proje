@@ -69,7 +69,7 @@
 				{{ purchase.id }}
 			</div>
 			<div class="col-sm">
-				{{ purchase.id }}
+				{{ purchase.ad_soyad }}
 			</div>
 			<div class="col-sm">
 				{{ purchase.odeme_miktari }}
@@ -91,7 +91,7 @@
 						class="fa fa-pencil"
 						style="color: black"
 				></span></a>
-				<a href="#"><span class="fa fa-trash" style="color: red"></span></a>
+				<a href="/nakliyeciHome_delete/{{ purchase.id }}"><span class="fa fa-trash" style="color: red"></span></a>
 			</div>
 		</div>
 		{% endfor %}
