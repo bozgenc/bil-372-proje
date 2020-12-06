@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request,flash
 from flask_sqlalchemy import SQLAlchemy
-
+from sqlalchemy_utils.functions import database_exists
 
 app = Flask(__name__, template_folder="C:\\Users\\user\\Documents\\GitHub\\Bil372Proje\\templates")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -35,7 +35,16 @@ def cekirdek():
         miktar = request.form['miktar']
         tur = request.form['tur']
         koken = request.form['koken']
-        query = "INSERT INTO Cekirdek(koken, miktar, tur) VALUES ('" + koken + "' , '" + miktar + "', '" + tur + "')"
+        intMiktar = int(miktar)
+        print(intMiktar)
+        if intMiktar > 0:
+            query = "INSERT INTO \"Cekirdek\"(koken, miktar, tur) VALUES ('" + koken + "' , '" + miktar + "', '" + tur + "')"
+
+        else:
+            flash("Miktar must be greater than zero, please try again!")
+            return render_template("cekirdek.html")
+
+
         result = db.engine.execute(query)
 
     return render_template("cekirdek.html", )
@@ -48,7 +57,7 @@ def paket():
         gramaj = request.form['gramaj']
         tur = request.form['tur']
         skt = request.form['skt']
-        query = "INSERT INTO Paket_Kahve(gramaj, skt, tur) VALUES ('" + gramaj + "' , '" + skt + "', '" + tur + "')"
+        query = "INSERT INTO \"Paket_Kahve\"(gramaj, skt, tur) VALUES ('" + gramaj + "' , '" + skt + "', '" + tur + "')"
         result = db.engine.execute(query)
 
     return render_template("paket.html", )
