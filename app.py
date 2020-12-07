@@ -191,7 +191,7 @@ def kavurma():
     query = "SELECT * FROM public.\"Personel\" WHERE personel_tipi = 'koordinator'"
     res = db.session.execute(query)
 
-    queryKavurma = "SELECT * FROM public.\"Kavurma\""
+    queryKavurma = "SELECT * FROM public.\"Kavurma\" WHERE bitti_mi = 'False'"
     result = db.session.execute(queryKavurma)
 
     personelList = res.fetchall()
@@ -199,6 +199,23 @@ def kavurma():
 
     return render_template("kavurma.html", personelList=personelList, kavurmaList=kavurmaList)
 
+
+@app.route("/kavurma_delete/<int:id>", methods=['GET', 'POST'])
+def kavurma_delete(id):
+    if request.method == 'GET':
+        queryDel = "DELETE FROM public.\"Kavurma\" WHERE id = '" + str(id) + "'"
+        db.engine.execute(queryDel)
+
+    query = "SELECT * FROM public.\"Personel\" WHERE personel_tipi = 'koordinator'"
+    res = db.session.execute(query)
+
+    queryKavurma = "SELECT * FROM public.\"Kavurma\""
+    result = db.session.execute(queryKavurma)
+
+    personelList = res.fetchall()
+    kavurmaList = result.fetchall()
+
+    return render_template("kavurma.html", personelList=personelList, kavurmaList=kavurmaList)
 
 
 @app.route("/")
