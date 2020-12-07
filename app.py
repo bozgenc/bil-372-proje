@@ -91,6 +91,25 @@ def adminHome():
 
     return render_template("adminHome.html", roleList=roleList, personelList=personelList)
 
+@app.route("/adminHome_delete/<int:id>")
+def adminHomeDelete(id):
+    if request.method == 'GET':
+        query = "DELETE FROM public.\"Login\" WHERE tckn = '" + str(id) + "'"
+        db.engine.execute(query)
+        query2 = "DELETE FROM public.\"Personel\" WHERE tckn = '" + str(id) + "'"
+        db.engine.execute(query2)
+
+    query = "SELECT * FROM usertypes"
+    temp = db.session.execute(query)
+    queryPersonel = "SELECT * FROM public.\"Personel\""
+    temp2 = db.session.execute(queryPersonel)
+
+    roleList = temp.fetchall()
+    personelList = temp2.fetchall()
+
+    return render_template("adminHome.html", roleList=roleList, personelList=personelList)
+
+
 
 @app.route("/nakliyeciHome", methods=['GET','POST'])
 def nakliyeciHome():
