@@ -184,9 +184,18 @@ def kavurma():
         islem_suresi = request.form['islem_suresi']
         bitti_mi = request.form['bitti_mi']
         tur_id = "2"
+        id = request.form['isInsert']
 
-        insertQuery = "INSERT INTO public.\"Kavurma\"(sorumlu_koordinator_tckn, tur_id, giren_miktar, cikan_miktar ,islem_suresi, bitti_mi) VALUES ('" + tckn + "' , '" + tur_id + "' ,'" + giren_miktar + "' , '" + cikan_miktar + "' ,'" + islem_suresi + "', '" + bitti_mi + "')"
-        db.engine.execute(insertQuery)
+        if int(id) == 0:
+            insertQuery = "INSERT INTO public.\"Kavurma\"(sorumlu_koordinator_tckn, tur_id, giren_miktar, cikan_miktar ,islem_suresi, bitti_mi) VALUES ('" + tckn + "' , '" + tur_id + "' ,'" + giren_miktar + "' , '" + str(0) + "' ,'" +  str(0) + "', '" + bitti_mi + "')"
+            db.engine.execute(insertQuery)
+        else:
+            query_update = "UPDATE public.\"Kavurma\" SET sorumlu_koordinator_tckn = '" + tckn + "', tur_id = '" + tur_id + "', giren_miktar = '" + giren_miktar + "', cikan_miktar = '" + cikan_miktar + "', islem_suresi = '" + islem_suresi + "', bitti_mi = '" + bitti_mi + "'  WHERE id = '" + str(id) + "'"
+            db.engine.execute(query_update)
+            if bitti_mi:
+                print("biten işlemlere geçiş yapılacak")
+
+
 
     query = "SELECT * FROM public.\"Personel\" WHERE personel_tipi = 'koordinator'"
     res = db.session.execute(query)

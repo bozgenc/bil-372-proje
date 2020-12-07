@@ -5,26 +5,26 @@
     <form action="/kavurma" method="POST">
         <br>
 
-        <label for="sorumlu_koordinator_tckn">Sorumlu Koordinator:</label>
+        <label for="sorumlu_koordinator_tckn" >Sorumlu Koordinator:</label>
         <select id="sorumlu_koordinator_tckn" name="sorumlu_koordinator_tckn">
             {% for row in personelList %}
             <option value="{{ row.tckn }}">{{ row.ad}} {{row.soyad}}</option>
             {% endfor %}
         </select>
 
-        <label for="giren_miktar">Giren Miktar</label>
+        <label for="giren_miktar">Giren Miktar </label>
         <input type="number" id="giren_miktar" name="giren_miktar" placeholder="Giren Miktar" required="required">
 
-        <label for="cikan_miktar">Çıkan Miktar</label>
-        <input type="number" id="cikan_miktar" name="cikan_miktar" placeholder="Çıkan Miktar" required="required">
+        <label id = "label1" for="cikan_miktar" style="visibility: hidden">Çıkan Miktar</label>
+        <input type="number" id="cikan_miktar" name="cikan_miktar" placeholder="Çıkan Miktar" style="visibility: hidden">
 
-        <label for="islem_suresi">İşlem Süresi(Saat)</label>
-        <input type="number" id="islem_suresi" name="islem_suresi" placeholder="İşlem Süresi" required="required">
+        <label id= "label2" for="islem_suresi" style="visibility: hidden">İşlem Süresi(Saat)</label>
+        <input type="number" id="islem_suresi" name="islem_suresi" placeholder="İşlem Süresi" style="visibility: hidden">
 
-        <label for="bitti" >İşlem Bitti mi?</label>
+        <label for="bitti" >Kavrulma İşlemi Bitti Mi?</label>
         <br>
-        <input type="radio" id="bitti" name="bitti_mi" value="True">Evet
-        <input type="radio" id="bitmedi" name="bitti_mi" value="False" checked>Hayır
+        <input type="radio" id="bitti" name="bitti_mi" value="True"> Evet
+        <input type="radio" id="bitmedi" name="bitti_mi" value="False" checked> Hayır
         <br>
         <br>
         <input type="submit" class="btn btn-success" value="Submit">
@@ -39,9 +39,6 @@
             <div class="row border">
                 <div class="col-sm">
                     TCKN
-                </div>
-                <div class="col-sm">
-                    İşlem Türü
                 </div>
                 <div class="col-sm">
                     Giren Miktar
@@ -62,9 +59,6 @@
                     {{ row.sorumlu_koordinator_tckn}}
                 </div>
                 <div class="col-sm">
-                    Kavurma
-                </div>
-                <div class="col-sm">
                     {{ row.giren_miktar}}
                 </div>
                 <div class="col-sm">
@@ -77,7 +71,12 @@
                     <a href="#"><span
                             class="fa fa-pencil"
                             style="color: black"
-                            onClick="update('{{row.sorumlu_koordinator_tckn}}','{{row.tur_id}}', '{{row.giren_miktar}}', '{{row.cikan_miktar}}', '{{row.islem_suresi}}','{{row.bitti_mi}}')"
+                            onClick="update('{{row.sorumlu_koordinator_tckn}}', '{{row.giren_miktar}}', '{{row.cikan_miktar}}', '{{row.islem_suresi}}','{{row.id}}')"
+                    ></span></a>
+                    <a href="#"><span
+                            class="fa fa-pencil"
+                            style="color: blue"
+                            onClick="update2('{{row.sorumlu_koordinator_tckn}}', '{{row.giren_miktar}}', '{{row.cikan_miktar}}', '{{row.islem_suresi}}','{{row.id}}')"
                     ></span></a>
                     <a href="/kavurma_delete/{{row.id}}"><span class="fa fa-trash" style="color: red"></span></a>
                 </div>
@@ -87,5 +86,5 @@
     </form>
 
 </div>
-
+<script type="text/javascript" src="{{ url_for('static',filename='kavurma.js') }}"></script>
 {% endblock %}
