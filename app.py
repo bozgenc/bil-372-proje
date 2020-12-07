@@ -5,7 +5,7 @@ from sqlalchemy_utils.functions import database_exists
 app = Flask(__name__, template_folder="C:\\Users\\user\\Documents\\GitHub\\Bil372Proje\\templates")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:vampirler@localhost:5432/dbV2"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:vampirler@localhost:5432/dbV3"
 db = SQLAlchemy(app)
 
 
@@ -39,15 +39,19 @@ def cekirdek():
         print(intMiktar)
         if intMiktar > 0:
             query = "INSERT INTO \"Cekirdek\"(koken, miktar, tur) VALUES ('" + koken + "' , '" + miktar + "', '" + tur + "')"
+            result = db.engine.execute(query)
+
 
         else:
             flash("Miktar must be greater than zero, please try again!")
             return render_template("cekirdek.html")
 
+    queryCekirdek = "SELECT * FROM public.\"Cekirdek\""
+    temp = db.session.execute(queryCekirdek)
 
-        result = db.engine.execute(query)
+    cList = temp.fetchall()
 
-    return render_template("cekirdek.html", )
+    return render_template("cekirdek.html", cekirdekList=cList)
 
 
 
