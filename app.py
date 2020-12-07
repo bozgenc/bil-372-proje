@@ -5,7 +5,7 @@ from sqlalchemy_utils.functions import database_exists
 app = Flask(__name__, template_folder="C:\\Users\\user\\Documents\\GitHub\\Bil372Proje\\templates")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:vampirler@localhost:5432/dbV3"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:vampirler@localhost:5432/dbV4"
 db = SQLAlchemy(app)
 
 
@@ -55,6 +55,28 @@ def cekirdek():
 
 
 
+
+@app.route("/cekirdek_delete/<int:id>", methods=['GET','POST'])
+def cekirdekDelete(id):
+    if request.method == 'GET':
+        query = "DELETE FROM public.\"Cekirdek\" WHERE id = '" + str(id) + "'"
+        db.engine.execute(query)
+
+    queryPaket = "SELECT * FROM public.\"Cekirdek\""
+    temp = db.session.execute(queryPaket)
+
+    cList = temp.fetchall()
+
+    return render_template("paket.html", cekirdekList=cList)
+
+
+
+
+
+
+
+
+
 @app.route('/paket', methods=['GET', 'POST'])
 def paket():
     if request.method == 'POST':
@@ -64,7 +86,41 @@ def paket():
         query = "INSERT INTO \"Paket_Kahve\"(gramaj, skt, tur) VALUES ('" + gramaj + "' , '" + skt + "', '" + tur + "')"
         result = db.engine.execute(query)
 
-    return render_template("paket.html", )
+
+
+    queryPaket = "SELECT * FROM public.\"Paket_Kahve\""
+    temp = db.session.execute(queryPaket)
+
+    pList = temp.fetchall()
+
+    return render_template("paket.html", paketList=pList)
+
+
+
+
+
+
+@app.route("/paket_delete/<int:id>", methods=['GET','POST'])
+def paketDelete(id):
+    if request.method == 'GET':
+        query = "DELETE FROM public.\"Paket_Kahve\" WHERE id = '" + str(id) + "'"
+        db.engine.execute(query)
+
+    queryPaket = "SELECT * FROM public.\"Paket_Kahve\""
+    temp = db.session.execute(queryPaket)
+
+    pList = temp.fetchall()
+
+    return render_template("paket.html", paketList=pList)
+
+
+
+
+
+
+
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
