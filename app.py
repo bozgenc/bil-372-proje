@@ -83,7 +83,7 @@ def uretici():
             query = "INSERT INTO public.\"Uretici\"(ad_soyad, tckn, koy, tel_no) VALUES ('" + ad_soyad + "', '" + tckn + "','" + koy + "','" + tel_no + "')"
             db.engine.execute(query)
         else:
-            query = "UPDATE public.\"Uretici\" SET ad_soyad '" + ad_soyad + "', tckn = '" + tckn + "', koy = '" + koy + "', tel_no = '" + tel_no + "'"
+            query = "UPDATE public.\"Uretici\" SET ad_soyad '" + ad_soyad + "', tckn = '" + tckn + "', koy = '" + koy + "', tel_no = '" + tel_no + "' where tckn = '" + tckn + "'"
             db.engine.execute(query)
 
     all_data = "Select * from public.\"Uretici\""

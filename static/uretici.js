@@ -1,4 +1,4 @@
-function update(ad_soyad, tckn, koy, tel_no,id) {
+function update(ad_soyad, tckn, koy, tel_no) {
     var input = document.getElementById("ad_soyad");
     var input2 = document.getElementById("tckn");
     var input3 = document.getElementById("koy");
@@ -6,7 +6,7 @@ function update(ad_soyad, tckn, koy, tel_no,id) {
 
     var cancel_button = document.getElementById("cancel_button");
     var isInsert = document.getElementById("isInsert");
-    isInsert.value = id;
+    isInsert.value = '5';
     cancel_button.style.visibility = "visible"
     input.value = ad_soyad;
     input2.value = tckn;
