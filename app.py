@@ -70,23 +70,39 @@ def home():
     return render_template("index.html")
 
 
-@app.route('/uretici',  methods=['POST', 'GET'])
+@app.route('/uretici', methods=['POST', 'GET'])
 def uretici():
     if request.method == "POST":
-        ad_soyad = request.form['ad']
+        ad_soyad = request.form['ad_soyad']
         tckn = request.form['tckn']
         koy = request.form['koy']
         tel_no = request.form['tel_no']
+        id = request.form['isInsert']
 
-        query = "INSERT INTO \"Uretici\"(ad_soyad, tckn, koy, tel_no) VALUES ('" + ad_soyad + "', '" + tckn + "','" + koy + "','" + tel_no + "')"
-        result = db.engine.execute(query)
+        if int(id) == 0:
+            query = "INSERT INTO public.\"Uretici\"(ad_soyad, tckn, koy, tel_no) VALUES ('" + ad_soyad + "', '" + tckn + "','" + koy + "','" + tel_no + "')"
+            db.engine.execute(query)
+        else:
+            query = "UPDATE public.\"Uretici\" SET ad_soyad '" + ad_soyad + "', tckn = '" + tckn + "', koy = '" + koy + "', tel_no = '" + tel_no + "'"
+            db.engine.execute(query)
 
-        return render_template("uretici.html", feat=result)
+    all_data = "Select * from public.\"Uretici\""
+    result = db.engine.execute(all_data)
+    uList = result.fetchall()
+    return render_template("uretici.html", ureticiList=uList)
 
-    else:
-        all_data = "Select * from public.\"Uretici\""
-        result = db.engine.execute(all_data)
-        return render_template("uretici.html", feat=result)
+
+@app.route('/uretici_delete/<string:tckn>', methods=['GET', 'POST'])
+def uretici_delete(tckn):
+    if request.method == 'GET':
+        query = "DELETE FROM public.\"Uretici\" where tckn = '" + tckn + "'"
+        db.engine.execute(query)
+
+    all_data = "Select * from public.\"Uretici\""
+    result = db.engine.execute(all_data)
+    uList = result.fetchall()
+    return render_template("uretici.html", ureticiList=uList)
+
 
 if __name__ == "__main__":
     app.debug = True

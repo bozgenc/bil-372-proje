@@ -1,64 +1,77 @@
 {% extends "base.html" %}
-{% block title %} Home Page {% endblock %}
+{% block title %} Satın Alım {% endblock %}
 {% block content %}
+
 <div class="container">
-    <div class="row">
-         <div class="col md-12">
-             <h2><b>Üretici</b> Sayfası</h2>
-             <table class="table table-hover table-dark">
-                 <tr>
-                     <th>Ad</th>
-                        <th>Soyad</th>
-                        <th>TCKN</th>
-                        <th>Köy</th>
-                        <th>Telefon Numarasi</th>
-                        <th>İşlem</th>
-                    </tr>
-                     {% for row in feat %}
-                     <tr>
-                         <th>{{row.ad}}</th>
-                         <th>{{row.soyad}}</th>
-                         <th>{{row.tckn}}</th>
-                         <th>{{row.koy}}</th>
-                         <th>{{row.tel_no}}</th>
-                          <td>
-                             <a href="/updateuretici/{{ row.manufacturer_id }}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{row.manufacturer_id}}">Edit</a>
-                             <a href="/deleteuretici/{{ row.manufacturer_id }}" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#modaldelete{{row.manufacturer_id}}" >Delete</a>
-                         </td>
-                     </tr>
-                      {% endfor %}
-                 </table>
-            <div class="modal-header">
-                <h4 class="modal-title">Yeni Üretici Ekle</h4>
-                </div>
-                <div class="modal-body">
-                    <form action="/uretici" autocomplete="on" method="POST">
-                     <div class="form-group">
-                            <label>Üretici Adı:</label>
-                                <input type="text" id="ad" name="ad" required="">
-                     </div>
-                        <div class="form-group">
-                            <label>Üretici Soyadi:</label>
-                            <input type="text" id="soyad" name="soyad" required="required">
-                        </div>
-                        <div class="form-group">
-                            <label>Köy:</label>
-                            <input type="text" id="koy" name="koy" required="required">
-                        </div>
-                        <div class="form-group">
-                            <label>TCKN:</label>
-                            <input type="text" id="tckn" name="tckn" required="required">
-                        </div>
-                                          <div class="form-group">
-                                            <label>Telefon Numarası:</label>
-                                            <input type="text" id="tel_no" name="tel_no" required="required">
-                                        </div>
-                                        <input type="submit" class="btn btn-success" value="Submit">
-		                        <input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
-		                        value="Cancel">
-                                    </form>
-                    </div>
-        </div>
+	<form action="/uretici" method="POST">
+
+		<label for="ad_soyad">Üretici Adı Soyadı:</label>
+        <input type="text" id="ad_soyad" name="ad_soyad" placeholder="Ad Soyad" required="required" >
+
+		<label for="tckn">TCKN:</label>
+		<input type="text" id="tckn" name="tckn" placeholder="TCKN" required="required" >
+
+		<label for="koy">Köy:</label>
+		<input type="text" id="koy" name="koy" placeholder="Köy" required="required" >
+
+        <label for="tel_no">Telefon Numarası:</label>
+		<input type="text" id="tel_no" name="tel_no" placeholder="Telefon Numarası" required="required">
+
+		<input type="submit" class="btn btn-success" value="Submit">
+		<input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
+		       value="Cancel">
+		<input type="hidden" id="isInsert" name="isInsert" value="0">
+
+
+	<h1>Üretici Listesi</h1>
+	<div class="container" id="uretici_table">
+		<div class="row border">
+			<div class="col-sm">
+				Ad Soyad
+			</div>
+			<div class="col-sm">
+				TCKN
+			</div>
+			<div class="col-sm">
+				Köy
+			</div>
+			<div class="col-sm">
+				Telefon Numarası
+			</div>
+			<div class="col-sm">
+				Operations
+			</div>
+		</div>
+		{% for row in ureticiList %}
+		<div class="row border">
+			<div class="col-sm">
+				{{row.ad_soyad}}
+			</div>
+			<div class="col-sm">
+				{{ row.tckn }}
+			</div>
+			<div class="col-sm">
+				{{ row.koy }}
+			</div>
+			<div class="col-sm">
+				{{ row.tel_no }}
+			</div>
+			<div class="col-sm">
+				<a href="#"><span
+						class="fa fa-pencil"
+						style="color: black"
+						onClick="update('{{row.ad_soyad}}', '{{row.tckn}}', '{{row.koy}}', '{{row.tel_no}}')"
+				></span></a>
+				<a href="/uretici_delete/{{ row.tckn }}"><span class="fa fa-trash" style="color: red"></span></a>
+			</div>
+		</div>
+		{% endfor %}
+
+	</div>
+
+	</form>
+
 </div>
-</div>
+
+<script type="text/javascript" src="{{ url_for('static',filename='uretici.js') }}"></script>
 {% endblock %}
