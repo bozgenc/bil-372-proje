@@ -58,12 +58,64 @@ def login():
                     return redirect(url_for("/"), code=303)
                 elif userrole == "nakliyeci":
                     return redirect(url_for("nakliyeciHome"), code=303)
+                elif userrole == 'admin':
+                    return redirect(url_for("adminHome"), code=303)
             else:
                 flash("Password is incorrect, please try again!")
                 return render_template("login.html")
 
     else:
         return render_template("login.html")
+
+
+@app.route("/adminHome", methods=['GET', 'POST'])
+def adminHome():
+    if request.method == 'POST':
+        tckn = request.form['tckn']
+        ad = request.form['ad']
+        soyad = request.form['soyad']
+        tel_no = request.form['tel_no']
+        email = request.form['email']
+        personel_tipi = request.form['type']
+        id = request.form['isInsert']
+
+        if int(id) == 0:
+            insertQuery = "INSERT INTO public.\"Personel\"(tckn, ad, soyad, tel_no, email, personel_tipi) VALUES ('" + tckn + "','" + ad + "','" + soyad + "', '" + tel_no + "' , '" + email + "', '" + personel_tipi + "')"
+            db.engine.execute(insertQuery)
+        else:
+            update_query = "UPDATE public.\"Personel\" SET tckn = '" + tckn + "', ad = '" + ad + "', soyad = '" + soyad + "', tel_no = '" + tel_no + "', email = '" + email + "', personel_tipi = '" + personel_tipi + "'  WHERE tckn = '" + str(id) + "'"
+            db.engine.execute(update_query)
+
+
+
+    query = "SELECT * FROM usertypes"
+    temp = db.session.execute(query)
+    queryPersonel = "SELECT * FROM public.\"Personel\""
+    temp2 = db.session.execute(queryPersonel)
+
+    roleList = temp.fetchall()
+    personelList = temp2.fetchall()
+
+    return render_template("adminHome.html", roleList=roleList, personelList=personelList)
+
+@app.route("/adminHome_delete/<int:id>")
+def adminHomeDelete(id):
+    if request.method == 'GET':
+        query = "DELETE FROM public.\"Login\" WHERE tckn = '" + str(id) + "'"
+        db.engine.execute(query)
+        query2 = "DELETE FROM public.\"Personel\" WHERE tckn = '" + str(id) + "'"
+        db.engine.execute(query2)
+
+    query = "SELECT * FROM usertypes"
+    temp = db.session.execute(query)
+    queryPersonel = "SELECT * FROM public.\"Personel\""
+    temp2 = db.session.execute(queryPersonel)
+
+    roleList = temp.fetchall()
+    personelList = temp2.fetchall()
+
+    return render_template("adminHome.html", roleList=roleList, personelList=personelList)
+
 
 
 @app.route("/nakliyeciHome", methods=['GET','POST'])
@@ -87,7 +139,7 @@ def nakliyeciHome():
             db.engine.execute(insertQuery)
 
         else:
-            query_update = "UPDATE public.\"Satin_Alir\" SET uretici_tckn = '" + uretici_tckn + "', odeme_miktari = '" + odeme + "', odeme_tarihi = '" + str(today) + "', urun_miktari = '" + str(miktar) + "', plaka = '" + arac + "'  WHERE id = '" + str(id) + "'"
+            query_update = "UPDATE public.\"Satin_Alir\" SET uretici_tckn = '" + uretici_tckn + "', aciklama = '" + aciklama + "', odeme_miktari = '" + odeme + "', odeme_tarihi = '" + str(today) + "', urun_miktari = '" + str(miktar) + "', plaka = '" + arac + "'  WHERE id = '" + str(id) + "'"
             db.engine.execute(query_update)
 
 

@@ -1,4 +1,4 @@
-function update(id,ad_soyad, odeme_miktari, urun_miktari, aciklama, plaka,) {
+function update(id, ad_soyad, odeme_miktari, urun_miktari, aciklama, plaka) {
     var input = document.getElementById("miktar");
     var input2 = document.getElementById("odeme");
     var input3 = document.getElementById("aciklama");
@@ -13,7 +13,7 @@ function update(id,ad_soyad, odeme_miktari, urun_miktari, aciklama, plaka,) {
     input2.value = odeme_miktari;
     input3.value = aciklama;
     input4.value = plaka;
-    input5.value = plaka;
+    input5.value = ad_soyad;
 
 }
 
@@ -21,7 +21,7 @@ function cancel() {
     var input = document.getElementById("miktar");
     var input2 = document.getElementById("odeme");
     var input3 = document.getElementById("aciklama");
-    var input4 = document.getElementById("plaka");
+    var input4 = document.getElementById("arac");
     var input5 = document.getElementById("uretici");
 
     var cancel_button = document.getElementById("cancel_button");
