@@ -63,7 +63,7 @@ def login():
 @app.route("/")
 def home():
     return render_template("index.html")
-@app.route('/uretici',  methods=['POST', 'GET'])
+#@app.route('/uretici',  methods=['POST', 'GET'])
 def uretici():
     if request.method == "POST":
         ad = request.form['ad']
@@ -119,6 +119,38 @@ def SatisDelete(id):
     #aList = temp2.fetchall()
     purchaseList = temp3.fetchall()
     return render_template("satis.html", aliciList=uList, satisList=purchaseList)
+
+@app.route('/alici', methods=['POST', 'GET'])
+def alici():
+    if request.method == "POST":
+            sirket_adi = request.form['sirket_adi']
+            sirket_id = request.form['sirket_id']
+
+            query = "INSERT INTO \"Alici\"(sirket_adi,sirket_id) VALUES ('" + sirket_adi + "' , '" + sirket_id + "')"
+            result = db.engine.execute(query)
+            db.session.add(result)
+            db.session.commit()
+            return render_template("alici.html")
+    else:
+            all_data = "Select * from public.\"Alici\""
+            result = db.engine.execute(all_data)
+            return render_template("alici.html", feat=result)
+
+
+#@app.route('/alici_delete/<string:tckn>', methods=['GET', 'POST'])
+def alici_delete(sirket_id):
+    if request.method == 'GET':
+        query = "DELETE FROM public.\"Alici\" where sirket_id = '" + sirket_id + "'"
+        db.engine.execute(query)
+
+    all_data = "Select * from public.\"Alici\""
+    result = db.engine.execute(all_data)
+    uList = result.fetchall()
+    return render_template("alici.html", aliciList=uList)
+
+
+
+
 
 if __name__ == "__main__":
     app.debug = True
