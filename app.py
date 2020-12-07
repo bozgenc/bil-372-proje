@@ -55,7 +55,7 @@ def login():
                 passwordFlag = True
             if passwordFlag:
                 if userrole == "koordinator":
-                    return redirect(url_for("/"), code=303)
+                    return redirect(url_for("kavurma"), code=303)
                 elif userrole == "nakliyeci":
                     return redirect(url_for("nakliyeciHome"), code=303)
                 elif userrole == 'admin':
@@ -156,7 +156,7 @@ def nakliyeciHome():
     return render_template("nakliyeciHome.html", ureticiList=uList, aracList=aList, purchaseList=purchaseList)
 
 
-@app.route("/nakliyeciHome_delete/<int:id>", methods=['GET','POST'])
+@app.route("/nakliyeciHome_delete/<int:id>", methods=['GET', 'POST'])
 def nakliyeciHomeDelete(id):
     if request.method == 'GET':
         query = "DELETE FROM public.\"Satin_Alir\" WHERE id = '" + str(id) + "'"
@@ -173,6 +173,32 @@ def nakliyeciHomeDelete(id):
     aList = temp2.fetchall()
     purchaseList = temp3.fetchall()
     return render_template("nakliyeciHome.html", ureticiList=uList, aracList=aList, purchaseList=purchaseList)
+
+
+@app.route("/kavurma", methods=['GET', 'POST'])
+def kavurma():
+    if request.method == 'POST':
+        tckn = request.form['sorumlu_koordinator_tckn']
+        giren_miktar = request.form['giren_miktar']
+        cikan_miktar = request.form['cikan_miktar']
+        islem_suresi = request.form['islem_suresi']
+        bitti_mi = request.form['bitti_mi']
+        tur_id = "2"
+
+        insertQuery = "INSERT INTO public.\"Kavurma\"(sorumlu_koordinator_tckn, tur_id, giren_miktar, cikan_miktar ,islem_suresi, bitti_mi) VALUES ('" + tckn + "' , '" + tur_id + "' ,'" + giren_miktar + "' , '" + cikan_miktar + "' ,'" + islem_suresi + "', '" + bitti_mi + "')"
+        db.engine.execute(insertQuery)
+
+    query = "SELECT * FROM public.\"Personel\" WHERE personel_tipi = 'koordinator'"
+    res = db.session.execute(query)
+
+    queryKavurma = "SELECT * FROM public.\"Kavurma\""
+    result = db.session.execute(queryKavurma)
+
+    personelList = res.fetchall()
+    kavurmaList = result.fetchall()
+
+    return render_template("kavurma.html", personelList=personelList, kavurmaList=kavurmaList)
+
 
 
 @app.route("/")
