@@ -137,7 +137,7 @@ def alici():
             return render_template("alici.html", feat=result)
 
 
-#@app.route('/alici_delete/<string:tckn>', methods=['GET', 'POST'])
+@app.route('/alici_delete/<string:sirket_id>', methods=['GET', 'POST'])
 def alici_delete(sirket_id):
     if request.method == 'GET':
         query = "DELETE FROM public.\"Alici\" where sirket_id = '" + sirket_id + "'"
