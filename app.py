@@ -140,7 +140,7 @@ def alici():
 @app.route('/alici_delete/<string:sirket_id>', methods=['GET', 'POST'])
 def alici_delete(sirket_id):
     if request.method == 'GET':
-        query = "DELETE FROM public.\"Alici\" where sirket_id = '" + sirket_id + "'"
+        query = "DELETE FROM public.\"Alici\" where sirket_id = '" +  sirket_id + "'"
         db.engine.execute(query)
 
     all_data = "Select * from public.\"Alici\""
