@@ -1,0 +1,104 @@
+{% extends "baseForAdmin.html" %}
+{% block title %} Personel {% endblock %}
+{% block content %}
+
+<div class="container">
+	<form action="/adminHome" method="POST">
+    <br>
+
+
+		<label for="ad">İsim:</label>
+		<input type="text" id="ad" name="ad" placeholder="İsim" required="required" >
+
+		<label for="soyad">Soyisim:</label>
+		<input type="text" id="soyad" name="soyad" placeholder="Soyisim" required="required" >
+
+        <label for="ad">TCKN:</label>
+		<input type="text" id="tckn" name="tckn" placeholder="T.C. Kimlik No" required="required" maxlength="11" >
+
+        <label for="tel_no">Tel No:</label>
+		<input type="text" id="tel_no" name="tel_no" placeholder="Telefon No" required="required" >
+
+        <label for="email">E mail:</label>
+		<input type="text" id="email" name="email" placeholder="E Mail" required="required" >
+
+        <label for="type">Personel Tipi:</label>
+        <select id="type" name="type">
+            {% for userType in roleList %}
+			<option value="{{ userType.userrole }}">{{ userType.userrole }}</option>
+			{% endfor %}
+        </select>
+
+		<input type="submit" class="btn btn-success" value="Submit">
+		<input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
+		       value="Cancel">
+		<input type="hidden" id="isInsert" name="isInsert" value="0">
+
+		<br>
+
+	<h1>Personeller</h1>
+	<div class="container" id="product_table">
+		<div class="row border">
+			<div class="col-sm">
+				TCKN
+			</div>
+			<div class="col-sm">
+				Ad
+			</div>
+			<div class="col-sm">
+				Soyad
+			</div>
+			<div class="col-sm">
+				Telefon No
+			</div>
+			<div class="col-sm">
+				E-mail
+			</div>
+			<div class="col-sm">
+				Rol
+			</div>
+			<div class="col-sm">
+				Operations
+			</div>
+		</div>
+		{% for personel in personelList %}
+		<div class="row border">
+			<div class="col-sm">
+				{{ personel.tckn }}
+			</div>
+			<div class="col-sm">
+				{{ personel.ad }}
+			</div>
+			<div class="col-sm">
+				{{ personel.soyad }}
+			</div>
+			<div class="col-sm">
+				{{ personel.tel_no }}
+			</div>
+			<div class="col-sm">
+				{{ personel.email }}
+			</div>
+			<div class="col-sm">
+				{{ personel.personel_tipi }}
+			</div>
+			<div class="col-sm">
+				<a href="#"><span
+						class="fa fa-pencil"
+						style="color: black"
+						onClick="update('{{personel.tckn}}', '{{personel.ad}}', '{{personel.soyad}}', '{{personel.tel_no}}', '{{personel.email}}', '{{personel.personel_tipi}}')"
+				></span></a>
+				<a href="#"><span class="fa fa-trash" style="color: red"></span></a>
+			</div>
+		</div>
+		{% endfor %}
+
+		</tbody>
+		</table>
+	</div>
+
+	</form>
+
+</div>
+
+<script type="text/javascript" src="{{ url_for('static',filename='nakliyeciHome.js') }}"></script>
+{% endblock %}

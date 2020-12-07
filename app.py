@@ -58,12 +58,38 @@ def login():
                     return redirect(url_for("/"), code=303)
                 elif userrole == "nakliyeci":
                     return redirect(url_for("nakliyeciHome"), code=303)
+                elif userrole == 'admin':
+                    return redirect(url_for("adminHome"), code=303)
             else:
                 flash("Password is incorrect, please try again!")
                 return render_template("login.html")
 
     else:
         return render_template("login.html")
+
+
+@app.route("/adminHome", methods=['GET', 'POST'])
+def adminHome():
+    if request.method == 'POST':
+        tckn = request.form['tckn']
+        ad = request.form['ad']
+        soyad = request.form['soyad']
+        tel_no = request.form['tel_no']
+        email = request.form['email']
+        personel_tipi = request.form['type']
+
+        insertQuery = "INSERT INTO public.\"Personel\"(tckn, ad, soyad, tel_no, email, personel_tipi) VALUES ('" + tckn + "','" + ad + "','" + soyad + "', '" + tel_no + "' , '" + email + "', '" + personel_tipi + "')"
+        db.engine.execute(insertQuery)
+
+    query = "SELECT * FROM usertypes"
+    temp = db.session.execute(query)
+    queryPersonel = "SELECT * FROM public.\"Personel\""
+    temp2 = db.session.execute(queryPersonel)
+
+    roleList = temp.fetchall()
+    personelList = temp2.fetchall()
+
+    return render_template("adminHome.html", roleList=roleList, personelList=personelList)
 
 
 @app.route("/nakliyeciHome", methods=['GET','POST'])
