@@ -1,7 +1,17 @@
-{% extends 'base.html' %}
+{% extends 'baseForLogin.html' %}
 {% block title %}Register{% endblock %}
 {% block content %}
 <h1>Register</h1>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 
 <div class="container">
 	<form action="/register" method="POST">
