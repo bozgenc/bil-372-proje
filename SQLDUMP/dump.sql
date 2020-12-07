@@ -189,12 +189,13 @@ CREATE TABLE public."Alici"
 
 -- DROP TABLE public."Satis";
 
-CREATE TABLE public."Satis"
-(
+CREATE TABLE (
     "ucret" integer,
     "tarih" date,
     "miktar" integer,
-    "alici_sirket_id" character varying(50) COLLATE pg_catalog."default",
+    "alici_sirket_id" character varying(50) COLLATE pg_catalog."default",ublic."Satis"
+(
+
     CONSTRAINT "satis_alici_sirket_id_fkey" FOREIGN KEY ("alici_sirket_id")
         REFERENCES public."Alici" ("sirket_id") MATCH SIMPLE
 )

@@ -2,9 +2,9 @@ from flask import Flask, render_template, request,flash
 from flask_sqlalchemy import SQLAlchemy
 
 
-app = Flask(__name__, template_folder="Users\elifg\PycharmProjects\Bil372Proje\templates")
+app = Flask(__name__, template_folder="/Users/elifg/PycharmProjects/Bil372Proje/templates")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:12345@localhost:5432/ProjeDB"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:1234@localhost:5432/ProjectDB"
 db = SQLAlchemy(app)
 
 
@@ -85,22 +85,40 @@ def uretici():
 @app.route('/satis',  methods=['POST', 'GET'])
 def  satis():
     if request.method == "POST":
-        ucret =  request.form['ucret']
-        tarih =  request.form['tarih']
-        miktar = request.form['miktar']
-        alici_sirket_id = request.form['alıcı_sirket_id']
+            ucret = request.form['ucret']
+            tarih = request.form['tarih']
+            miktar = request.form['miktar']
+            alici_sirket_id = request.form['alıcı_sirket_id']
 
-        query = "INSERT INTO \"Satis\"(ucret, tarih, miktar, alici_sirket_id) VALUES ('" + ucret + "' , '" + tarih + "', '" + miktar + "','" + alici_sirket_id + "')"
-        result = db.engine.execute(query)
-        db.session.add(result)
-        db.session.commit()
-        return render_template("satis.html")
+            query = "INSERT INTO \"Satis\"(ucret, tarih, miktar, alici_sirket_id) VALUES ('" + ucret + "' , '" + tarih + "', '" + miktar + "','" + alici_sirket_id + "')"
+            result = db.engine.execute(query)
+            db.session.add(result)
+            db.session.commit()
+            return render_template("satis.html")
     else:
-        all_data = "Select * from public.\"Satis\""
-        result = db.engine.execute(all_data)
-        return render_template("satis.html", feat=result)
+            all_data = "Select * from public.\"Satis\""
+            result = db.engine.execute(all_data)
+            return render_template("satis.html", feat=result)
 
 
+
+@app.route("/Satis_delete/<int:id>", methods=['GET','POST'])
+def SatisDelete(id):
+    if request.method == 'GET':
+        query = "DELETE FROM public.\"Satis\" WHERE id = '" + str(id) + "'"
+        db.engine.execute(query)
+
+    queryAlici = "SELECT * FROM public.\"Alıcı\""
+    temp = db.session.execute(queryAlici)
+    #queryArac = "SELECT * FROM public.\"Arac\""
+    #temp2 = db.session.execute(queryArac)
+    queryAll = "SELECT public.\"Satis\".alici_sirket_id, public.\"Satis\".miktar, public.\"Satin_Alir\".tarih, public.\"Satin_Alir\".ucret,  FROM( public.\"Satis\" INNER JOIN public.\"Alici\" ON public.\"Satis\".alici_sirket_id = public.\"Alici\".sirket_id)"
+    temp3 = db.session.execute(queryAll)
+
+    uList = temp.fetchall()
+    #aList = temp2.fetchall()
+    purchaseList = temp3.fetchall()
+    return render_template("satis.html", aliciList=uList, satisList=purchaseList)
 
 if __name__ == "__main__":
     app.debug = True
