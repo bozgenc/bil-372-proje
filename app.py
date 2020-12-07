@@ -77,9 +77,16 @@ def adminHome():
         tel_no = request.form['tel_no']
         email = request.form['email']
         personel_tipi = request.form['type']
+        id = request.form['isInsert']
 
-        insertQuery = "INSERT INTO public.\"Personel\"(tckn, ad, soyad, tel_no, email, personel_tipi) VALUES ('" + tckn + "','" + ad + "','" + soyad + "', '" + tel_no + "' , '" + email + "', '" + personel_tipi + "')"
-        db.engine.execute(insertQuery)
+        if int(id) == 0:
+            insertQuery = "INSERT INTO public.\"Personel\"(tckn, ad, soyad, tel_no, email, personel_tipi) VALUES ('" + tckn + "','" + ad + "','" + soyad + "', '" + tel_no + "' , '" + email + "', '" + personel_tipi + "')"
+            db.engine.execute(insertQuery)
+        else:
+            update_query = "UPDATE public.\"Personel\" SET tckn = '" + tckn + "', ad = '" + ad + "', soyad = '" + soyad + "', tel_no = '" + tel_no + "', email = '" + email + "', personel_tipi = '" + personel_tipi + "'  WHERE tckn = '" + str(id) + "'"
+            db.engine.execute(update_query)
+
+
 
     query = "SELECT * FROM usertypes"
     temp = db.session.execute(query)
@@ -132,7 +139,7 @@ def nakliyeciHome():
             db.engine.execute(insertQuery)
 
         else:
-            query_update = "UPDATE public.\"Satin_Alir\" SET uretici_tckn = '" + uretici_tckn + "', odeme_miktari = '" + odeme + "', odeme_tarihi = '" + str(today) + "', urun_miktari = '" + str(miktar) + "', plaka = '" + arac + "'  WHERE id = '" + str(id) + "'"
+            query_update = "UPDATE public.\"Satin_Alir\" SET uretici_tckn = '" + uretici_tckn + "', aciklama = '" + aciklama + "', odeme_miktari = '" + odeme + "', odeme_tarihi = '" + str(today) + "', urun_miktari = '" + str(miktar) + "', plaka = '" + arac + "'  WHERE id = '" + str(id) + "'"
             db.engine.execute(query_update)
 
 
