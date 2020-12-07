@@ -5,8 +5,8 @@
 SET default_tablespace = pg_default;
 
 CREATE TABLE userTypes(
-	userrole VARCHAR(20)
-);
+	userrole character varying(20)
+)
 
 INSERT INTO userTypes VALUES ('admin');
 INSERT INTO userTypes VALUES ('koordinator');
@@ -57,7 +57,8 @@ CREATE TABLE public."Arac"
     "sofor_tckn" character varying(20) COLLATE pg_catalog."default",
     CONSTRAINT "arac_pkey" PRIMARY KEY ("plaka"),
     CONSTRAINT "arac_sofor_tckn_fkey" FOREIGN KEY ("sofor_tckn")
-        REFERENCES public."Personel" ("tckn") MATCH SIMPLE
+        REFERENCES public."Personel" ("tckn") MATCH SIMPLE ON DELETE CASCADE
+        ON update cascade
 )
 
 -- Index: sofor_tckn_fkey
@@ -105,7 +106,6 @@ CREATE TABLE public."Islem_Turu"
     primary key ("tur_id")
 )
 
-
 -- Table: public.Satin_Alir
 
 -- DROP TABLE public."Satin_Alir";
@@ -120,7 +120,8 @@ CREATE TABLE public."Satin_Alir"
     "id" serial not null,
     primary key(id),
     CONSTRAINT "satin_alir_uretici_tckn_fkey" FOREIGN KEY ("uretici_tckn")
-        REFERENCES public."Uretici" ("tckn") MATCH SIMPLE
+        REFERENCES public."Uretici" ("tckn") MATCH SIMPLE ON DELETE CASCADE
+        ON update cascade
 )
 
 -- Index: uretici_tckn_fkey
@@ -144,9 +145,11 @@ CREATE TABLE public."Ogutme"
     "id" serial not null,
     primary key(id),
     CONSTRAINT "ogutme_tur_id_fkey" FOREIGN KEY ("tur_id")
-        REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE,
+        REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE ON DELETE CASCADE
+        On update cascade,
     CONSTRAINT "islem_turu_sorumlu_koordinator_tckn_fkey" FOREIGN KEY ("sorumlu_koordinator_tckn")
-        REFERENCES public."Personel"("tckn") MATCH SIMPLE
+        REFERENCES public."Personel"("tckn") MATCH SIMPLE ON DELETE CASCADE
+        ON update cascade
 )
 
 -- Index: islem_turu_fkey
@@ -177,9 +180,11 @@ CREATE TABLE public."Kavurma"
     "id" serial not null,
     primary key(id),
     CONSTRAINT "kavurma_tur_id_fkey" FOREIGN KEY ("tur_id")
-        REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE,
+        REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE ON DELETE CASCADE
+        On update cascade,
     CONSTRAINT "islem_turu_sorumlu_koordinator_tckn_fkey" FOREIGN KEY ("sorumlu_koordinator_tckn")
-        REFERENCES public."Personel" ("tckn") MATCH SIMPLE
+        REFERENCES public."Personel" ("tckn") MATCH SIMPLE ON DELETE CASCADE
+        ON update cascade
 )
 
 -- Index: turid_fkey
@@ -198,15 +203,27 @@ CREATE INDEX sorumlu_koordinator_tckn_fkey2 ON public."Kavurma"("sorumlu_koordin
 
 CREATE TABLE public."Islem_Sonu"(
     "sorumlu_koordinator_tckn" character varying(20) COLLATE pg_catalog."default",
+    "tur_id" integer,
     "id" serial not null,
     primary key(id),
+    "id2" integer,
+    CONSTRAINT "id2_fkey" FOREIGN KEY ("id2")
+        REFERENCES public."Ogutme" ("id") MATCH SIMPLE ON DELETE CASCADE
+        On update cascade,
+     CONSTRAINT "son_tur_id_fkey" FOREIGN KEY ("tur_id")
+        REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE ON DELETE CASCADE
+        On update cascade,
     CONSTRAINT "islem_turu_sorumlu_koordinator_tckn_fkey" FOREIGN KEY ("sorumlu_koordinator_tckn")
-        REFERENCES public."Personel" ("tckn") MATCH SIMPLE
+        REFERENCES public."Personel" ("tckn") MATCH SIMPLE ON DELETE CASCADE
+        ON update cascade
 )
 
 
 CREATE INDEX sorumlu_koordinator_tckn_fkey3 ON public."Islem_Sonu"("sorumlu_koordinator_tckn")
-    
+
+CREATE INDEX tur_id_islemsonu2 ON public."Islem_Sonu"("tur_id")
+
+CREATE INDEX id_seri ON public."Islem_Sonu"(id2)
 -- Table: public.Alici
 
 -- DROP TABLE public."Alici";
@@ -232,7 +249,8 @@ CREATE TABLE public."Satis"
     "id" serial not null,
     primary key(id),
     CONSTRAINT "satis_alici_sirket_id_fkey" FOREIGN KEY ("alici_sirket_id")
-        REFERENCES public."Alici" ("sirket_id") MATCH SIMPLE
+        REFERENCES public."Alici" ("sirket_id") MATCH SIMPLE ON DELETE CASCADE
+        ON update cascade
 )
 
 -- Index: sirket_id_fk
@@ -248,3 +266,9 @@ CREATE TABLE public."Login"(
      unique("passcode"),
      primary key(tckn)
 )
+
+select * from public."Islem_Sonu";
+DELETE from public."Islem_Sonu" where tur_id = 1;
+
+select * from public."Ogutme";
+select * from public."Islem_Turu";

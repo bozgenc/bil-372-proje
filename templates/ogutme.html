@@ -8,13 +8,7 @@
     <label for="sorumlu_koordinator_tckn">Sorumlu Koordinator TCKN:</label>
         <select id="sorumlu_koordinator_tckn" name="sorumlu_koordinator_tckn">
             {% for row in personelList %}
-			<option value="{{ row.tckn }}">{{ row.tckn}}</option>
-			{% endfor %}
-        </select>
-    <label for="tur_id">İşlem Türü ID</label>
-        <select id="tur_id" name="tur_id">
-            {% for row in islemList %}
-			<option value="{{ row.tur_id }}">{{ row.tur_id}}</option>
+			<option value="{{ row.tckn }}">{{ row.ad}} {{row.soyad}}</option>
 			{% endfor %}
         </select>
     <label for="giren_miktar">Giren Miktar</label>
@@ -39,7 +33,7 @@
 				TCKN
 			</div>
 			<div class="col-sm">
-                İşlem Türü ID
+                Öğütme
 			</div>
             <div class="col-sm">
                 Giren Miktar

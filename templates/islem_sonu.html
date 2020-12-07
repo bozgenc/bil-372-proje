@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %} İşlem Türü {% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Biten İşlemler Listesi</h1>
+	<div class="container" id="product_table">
+		<div class="row border">
+			<div class="col-sm">
+				TCKN
+			</div>
+			<div class="col-sm">
+                İşlem Türü ID
+			</div>
+            <div class="col-sm">
+                Giren Miktar
+			</div>
+            <div class="col-sm">
+                Çıkan Miktar
+			</div>
+            <div class="col-sm">
+                İşlem Süresi
+			</div>
+		</div>
+		{% for row in data %}
+		<div class="row border">
+			<div class="col-sm">
+				{{ row.sorumlu_koordinator_tckn}}
+			</div>
+			<div class="col-sm">
+				{{ row.tur_id}}
+			</div>
+            <div class="col-sm">
+				{{ row.giren_miktar}}
+			</div>
+			<div class="col-sm">
+				{{row.cikan_miktar}}
+			</div>
+			<div class="col-sm">
+				{{row.islem_suresi}}
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+    </form>
+
+</div>
+{% endblock %}

@@ -8,6 +8,7 @@ function update(tur_id, islem_ismi) {
     cancel_button.style.visibility = "visible"
     input.value = tur_id;
     input2.value = islem_ismi;
+    document.getElementById("tur_id").setAttribute("readonly", true)
 }
 
 function cancel() {
