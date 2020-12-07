@@ -248,5 +248,3 @@ CREATE TABLE public."Login"(
      unique("passcode"),
      primary key(tckn)
 )
-
-select * from public."Islem_Turu";

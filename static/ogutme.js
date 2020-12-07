@@ -1,5 +1,4 @@
 function update(sorumlu_koordinator_tckn, tur_id, giren_miktar, cikan_miktar, islem_suresi, bitti_mi) {
-
     var input = document.getElementById("sorumlu_koordinator_tckn");
     var input2 = document.getElementById("tur_id");
     var input3 = document.getElementById("giren_miktar");

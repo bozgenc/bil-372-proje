@@ -112,7 +112,6 @@ def ogutme():
         islem_suresi = request.form['islem_suresi']
         bitti_mi = request.form['bitti_mi']
         id = request.form['isInsert']
-        print(id)
 
         query = "SELECT * from public.\"Personel\" where tckn = '" + sorumlu_koordinator_tckn + "'"
         result = db.session.execute(query)
@@ -126,13 +125,14 @@ def ogutme():
 
         if int(id) == 0:
             query = "INSERT INTO public.\"Ogutme\"(sorumlu_koordinator_tckn, tur_id, giren_miktar, cikan_miktar, islem_suresi," \
-                    "bitti_mi) VALUES ('" + sorumlu_koordinator_tckn + "','" + str(tur_id) + "','" + str(
-                giren_miktar) + "','" + str(cikan_miktar) + "','" + str(islem_suresi) + "','" + str(bitti_mi) + "')"
+                    "bitti_mi) VALUES ('" + sorumlu_koordinator_tckn + "','" + str(tur_id) + "','" + str(giren_miktar) + "','" + \
+                    str(cikan_miktar) + "','" + str(islem_suresi) + "','" + str(bitti_mi) + "')"
             db.session.execute(query)
             db.session.commit()
         else:
-            print("girsene")
-            query = "UPDATE public.\"Ogutme\" SET sorumlu_koordinator_tckn ='" + sorumlu_koordinator_tckn + "', tur_id = '" + str(tur_id) + "', giren_miktar = '" + str(giren_miktar) + "', cikan_miktar = '" + str(cikan_miktar) + "', islem_suresi = '" + str(islem_suresi) + "', bitti_mi = '" + str(bitti_mi) + "' WHERE id = '" + str(id) + "'"
+            query = "UPDATE public.\"Ogutme\" SET sorumlu_koordinator_tckn ='" + sorumlu_koordinator_tckn + "', tur_id = '" + \
+                    str(tur_id) + "', giren_miktar = '" + str(giren_miktar) + "', cikan_miktar = '" + \
+                    str(cikan_miktar) + "', islem_suresi = '" + str(islem_suresi) + "', bitti_mi = '" + bitti_mi + "' WHERE id = '" + str(id) + "'"
             db.session.execute(query)
             db.session.commit()
 
