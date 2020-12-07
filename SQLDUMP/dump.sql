@@ -140,7 +140,7 @@ CREATE TABLE public."Ogutme"
     "giren_miktar" integer,
     "cikan_miktar" integer,
     "islem_suresi" integer,
-    "bitti_mi" integer,
+    "bitti_mi" boolean,
     "id" serial not null,
     primary key(id),
     CONSTRAINT "ogutme_tur_id_fkey" FOREIGN KEY ("tur_id")
@@ -173,7 +173,7 @@ CREATE TABLE public."Kavurma"
     "giren_miktar" integer,
     "cikan_miktar" integer,
     "islem_suresi" integer,
-    bitti_mi integer,
+    bitti_mi boolean,
     "id" serial not null,
     primary key(id),
     CONSTRAINT "kavurma_tur_id_fkey" FOREIGN KEY ("tur_id")
@@ -248,3 +248,5 @@ CREATE TABLE public."Login"(
      unique("passcode"),
      primary key(tckn)
 )
+
+select * from public."Islem_Turu";
