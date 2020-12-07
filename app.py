@@ -35,16 +35,36 @@ def cekirdek():
         miktar = request.form['miktar']
         tur = request.form['tur']
         koken = request.form['koken']
+        id = request.form['isInsert']
+
         intMiktar = int(miktar)
-        print(intMiktar)
-        if intMiktar > 0:
-            query = "INSERT INTO \"Cekirdek\"(koken, miktar, tur) VALUES ('" + koken + "' , '" + miktar + "', '" + tur + "')"
-            result = db.engine.execute(query)
+        print("id:")
+        print(id)
+
+        if int(id) == 0:
+            if intMiktar > 0:
+                query = "INSERT INTO \"Cekirdek\"(koken, miktar, tur) VALUES ('" + koken + "' , '" + miktar + "', '" + tur + "')"
+                result = db.engine.execute(query)
+
+
+            else:
+
+                flash("Miktar sıfırdan fazla olmalı., lütfen tekrar deneyin!")
+
+                return render_template("cekirdek.html")
+
 
 
         else:
-            flash("Miktar must be greater than zero, please try again!")
-            return render_template("cekirdek.html")
+
+            query_update = "UPDATE public.\"Cekirdek\" SET koken = '" + koken + "', miktar = '" + miktar + "', tur = '" + tur + "' WHERE id = '" + str(
+
+                id) + "'"
+
+            db.engine.execute(query_update)
+
+
+
 
     queryCekirdek = "SELECT * FROM public.\"Cekirdek\""
     temp = db.session.execute(queryCekirdek)
@@ -52,6 +72,36 @@ def cekirdek():
     cList = temp.fetchall()
 
     return render_template("cekirdek.html", cekirdekList=cList)
+
+
+
+@app.route('/paket', methods=['GET', 'POST'])
+def paket():
+    if request.method == 'POST':
+        gramaj = request.form['gramaj']
+        tur = request.form['tur']
+        skt = request.form['skt']
+        id = request.form['isInsert']
+
+        if int(id) == 0:
+            query = "INSERT INTO \"Paket_Kahve\"(gramaj, skt, tur) VALUES ('" + gramaj + "' , '" + skt + "', '" + tur + "')"
+            result = db.engine.execute(query)
+
+        else:
+            query_update = "UPDATE public.\"Paket_Kahve\" SET tur = '" + tur + "', gramaj = '" + gramaj + "', skt = '"+ skt +"' WHERE id = '" + str(id) + "'"
+            db.engine.execute(query_update)
+
+
+
+
+    queryPaket = "SELECT * FROM public.\"Paket_Kahve\""
+    temp = db.session.execute(queryPaket)
+
+    pList = temp.fetchall()
+
+    return render_template("paket.html", paketList=pList)
+
+
 
 
 
@@ -72,28 +122,6 @@ def cekirdekDelete(id):
 
 
 
-
-
-
-
-
-@app.route('/paket', methods=['GET', 'POST'])
-def paket():
-    if request.method == 'POST':
-        gramaj = request.form['gramaj']
-        tur = request.form['tur']
-        skt = request.form['skt']
-        query = "INSERT INTO \"Paket_Kahve\"(gramaj, skt, tur) VALUES ('" + gramaj + "' , '" + skt + "', '" + tur + "')"
-        result = db.engine.execute(query)
-
-
-
-    queryPaket = "SELECT * FROM public.\"Paket_Kahve\""
-    temp = db.session.execute(queryPaket)
-
-    pList = temp.fetchall()
-
-    return render_template("paket.html", paketList=pList)
 
 
 

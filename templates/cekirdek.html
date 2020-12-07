@@ -4,7 +4,7 @@
 
 
 
-<h1>Cekirdek</h1>
+<h1>Çekirdek</h1>
 
 {% with messages = get_flashed_messages() %}
   {% if messages %}
@@ -34,7 +34,7 @@
 		       value="Cancel">
 		<input type="hidden" id="isInsert" name="isInsert" value="0">
 
-<h1>Mevcut Cekirdekler</h1>
+<h1>Mevcut Çekirdekler</h1>
 	<div class="container" id="product_table">
 		<div class="row border">
 
@@ -56,6 +56,8 @@
 		</div>
 		{% for cekirdek in cekirdekList %}
 		<div class="row border">
+
+
 			<div class="col-sm">
 				{{ cekirdek.koken }}
 			</div>
@@ -70,7 +72,7 @@
 				<a href="#"><span
 						class="fa fa-pencil"
 						style="color: black"
-						onClick="update('{{cekirdek.koken}}', '{{cekirdek.miktar}}', '{{cekirdek.tur}}')"
+						onClick="update('{{cekirdek.id}}','{{cekirdek.koken}}', '{{cekirdek.miktar}}', '{{cekirdek.tur}}')"
 				></span></a>
 				<a href="/cekirdek_delete/{{ cekirdek.id }}"><span class="fa fa-trash" style="color: red"></span></a>
 
@@ -89,5 +91,6 @@
 	</form>
 
 </div>
+<script type="text/javascript" src="{{ url_for('static',filename='cekirdek.js') }}"></script>
 
 {% endblock %}

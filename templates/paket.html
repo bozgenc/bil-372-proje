@@ -45,6 +45,9 @@
 		{% for paket in paketList %}
 		<div class="row border">
 			<div class="col-sm">
+				{{ paket.id }}
+			</div>
+			<div class="col-sm">
 				{{ paket.tur }}
 			</div>
 			<div class="col-sm">
@@ -58,7 +61,7 @@
 				<a href="#"><span
 						class="fa fa-pencil"
 						style="color: black"
-						onClick="update('{{paket.tur}}', '{{paket.gramaj}}', '{{paket.skt}}')"
+						onClick="update('{{paket.id}}','{{paket.tur}}', '{{paket.gramaj}}', '{{paket.skt}}')"
 				></span></a>
 				<a href="/paket_delete/{{ paket.id }}"><span class="fa fa-trash" style="color: red"></span></a>
 			</div>
@@ -78,5 +81,5 @@
 	</form>
 
 </div>
-
+<script type="text/javascript" src="{{ url_for('static',filename='paket.js') }}"></script>
 {% endblock %}
