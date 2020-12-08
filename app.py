@@ -354,6 +354,57 @@ def paket_search():
         return render_template("paket.html", paketList=finalList)
 
 
+@app.route("/nakliyeci_home_search", methods=['GET', 'POST'])
+def nakliyeci_home_search():
+    if request.method == 'POST':
+        search = request.form['search']
+        queryUretici = "SELECT * FROM public.\"Uretici\""
+        temp = db.session.execute(queryUretici)
+        queryArac = "SELECT * FROM public.\"Arac\""
+        temp2 = db.session.execute(queryArac)
+        queryAll = "SELECT public.\"Satin_Alir\".id, public.\"Satin_Alir\".odeme_miktari, public.\"Satin_Alir\".odeme_tarihi, public.\"Satin_Alir\".urun_miktari, public.\"Satin_Alir\".aciklama, public.\"Satin_Alir\".plaka, public.\"Uretici\".ad_soyad FROM( public.\"Satin_Alir\" INNER JOIN public.\"Uretici\" ON public.\"Satin_Alir\".uretici_tckn = public.\"Uretici\".tckn)"
+        temp3 = db.session.execute(queryAll)
+
+        uList = temp.fetchall()
+        aList = temp2.fetchall()
+        purchaseList = temp3.fetchall()
+
+
+        finalList = []
+        for row in purchaseList:
+            if row.ad_soyad == search:
+                finalList.append(row)
+            elif row.aciklama == search:
+                finalList.append(row)
+            elif row.plaka == search:
+                finalList.append(row)
+
+
+        return render_template("nakliyeciHome.html", ureticiList=uList, aracList=aList, purchaseList=finalList)
+
+@app.route("/uretici_search", methods=['GET', 'POST'])
+def uretici_search():
+    if request.method == 'POST':
+        search = request.form['search']
+        all_data = "Select * from public.\"Uretici\""
+        result = db.engine.execute(all_data)
+        uList = result.fetchall()
+
+        finalList = []
+        for row in uList:
+            if row.ad_soyad == search:
+                finalList.append(row)
+            elif row.tckn == search:
+                finalList.append(row)
+            elif row.koy == search:
+                finalList.append(row)
+            elif row.tel_no == search:
+                finalList.append(row)
+
+
+        return render_template("uretici.html", ureticiList=finalList)
+
+
 @app.route('/satis',  methods=['POST', 'GET'])
 def satis():
     if request.method == "POST":
