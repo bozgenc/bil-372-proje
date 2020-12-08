@@ -2,9 +2,9 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
-app = Flask(__name__, template_folder="/Users/elifg/PycharmProjects/Bil372Proje/templates")
+app = Flask(__name__, template_folder="/Users/baranozgenc/Desktop/proje/Bil372Proje/templates")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:1234@localhost:5432/db2"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:12345@localhost:5432/caffeCo"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -53,6 +53,23 @@ def iletisim():
             return render_template("iletisim.html")
 
     return render_template("iletisim.html", )
+
+@app.route("/iletisimNakliyeci", methods=['GET', 'POST'])
+def iletisimNakliyeci():
+    if request.method == 'POST':
+        email = request.form['email']
+        mesaj = request.form['mesaj']
+        if len(mesaj) > 0 or len(email) > 0:
+
+            query = "INSERT INTO \"Iletisim\"(email, mesaj) VALUES ('" + email + "' , '" + mesaj + "')"
+
+            result = db.engine.execute(query)
+
+        else:
+            flash("Lütfen alanları doldurun !")
+            return render_template("iletisimNakliyeci.html")
+
+    return render_template("iletisimNakliyeci.html", )
 
 
 @app.route('/cekirdek', methods=['GET', 'POST'])

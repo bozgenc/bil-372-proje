@@ -271,3 +271,14 @@ CREATE TABLE public."Iletisim"
     "id" serial not null,
     primary key(id)
 )
+
+INSERT INTO public."Personel" VALUES ('admin', '4', 'admin', 'admin', '999', 'admin@mail.com')
+INSERT INTO public."Personel" VALUES ('koordinator', '2', 'koordinator', 'koordinator', '888', 'koordinator@mail.com')
+INSERT INTO public."Personel" VALUES ('nakliyeci', '3', 'nakliyeci', 'nakliyeci', '999', 'nakliyeci@mail.com')
+
+INSERT INTO public."Login" VALUES ('1', 'admin', 'admin')
+INSERT INTO public."Login" VALUES ('2', 'koordinator', 'koordinator')
+INSERT INTO public."Login" VALUES ('3', 'nakliyeci', 'nakliyeci')
+
+INSERT INTO public."Islem_Turu" VALUES ('1', 'Öğütme')
+INSERT INTO public."Islem_Turu" VALUES ('2', 'Kavurma')
