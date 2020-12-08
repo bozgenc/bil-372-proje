@@ -7,7 +7,7 @@ function update(alici_sirket_id,ucret,tarih,miktar) {
 
     var cancel_button = document.getElementById("cancel_button");
     var isInsert = document.getElementById("isInsert");
-    isInsert.value = id;
+    isInsert.value = alici_sirket_id;
     cancel_button.style.visibility = "visible"
     input.value = alici_sirket_id;
     input2.value = ucret;

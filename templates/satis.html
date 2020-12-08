@@ -4,15 +4,10 @@
 
 <div class="container">
 	<form action="/satis" method="POST">
-    <br>
-		<label for="satis">Üretici:</label>
-        <select id="satis" name="satis">
-            {% for satis in satisList %}
-			<option value="{{ satis.alici_sirket_id }}">{{ satis.alici_sirket_id }}</option>
-			{% endfor %}
-        </select>
 
-        <label for="tarih">Satış Tari0hi:</label>
+		<label for="alici_sirket_id">Alici Şirket ID:</label>
+        <input type="text" id="alici_sirket_id" name="alici_sirket_id" placeholder="Alıcı şirket id " required="required" >
+        <label for="tarih">Satış Tarihi:</label>
         <input type="datetime-local" id="tarih" name="tarih" placeholder="Satış Tarihi " required="required" >
 
 		<label for="miktar">Satış Miktarı(KG):</label>
@@ -38,9 +33,7 @@
 			<div class="col-sm">
 				(ID)
 			</div>
-			<div class="col-sm">
-				Satış
-			</div>
+
 			<div class="col-sm">
 				Satış Ücreti
 			</div>
@@ -49,6 +42,9 @@
 			</div>
             <div class="col-sm">
 				Satış Miktarı
+			</div>
+			<div class="col-sm">
+				Operations
 			</div>
 
 		</div>

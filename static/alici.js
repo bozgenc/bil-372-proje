@@ -4,7 +4,7 @@ function update(sirket_adi) {
 
     var cancel_button = document.getElementById("cancel_button");
     var isInsert = document.getElementById("isInsert");
-    isInsert.value = id;
+    isInsert.value = sirket_id;
     cancel_button.style.visibility = "visible"
     input.value = sirket_adi;
     input2.value=sirket_id;

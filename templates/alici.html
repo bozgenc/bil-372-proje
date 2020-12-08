@@ -4,17 +4,14 @@
 
 <div class="container">
 	<form action="/alici" method="POST">
-		<br>
-		<label for="alici">Alici Şirket Adı Seçiniz:</label>
-        <select id="alici" name="alici">
-            {% for a in satisList %}
-			<option value="{{ alici.sirket_id }}">{{ alici.sirket_id }}</option>
-			{% endfor %}
-        </select>
 
 
-        <label for="sirketid">Alıcı Şirket ID:</label>
-        <input type="text" id="sirketid" name="sirketid" placeholder="Sirket ID" required="required" >
+       <label for="sirket_adi">Alıcı Şirket Adı:</label>
+        <input type="text" id="sirket_adi" name="sirket_adi" placeholder="Sirket ADI" required="required" >
+
+
+        <label for="sirket_id">Alıcı Şirket ID:</label>
+        <input type="text" id="sirket_id" name="sirket_id" placeholder="Sirket ID" required="required" >
 
 		<input type="submit" class="btn btn-success" value="Submit">
 		<input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
@@ -30,6 +27,9 @@
 			</div>
             <div class="col-sm">
 				Şirket ID
+			</div>
+			<div class="col-sm">
+				Operations
 			</div>
 		</div>
 		{% for row in aliciList %}
