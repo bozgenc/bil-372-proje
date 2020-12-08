@@ -621,6 +621,21 @@ def islem_sonu():
     return render_template("islem_sonu.html", data=islem_sonu_list)
 
 
+@app.route('/araclar', methods=['GET', 'POST'])
+def araclar():
+    if request.method == 'POST':
+        plaka = request.form['plaka']
+        kapasite = request.form['kapasite']
+
+        query = "INSERT INTO public.\"Arac\"(plaka, kapasite) VALUES ('" + plaka + "' , '" + kapasite + "')"
+        db.engine.execute(query)
+
+
+    queryAraclar = "SELECT * FROM public.\"Arac\""
+    res = db.session.execute(queryAraclar)
+    aracList = res.fetchall()
+
+    return render_template("araclar.html", aracList=aracList)
 
 
 @app.route("/")

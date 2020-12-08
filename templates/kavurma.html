@@ -33,9 +33,10 @@
         <input type="hidden" id="isInsert" name="isInsert" value="0">
 
         <br>
+    </form>
 
-        <h1>Kavurma Listesi</h1>
-        <div class="container" id="product_table">
+    <h1>Kavrulma Listesi</h1>
+        <div class="container" id="kavurma_table">
             <div class="row border">
                 <div class="col-sm">
                     Ad Soyad
@@ -84,7 +85,6 @@
             </div>
             {% endfor %}
         </div>
-    </form>
 
 </div>
 <script type="text/javascript" src="{{ url_for('static',filename='kavurma.js') }}"></script>

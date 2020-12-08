@@ -1,0 +1,57 @@
+{% extends "baseForAdmin.html" %}
+{% block title %} Login {% endblock %}
+{% block content %}
+<h1>Araçlar</h1>
+
+
+<div class="container">
+	<form action="/araclar" method="POST">
+
+		<label for="plaka">Plaka: </label>
+		<input type="text" id="plaka" name="plaka" placeholder="Plaka.." required="required" maxlength="10">
+
+		<label for="kapasite">Araç Kapasitesi (KG): </label>
+		<input type="text" id="kapasite" name="kapasite" placeholder="Kapasite.." required="required" >
+
+		<input type="submit" class="btn btn-success" value="Submit">
+		<input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
+		       value="Cancel">
+		<input type="hidden" id="isInsert" name="isInsert" value="0">
+
+	</form>
+
+	<h1>Filo</h1>
+	<div class="container" id="araclar_table">
+            <div class="row border">
+                <div class="col-sm">
+                   Plaka
+                </div>
+                <div class="col-sm">
+                    Kapasite
+                </div>
+                <div class="col-sm">
+                    Operations
+                </div>
+            </div>
+            {% for row in aracList %}
+            <div class="row border">
+                <div class="col-sm">
+                    {{row.plaka }}
+                </div>
+                <div class="col-sm">
+                    {{ row.kapasite }}
+                </div>
+                <div class="col-sm">
+                    <a href="#"><span
+                            class="fa fa-pencil"
+                            style="color: black"
+                            onClick="update('{{row.plaka}}', '{{row.kapasite}}')
+                    ></span></a>
+                    <a href="/arac_delete/{{row.plaka}}"><span class="fa fa-trash" style="color: red"></span></a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+</div>
+{% endblock %}
