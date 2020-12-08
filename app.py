@@ -406,7 +406,7 @@ def uretici_search():
 
 
 @app.route('/satis',  methods=['POST', 'GET'])
-def satis():
+def  satis():
     if request.method == "POST":
             ucret = request.form['ucret']
             tarih = request.form['tarih']
@@ -418,7 +418,7 @@ def satis():
                 query = "INSERT INTO public.\"Satis\"(alici_sirket_id,ucret,tarih,miktar) VALUES ('" + alici_sirket_id + "', '" + ucret + "','" + tarih + "','" + miktar + "')"
                 db.engine.execute(query)
             else:
-                query = "UPDATE public.\"Satis\" SET  alici_sirket_id= '" + alici_sirket_id + "', tarih = '" + tarih + "', ucret = '" + ucret + "', miktar = '" + miktar + "' where alici_sirket_id = '" + alici_sirket_id + "'"
+                query = "UPDATE public.\"Satis\" SET  alici_sirket_id= '" + alici_sirket_id + "', tarih = '" + str(tarih) + "', ucret = '" + str(ucret) + "', miktar = '" + str(miktar) + "' where id = '" + str(id)+ "'"
                 db.engine.execute(query)
 
     all_data = "Select * from public.\"Satis\""
@@ -431,7 +431,7 @@ def satis():
 @app.route("/satis_delete/<int:alici_sirket_id>", methods=['GET','POST'])
 def SatisDelete(alici_sirket_id):
     if request.method == 'GET':
-        query = "DELETE FROM public.\"Satis\" WHERE alici_sirket_id =  alici_sirket_id"
+        query = "DELETE FROM public.\"Satis\" WHERE alici_sirket_id = '" +  str(alici_sirket_id) + "' "
         db.engine.execute(query)
 
         all_data = "Select * from public.\"Satis\""
@@ -449,10 +449,10 @@ def alici():
             id = request.form['isInsert']
 
             if int(id) == 0:
-                query = "INSERT INTO \"Alici\"(sirket_adi,sirket_id) VALUES ('" + sirket_adi + "' , '" + sirket_id + "')"
+                query = "INSERT INTO public.\"Alici\"(sirket_adi,sirket_id) VALUES ('" + sirket_adi + "' , '" + str(sirket_id) + "')"
                 db.engine.execute(query)
             else:
-                query = "UPDATE public.\"Alici\" SET  sirket_id= '" + sirket_id + "', sirket_adi = '" + sirket_adi + "' where sirket_id = '" + sirket_id + "'"
+                query = "UPDATE public.\"Alici\" SET   sirket_adi = '" + str(sirket_adi) + "' where sirket_id = '" + str(sirket_id) + "'"
                 db.engine.execute(query)
 
     all_data = "Select * from public.\"Alici\""
@@ -463,17 +463,16 @@ def alici():
 
 
 
-@app.route('/alici_delete/<string:sirket_adi>', methods=['GET', 'POST'])
-def alici_delete(sirket_adi):
+@app.route('/alici_delete/<string:sirket_id>', methods=['GET', 'POST'])
+def alici_delete(sirket_id):
     if request.method == 'GET':
-        query = "DELETE FROM public.\"Alici\" where sirket_adi = '" +  sirket_adi + "'"
+        query = "DELETE FROM public.\"Alici\" where sirket_id = '" +  sirket_id + "'"
         db.engine.execute(query)
 
     all_data = "Select * from public.\"Alici\""
     result = db.engine.execute(all_data)
     uList = result.fetchall()
     return render_template("alici.html", aliciList= uList)
-
 
 
 
