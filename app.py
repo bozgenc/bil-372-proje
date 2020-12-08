@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request,flash
+from flask import Flask, render_template, request,flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy_utils.functions import database_exists
-
-app = Flask(__name__, template_folder="/Users/Lenovo/Bil372Proje/templates")
+from datetime import datetime
+app = Flask(__name__, template_folder="/Users/baranozgenc/Desktop/proje/Bil372Proje/templates")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:12345@localhost:5432/coffeeDB"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
@@ -18,17 +18,24 @@ def register():
         password = request.form['password']
         password2 = request.form['password2']
 
-        roleQuery = "SELECT * FROM personel WHERE tckn =  '" + tckn + "' "
+        roleQuery = "SELECT * FROM public.\"Personel\" WHERE tckn =  '" + tckn + "' "
         temp = db.session.execute(roleQuery)
-        userType = ""
-        for x in temp:
-            userType = x.userrole
+        rows = temp.fetchall()
 
-        if password == password2:
-            query = "INSERT INTO Login(tckn, passcode, userRole) VALUES ('" + tckn + "' , '" + password + "', '" + userType + "')"
-            result = db.engine.execute(query)
+        if len(rows) == 0:
+            flash("No personel found to be register with the TCKN: " + tckn, 'error')
+            return render_template("register.html")
+        else:
+            userType = rows[0].personel_tipi
+            if password == password2:
+                query = "INSERT INTO public.\"Login\"(tckn, passcode, personel_tipi) VALUES ('" + tckn + "' , '" + password + "', '" + userType + "')"
+                result = db.engine.execute(query)
+                if result:
+                    flash("Successfully registered, you can log in.")
+                    return render_template("login.html")
 
     return render_template("register.html",)
+
 
 
 
@@ -154,10 +161,9 @@ def login():
         password = request.form['password']
         passwordFlag = False
 
-        query = "SELECT * FROM login WHERE tckn =  '" + tckn + "' "
+        query = "SELECT * FROM public.\"Login\" WHERE tckn =  '" + tckn + "' "
         temp = db.session.execute(query)
         rows = temp.fetchall()
-
 
         if len(rows) == 0:
             flash("No user found in the database with the TCKN " + tckn, 'error')
@@ -168,7 +174,6 @@ def login():
                 passwordFlag = True
             if passwordFlag:
                 if userrole == "koordinator":
-
                     return redirect(url_for("kavurma"), code=303)
                 elif userrole == "nakliyeci":
                     return redirect(url_for("nakliyeciHome"), code=303)
@@ -177,8 +182,10 @@ def login():
             else:
                 flash("Password is incorrect, please try again!")
                 return render_template("login.html")
+
     else:
         return render_template("login.html")
+
 
 
 @app.route("/adminHome", methods=['GET', 'POST'])
@@ -241,10 +248,32 @@ def nakliyeciHome():
         odeme = request.form['odeme']
         id = request.form['isInsert']
 
+        query = "SELECT * FROM public.\"Uretici\" WHERE ad_soyad =  '" + uretici + "'"
+        res = db.session.execute(query)
+        res = res.fetchall()
+        uretici_tckn = res[0].tckn
+        today = datetime.today()
+
+        if int(id) == 0:
+            insertQuery = "INSERT INTO public.\"Satin_Alir\"(uretici_tckn, odeme_tarihi,aciklama, odeme_miktari ,urun_miktari, plaka) VALUES ('" + uretici_tckn + "' , '" + str(today) + "' ,'" + aciklama + "' , '" + odeme + "' ,'" + miktar + "', '" + arac + "')"
+            db.engine.execute(insertQuery)
 
         else:
             query_update = "UPDATE public.\"Satin_Alir\" SET uretici_tckn = '" + uretici_tckn + "', aciklama = '" + aciklama + "', odeme_miktari = '" + odeme + "', odeme_tarihi = '" + str(today) + "', urun_miktari = '" + str(miktar) + "', plaka = '" + arac + "'  WHERE id = '" + str(id) + "'"
             db.engine.execute(query_update)
+
+
+    queryUretici = "SELECT * FROM public.\"Uretici\""
+    temp = db.session.execute(queryUretici)
+    queryArac = "SELECT * FROM public.\"Arac\""
+    temp2 = db.session.execute(queryArac)
+    queryAll = "SELECT public.\"Satin_Alir\".id, public.\"Satin_Alir\".odeme_miktari, public.\"Satin_Alir\".odeme_tarihi, public.\"Satin_Alir\".urun_miktari, public.\"Satin_Alir\".aciklama, public.\"Satin_Alir\".plaka, public.\"Uretici\".ad_soyad FROM( public.\"Satin_Alir\" INNER JOIN public.\"Uretici\" ON public.\"Satin_Alir\".uretici_tckn = public.\"Uretici\".tckn)"
+    temp3 = db.session.execute(queryAll)
+
+    uList = temp.fetchall()
+    aList = temp2.fetchall()
+    purchaseList = temp3.fetchall()
+    return render_template("nakliyeciHome.html", ureticiList=uList, aracList=aList, purchaseList=purchaseList)
 
 
 
@@ -254,9 +283,19 @@ def nakliyeciHomeDelete(id):
         query = "DELETE FROM public.\"Satin_Alir\" WHERE id = '" + str(id) + "'"
         db.engine.execute(query)
 
-@app.route("/")
-def home():
-    return render_template("index.html")
+    queryUretici = "SELECT * FROM public.\"Uretici\""
+    temp = db.session.execute(queryUretici)
+    queryArac = "SELECT * FROM public.\"Arac\""
+    temp2 = db.session.execute(queryArac)
+    queryAll = "SELECT public.\"Satin_Alir\".id, public.\"Satin_Alir\".odeme_miktari, public.\"Satin_Alir\".odeme_tarihi, public.\"Satin_Alir\".urun_miktari, public.\"Satin_Alir\".aciklama, public.\"Satin_Alir\".plaka, public.\"Uretici\".ad_soyad FROM( public.\"Satin_Alir\" INNER JOIN public.\"Uretici\" ON public.\"Satin_Alir\".uretici_tckn = public.\"Uretici\".tckn)"
+    temp3 = db.session.execute(queryAll)
+
+    uList = temp.fetchall()
+    aList = temp2.fetchall()
+    purchaseList = temp3.fetchall()
+    return render_template("nakliyeciHome.html", ureticiList=uList, aracList=aList, purchaseList=purchaseList)
+
+
 #@app.route('/uretici',  methods=['POST', 'GET'])
 def uretici():
     if request.method == "POST":
@@ -276,8 +315,9 @@ def uretici():
         result = db.engine.execute(all_data)
         return render_template("uretici.html", feat=result)
 
+
 @app.route('/satis',  methods=['POST', 'GET'])
-def  satis():
+def satis():
     if request.method == "POST":
             ucret = request.form['ucret']
             tarih = request.form['tarih']
@@ -314,6 +354,7 @@ def SatisDelete(id):
     purchaseList = temp3.fetchall()
     return render_template("satis.html", aliciList=uList, satisList=purchaseList)
 
+
 @app.route('/alici', methods=['POST', 'GET'])
 def alici():
     if request.method == "POST":
@@ -331,6 +372,7 @@ def alici():
             return render_template("alici.html", feat=result)
 
 
+
 @app.route('/alici_delete/<string:sirket_id>', methods=['GET', 'POST'])
 def alici_delete(sirket_id):
     if request.method == 'GET':
@@ -341,10 +383,6 @@ def alici_delete(sirket_id):
     result = db.engine.execute(all_data)
     uList = result.fetchall()
     return render_template("alici.html", aliciList=uList)
-
-
-
-
 
 
 @app.route("/kavurma", methods=['GET', 'POST'])
@@ -412,11 +450,6 @@ def kavurma_delete(id):
     kavurmaList = result.fetchall()
 
     return render_template("kavurma.html", personelList=personelList, kavurmaList=kavurmaList)
-
-
-@app.route("/")
-def home():
-    return render_template("homePage.html")
 
 
 @app.route('/uretici', methods=['POST', 'GET'])
@@ -590,10 +623,9 @@ def islem_sonu():
 
 
 
-
-
-
-
+@app.route("/")
+def home():
+    return render_template("homePage.html")
 
 
 

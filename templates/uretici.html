@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "baseForNakliyeci.html" %}
 {% block title %} Uretici {% endblock %}
 {% block content %}
 
@@ -9,7 +9,7 @@
         <input type="text" id="ad_soyad" name="ad_soyad" placeholder="Ad Soyad" required="required" >
 
 		<label for="tckn">TCKN:</label>
-		<input type="text" id="tckn" name="tckn" placeholder="TCKN" required="required" >
+		<input type="text" id="tckn" name="tckn" placeholder="TCKN" required="required" maxlength="11" >
 
 		<label for="koy">Köy:</label>
 		<input type="text" id="koy" name="koy" placeholder="Köy" required="required" >
