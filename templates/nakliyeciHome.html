@@ -1,6 +1,106 @@
 {% extends "base.html" %}
-{% block title %} Login {% endblock %}
+{% block title %} Satın Alım {% endblock %}
 {% block content %}
-<h1>Nakliyeci Ana Sayfa</h1>
 
+<div class="container">
+	<form action="/nakliyeciHome" method="POST">
+		<br>
+		<label for="uretici">Üretici:</label>
+        <select id="uretici" name="uretici">
+            {% for uretici in ureticiList %}
+			<option value="{{ uretici.ad_soyad }}">{{ uretici.ad_soyad }}</option>
+			{% endfor %}
+        </select>
+
+		<label for="miktar">Ürün Miktarı(KG):</label>
+		<input type="number" id="miktar" name="miktar" placeholder="Ürün Miktarı" required="required" >
+
+		<label for="odeme">Ödeme Miktarı(TL):</label>
+		<input type="number" id="odeme" name="odeme" placeholder="Ödenen Miktar" required="required" >
+
+        <label for="aciklama">Açıklama:</label>
+		<input type="text" id="aciklama" name="aciklama" placeholder="Açıklama" required="required" >
+
+        <label for="arac">Araç:</label>
+        <select id="arac" name="arac">
+            {% for arac in aracList %}
+			<option value="{{ arac.plaka }}">{{ arac.plaka }}</option>
+			{% endfor %}
+        </select>
+
+		<input type="submit" class="btn btn-success" value="Submit">
+		<input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
+		       value="Cancel">
+		<input type="hidden" id="isInsert" name="isInsert" value="0">
+
+		<br>
+	</form>
+
+	<h1>Satın Alımlar</h1>
+	<div class="container" id="nakliyeci_table">
+		<div class="row border">
+			<div class="col-sm">
+				(ID)
+			</div>
+			<div class="col-sm">
+				Üretici
+			</div>
+			<div class="col-sm">
+				Ödeme Miktarı
+			</div>
+			<div class="col-sm">
+				Ödeme Tarihi
+			</div>
+			<div class="col-sm">
+				Ürün Miktarı
+			</div>
+			<div class="col-sm">
+				Açıklama
+			</div>
+			<div class="col-sm">
+				Kullanılan Araç
+			</div>
+			<div class="col-sm">
+				Operations
+			</div>
+		</div>
+		{% for purchase in purchaseList %}
+		<div class="row border">
+			<div class="col-sm">
+				{{ purchase.id }}
+			</div>
+			<div class="col-sm">
+				{{ purchase.ad_soyad }}
+			</div>
+			<div class="col-sm">
+				{{ purchase.odeme_miktari }}
+			</div>
+			<div class="col-sm">
+				{{ purchase.odeme_tarihi }}
+			</div>
+			<div class="col-sm">
+				{{ purchase.urun_miktari }}
+			</div>
+			<div class="col-sm">
+				{{ purchase.aciklama }}
+			</div>
+			<div class="col-sm">
+				{{ purchase.plaka }}
+			</div>
+			<div class="col-sm">
+				<a href="#"><span
+						class="fa fa-pencil"
+						style="color: black"
+						onClick="update('{{purchase.id}}', '{{purchase.ad_soyad}}', '{{purchase.odeme_miktari}}', '{{purchase.urun_miktari}}', '{{purchase.aciklama}}', '{{purchase.plaka}}')"
+				></span></a>
+				<a href="/nakliyeciHome_delete/{{ purchase.id }}"><span class="fa fa-trash" style="color: red"></span></a>
+			</div>
+		</div>
+		{% endfor %}
+
+	</div>
+
+</div>
+
+<script type="text/javascript" src="{{ url_for('static',filename='nakliyeciHome.js') }}"></script>
 {% endblock %}
