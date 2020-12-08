@@ -45,7 +45,7 @@
                     <a href="#"><span
                             class="fa fa-pencil"
                             style="color: black"
-                            onClick="update('{{row.plaka}}', '{{row.kapasite}}')"
+                            onClick="update('{{row.plaka}}', '{{row.kapasite}}', '{{row.id}}')"
                     ></span></a>
                     <a href="/araclar_delete/{{row.id}}"><span class="fa fa-trash" style="color: red"></span></a>
                 </div>
@@ -54,4 +54,7 @@
         </div>
 
 </div>
+
+<script type="text/javascript" src="{{ url_for('static',filename='araclar.js') }}"></script>
+
 {% endblock %}

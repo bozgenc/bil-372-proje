@@ -626,9 +626,14 @@ def araclar():
     if request.method == 'POST':
         plaka = request.form['plaka']
         kapasite = request.form['kapasite']
+        id = request.form['isInsert']
 
-        query = "INSERT INTO public.\"Arac\"(plaka, kapasite) VALUES ('" + plaka + "' , '" + kapasite + "')"
-        db.engine.execute(query)
+        if int(id) == 0:
+            query = "INSERT INTO public.\"Arac\"(plaka, kapasite) VALUES ('" + plaka + "' , '" + kapasite + "')"
+            db.engine.execute(query)
+        else:
+            queryUpdate = "UPDATE public.\"Arac\" SET kapasite = '" + kapasite + "'" + " WHERE id = '" + str(id) + "'"
+            db.engine.execute(queryUpdate)
 
 
     queryAraclar = "SELECT * FROM public.\"Arac\""
