@@ -2,9 +2,9 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
-app = Flask(__name__, template_folder="/Users/elifg/PycharmProjects/Bil372Proje/templates")
+app = Flask(__name__, template_folder="/Users/Lenovo/Bil372Proje/templates")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:1234@localhost:5432/ProjectDB"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:1234@localhost:5432/postgres"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -225,6 +225,25 @@ def adminHomeDelete(id):
     personelList = temp2.fetchall()
 
     return render_template("adminHome.html", roleList=roleList, personelList=personelList)
+
+@app.route("/adminHome_search", methods=['GET', 'POST'])
+def admin_search():
+    if request.method == 'POST':
+        search = request.form['search']
+
+        if search != ' ' or search != '':
+            query = "SELECT public.\"Personel\".* FROM public.\"Personel\" INNER JOIN ( SELECT public.\"Personel\".tckn AS pg_search_id,(ts_rank((to_tsvector('english', coalesce(public.\"Personel\".ad::text,  '')) || to_tsvector('english', coalesce(public.\"Personel\".soyad::text, '')) || to_tsvector('english', coalesce(public.\"Personel\".email::text, ''))),(to_tsquery('english', ''' ' || '" + search + "'|| ' ''')))) FROM public.\"Personel\" WHERE (((to_tsvector('english', coalesce(public.\"Personel\".ad::text, '')) ||to_tsvector('english', coalesce(public.\"Personel\".soyad::text, '')) ||to_tsvector('english', coalesce(public.\"Personel\".email::text, ''))) @@ (to_tsquery('english', ''' ' || '"+ search + " '|| ' '''))))) pg_search ON public.\"Personel\".tckn= pg_search.pg_search_id LIMIT 24 OFFSET 0"
+            t = db.engine.execute(query)
+            list = t.fetchall()
+            query = "SELECT * FROM public.\"userTypes\""
+            temp = db.session.execute(query)
+            queryPersonel = "SELECT * FROM public.\"Personel\""
+            temp2 = db.session.execute(queryPersonel)
+
+            roleList = temp.fetchall()
+            personelList = temp2.fetchall()
+            return render_template("adminHome.html", roleList=roleList, personelList=personelList, son=list)
+
 
 @app.route('/satis',  methods=['POST', 'GET'])
 def  satis():
@@ -532,7 +551,7 @@ def ogutme():
     all_data = db.session.execute(query)
     islem_list = all_data.fetchall()
 
-    query2 = "SELECT * from public.\"Personel\""
+    query2 = "SELECT * from public.\"Personel\" WHERE personel_tipi = 'koordinator'"
     data = db.session.execute(query2)
     son = data.fetchall()
 

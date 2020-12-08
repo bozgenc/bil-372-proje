@@ -3,6 +3,28 @@
 {% block content %}
 
 <div class="container">
+    <form class="example" action="/adminHome_search" method="POST">
+    <input type="text" id="search" name="search" placeholder="Search.." name="search">
+          {% for s in son %}
+            <div class="col-sm">
+                    TCKN: {{ s.tckn }}
+                </div>
+                <div class="col-sm">
+                    Ad Soyad: {{ s.ad }} {{ s.soyad }}
+                </div>
+                <div class="col-sm">
+                    Telefon Numarası: {{ s.tel_no }}
+                </div>
+                <div class="col-sm">
+                    E-mail: {{ s.email }}
+                </div>
+                <div class="col-sm">
+                    Personel Tipi: {{ s.personel_tipi }}
+                </div>
+        {% endfor %}
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+
     <form action="/adminHome" method="POST">
         <br>
 
