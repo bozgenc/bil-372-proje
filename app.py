@@ -197,7 +197,7 @@ def adminHome():
                 id) + "'"
             db.engine.execute(update_query)
 
-    query = "SELECT * FROM public.\"usertypes\""
+    query = "SELECT * FROM public.\"userTypes\""
     temp = db.session.execute(query)
     queryPersonel = "SELECT * FROM public.\"Personel\""
     temp2 = db.session.execute(queryPersonel)
@@ -216,7 +216,7 @@ def adminHomeDelete(id):
         query2 = "DELETE FROM public.\"Personel\" WHERE tckn = '" + str(id) + "'"
         db.engine.execute(query2)
 
-    query = "SELECT * FROM public.\"usertypes\""
+    query = "SELECT * FROM public.\"userTypes\""
     temp = db.session.execute(query)
     queryPersonel = "SELECT * FROM public.\"Personel\""
     temp2 = db.session.execute(queryPersonel)
@@ -235,7 +235,7 @@ def admin_search():
             query = "SELECT public.\"Personel\".* FROM public.\"Personel\" INNER JOIN ( SELECT public.\"Personel\".tckn AS pg_search_id,(ts_rank((to_tsvector('english', coalesce(public.\"Personel\".ad::text,  '')) || to_tsvector('english', coalesce(public.\"Personel\".soyad::text, '')) || to_tsvector('english', coalesce(public.\"Personel\".email::text, ''))),(to_tsquery('english', ''' ' || '" + search + "'|| ' ''')))) FROM public.\"Personel\" WHERE (((to_tsvector('english', coalesce(public.\"Personel\".ad::text, '')) ||to_tsvector('english', coalesce(public.\"Personel\".soyad::text, '')) ||to_tsvector('english', coalesce(public.\"Personel\".email::text, ''))) @@ (to_tsquery('english', ''' ' || '"+ search + " '|| ' '''))))) pg_search ON public.\"Personel\".tckn= pg_search.pg_search_id LIMIT 24 OFFSET 0"
             t = db.engine.execute(query)
             list = t.fetchall()
-            query = "SELECT * FROM public.\"usertypes\""
+            query = "SELECT * FROM public.\"userTypes\""
             temp = db.session.execute(query)
             queryPersonel = "SELECT * FROM public.\"Personel\""
             temp2 = db.session.execute(queryPersonel)
