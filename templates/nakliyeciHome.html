@@ -3,6 +3,10 @@
 {% block content %}
 
 <div class="container">
+	<form class="example" action="/nakliyeci_home_search" method="POST">
+    	<input type="text" id="search" name="search" placeholder="Search.." name="search">
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
 	<form action="/nakliyeciHome" method="POST">
 		<br>
 		<label for="uretici">Üretici:</label>

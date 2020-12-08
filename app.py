@@ -2,9 +2,9 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
-app = Flask(__name__, template_folder="/Users/elifg/PycharmProjects/Bil372Proje/templates")
+app = Flask(__name__, template_folder="/Users/baranozgenc/Desktop/proje/Bil372Proje/templates")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:1234@localhost:5432/db2"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:12345@localhost:5432/coffeeDB"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -226,8 +226,187 @@ def adminHomeDelete(id):
 
     return render_template("adminHome.html", roleList=roleList, personelList=personelList)
 
+@app.route("/adminHome_search", methods=['GET', 'POST'])
+def admin_search():
+    if request.method == 'POST':
+        search = request.form['search']
+
+        if search != ' ' or search != '':
+            query = "SELECT public.\"Personel\".* FROM public.\"Personel\" INNER JOIN ( SELECT public.\"Personel\".tckn AS pg_search_id,(ts_rank((to_tsvector('english', coalesce(public.\"Personel\".ad::text,  '')) || to_tsvector('english', coalesce(public.\"Personel\".soyad::text, '')) || to_tsvector('english', coalesce(public.\"Personel\".email::text, ''))),(to_tsquery('english', ''' ' || '" + search + "'|| ' ''')))) FROM public.\"Personel\" WHERE (((to_tsvector('english', coalesce(public.\"Personel\".ad::text, '')) ||to_tsvector('english', coalesce(public.\"Personel\".soyad::text, '')) ||to_tsvector('english', coalesce(public.\"Personel\".email::text, ''))) @@ (to_tsquery('english', ''' ' || '"+ search + " '|| ' '''))))) pg_search ON public.\"Personel\".tckn= pg_search.pg_search_id LIMIT 24 OFFSET 0"
+            t = db.engine.execute(query)
+            list = t.fetchall()
+            query = "SELECT * FROM public.\"userTypes\""
+            temp = db.session.execute(query)
+            queryPersonel = "SELECT * FROM public.\"Personel\""
+            temp2 = db.session.execute(queryPersonel)
+
+            roleList = temp.fetchall()
+            return render_template("adminHome.html", roleList=roleList, personelList=list, son=list)
+
+@app.route("/araclar_search", methods=['GET', 'POST'])
+def araclar_search():
+    if request.method == 'POST':
+        search = request.form['search']
+
+        if search != ' ' or search != '':
+            query = "SELECT public.\"Arac\".* FROM public.\"Arac\" INNER JOIN (SELECT public.\"Arac\".plaka AS pg_search_id,(ts_rank((to_tsvector('english', coalesce(public.\"Arac\".plaka::text,  ''))),(to_tsquery('english', ''' ' || '"+ search + "' || ' ''')))) FROM public.\"Arac\" WHERE (((to_tsvector('english', coalesce(public.\"Arac\".plaka::text, ''))) @@ (to_tsquery('english', ''' ' || '"  + search + "' || ' '''))))) pg_search ON public.\"Arac\".plaka= pg_search.pg_search_id LIMIT 24 OFFSET 0"
+            t = db.engine.execute(query)
+            list = t.fetchall()
+            return render_template("araclar.html", aracList=list)
+
+
+@app.route("/kavurma_search", methods=['GET', 'POST'])
+def kavurma_search():
+    if request.method == 'POST':
+        search = request.form['search']
+        queryJoin = "SELECT public.\"Kavurma\".giren_miktar, public.\"Kavurma\".bitti_mi  ,public.\"Kavurma\".id, public.\"Kavurma\".sorumlu_koordinator_tckn, public.\"Kavurma\".cikan_miktar, public.\"Kavurma\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad FROM (public.\"Kavurma\" INNER JOIN public.\"Personel\" ON public.\"Kavurma\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) WHERE public.\"Kavurma\".bitti_mi = False "
+        result = db.session.execute(queryJoin)
+        resList = result.fetchall()
+
+        finalList = []
+        for row in resList:
+            if (row.ad + " " + row.soyad) == search:
+                finalList.append(row)
+            elif row.ad == search :
+                finalList.append(row)
+            elif row.soyad == search :
+                finalList.append(row)
+
+        return render_template("kavurma.html", kavurmaList=finalList)
+
+@app.route("/ogutme_search", methods=['GET', 'POST'])
+def ogutme_search():
+    if request.method == 'POST':
+        search = request.form['search']
+        queryJoin = "SELECT public.\"Ogutme\".giren_miktar, public.\"Ogutme\".bitti_mi  ,public.\"Ogutme\".id, public.\"Ogutme\".sorumlu_koordinator_tckn, public.\"Ogutme\".cikan_miktar, public.\"Ogutme\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad FROM (public.\"Ogutme\" INNER JOIN public.\"Personel\" ON public.\"Ogutme\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) WHERE public.\"Ogutme\".bitti_mi = False "
+        result = db.session.execute(queryJoin)
+        resList = result.fetchall()
+
+        finalList = []
+        for row in resList:
+            if (row.ad + " " + row.soyad) == search:
+                finalList.append(row)
+            elif row.ad == search :
+                finalList.append(row)
+            elif row.soyad == search :
+                finalList.append(row)
+
+        return render_template("ogutme.html", ogutme=finalList)
+
+@app.route("/islem_sonu_search", methods=['GET', 'POST'])
+def islem_sonu_search():
+    if request.method == 'POST':
+        search = request.form['search']
+        q2 = "SELECT public.\"Ogutme\".giren_miktar, public.\"Ogutme\".cikan_miktar, public.\"Ogutme\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad, public.\"Islem_Turu\".islem_ismi FROM(( public.\"Ogutme\" INNER JOIN public.\"Personel\" ON public.\"Ogutme\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) INNER JOIN public.\"Islem_Turu\" ON public.\"Ogutme\".tur_id = public.\"Islem_Turu\".tur_id)"
+        data = db.session.execute(q2)
+
+        q3 = "SELECT public.\"Kavurma\".giren_miktar, public.\"Kavurma\".cikan_miktar, public.\"Kavurma\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad, public.\"Islem_Turu\".islem_ismi FROM(( public.\"Kavurma\" INNER JOIN public.\"Personel\" ON public.\"Kavurma\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) INNER JOIN public.\"Islem_Turu\" ON public.\"Kavurma\".tur_id = public.\"Islem_Turu\".tur_id)"
+        res = db.session.execute(q3)
+        list2 = res.fetchall()
+        islem_sonu_list = data.fetchall()
+
+        listMerged = list2 + islem_sonu_list
+
+        finalList = []
+        for row in listMerged:
+            if (row.ad + " " + row.soyad) == search:
+                finalList.append(row)
+            elif row.ad == search:
+                finalList.append(row)
+            elif row.soyad == search:
+                finalList.append(row)
+
+        return render_template("islem_sonu.html", data=finalList)
+
+@app.route("/cekirdek_search", methods=['GET', 'POST'])
+def cekirdek_search():
+    if request.method == 'POST':
+        search = request.form['search']
+        queryCekirdek = "SELECT * FROM public.\"Cekirdek\""
+        res = db.session.execute(queryCekirdek)
+        list = res.fetchall()
+
+        finalList = []
+        for row in list:
+            if row.koken == search:
+                finalList.append(row)
+            elif row.tur == search:
+                finalList.append(row)
+
+
+        return render_template("cekirdek.html", cekirdekList=finalList)
+
+
+@app.route("/paket_search", methods=['GET', 'POST'])
+def paket_search():
+    if request.method == 'POST':
+        search = request.form['search']
+        queryCekirdek = "SELECT * FROM public.\"Paket_Kahve\""
+        res = db.session.execute(queryCekirdek)
+        list = res.fetchall()
+
+        finalList = []
+        for row in list:
+            if row.tur == search:
+                finalList.append(row)
+
+
+        return render_template("paket.html", paketList=finalList)
+
+
+@app.route("/nakliyeci_home_search", methods=['GET', 'POST'])
+def nakliyeci_home_search():
+    if request.method == 'POST':
+        search = request.form['search']
+        queryUretici = "SELECT * FROM public.\"Uretici\""
+        temp = db.session.execute(queryUretici)
+        queryArac = "SELECT * FROM public.\"Arac\""
+        temp2 = db.session.execute(queryArac)
+        queryAll = "SELECT public.\"Satin_Alir\".id, public.\"Satin_Alir\".odeme_miktari, public.\"Satin_Alir\".odeme_tarihi, public.\"Satin_Alir\".urun_miktari, public.\"Satin_Alir\".aciklama, public.\"Satin_Alir\".plaka, public.\"Uretici\".ad_soyad FROM( public.\"Satin_Alir\" INNER JOIN public.\"Uretici\" ON public.\"Satin_Alir\".uretici_tckn = public.\"Uretici\".tckn)"
+        temp3 = db.session.execute(queryAll)
+
+        uList = temp.fetchall()
+        aList = temp2.fetchall()
+        purchaseList = temp3.fetchall()
+
+
+        finalList = []
+        for row in purchaseList:
+            if row.ad_soyad == search:
+                finalList.append(row)
+            elif row.aciklama == search:
+                finalList.append(row)
+            elif row.plaka == search:
+                finalList.append(row)
+
+
+        return render_template("nakliyeciHome.html", ureticiList=uList, aracList=aList, purchaseList=finalList)
+
+@app.route("/uretici_search", methods=['GET', 'POST'])
+def uretici_search():
+    if request.method == 'POST':
+        search = request.form['search']
+        all_data = "Select * from public.\"Uretici\""
+        result = db.engine.execute(all_data)
+        uList = result.fetchall()
+
+        finalList = []
+        for row in uList:
+            if row.ad_soyad == search:
+                finalList.append(row)
+            elif row.tckn == search:
+                finalList.append(row)
+            elif row.koy == search:
+                finalList.append(row)
+            elif row.tel_no == search:
+                finalList.append(row)
+
+
+        return render_template("uretici.html", ureticiList=finalList)
+
+
 @app.route('/satis',  methods=['POST', 'GET'])
-def  satis():
+def satis():
     if request.method == "POST":
             ucret = request.form['ucret']
             tarih = request.form['tarih']
@@ -239,7 +418,7 @@ def  satis():
                 query = "INSERT INTO public.\"Satis\"(alici_sirket_id,ucret,tarih,miktar) VALUES ('" + alici_sirket_id + "', '" + ucret + "','" + tarih + "','" + miktar + "')"
                 db.engine.execute(query)
             else:
-                query = "UPDATE public.\"Satis\" SET  alici_sirket_id= '" + alici_sirket_id + "', tarih = '" + str(tarih) + "', ucret = '" + str(ucret) + "', miktar = '" + str(miktar) + "' where id = '" + str(id)+ "'"
+                query = "UPDATE public.\"Satis\" SET  alici_sirket_id= '" + alici_sirket_id + "', tarih = '" + tarih + "', ucret = '" + ucret + "', miktar = '" + miktar + "' where alici_sirket_id = '" + alici_sirket_id + "'"
                 db.engine.execute(query)
 
     all_data = "Select * from public.\"Satis\""
@@ -252,7 +431,7 @@ def  satis():
 @app.route("/satis_delete/<int:alici_sirket_id>", methods=['GET','POST'])
 def SatisDelete(alici_sirket_id):
     if request.method == 'GET':
-        query = "DELETE FROM public.\"Satis\" WHERE alici_sirket_id = '" +  str(alici_sirket_id) + "' "
+        query = "DELETE FROM public.\"Satis\" WHERE alici_sirket_id =  alici_sirket_id"
         db.engine.execute(query)
 
         all_data = "Select * from public.\"Satis\""
@@ -270,10 +449,10 @@ def alici():
             id = request.form['isInsert']
 
             if int(id) == 0:
-                query = "INSERT INTO public.\"Alici\"(sirket_adi,sirket_id) VALUES ('" + sirket_adi + "' , '" + str(sirket_id) + "')"
+                query = "INSERT INTO \"Alici\"(sirket_adi,sirket_id) VALUES ('" + sirket_adi + "' , '" + sirket_id + "')"
                 db.engine.execute(query)
             else:
-                query = "UPDATE public.\"Alici\" SET   sirket_adi = '" + str(sirket_adi) + "' where sirket_id = '" + str(sirket_id) + "'"
+                query = "UPDATE public.\"Alici\" SET  sirket_id= '" + sirket_id + "', sirket_adi = '" + sirket_adi + "' where sirket_id = '" + sirket_id + "'"
                 db.engine.execute(query)
 
     all_data = "Select * from public.\"Alici\""
@@ -284,10 +463,10 @@ def alici():
 
 
 
-@app.route('/alici_delete/<string:sirket_id>', methods=['GET', 'POST'])
-def alici_delete(sirket_id):
+@app.route('/alici_delete/<string:sirket_adi>', methods=['GET', 'POST'])
+def alici_delete(sirket_adi):
     if request.method == 'GET':
-        query = "DELETE FROM public.\"Alici\" where sirket_id = '" +  sirket_id + "'"
+        query = "DELETE FROM public.\"Alici\" where sirket_adi = '" +  sirket_adi + "'"
         db.engine.execute(query)
 
     all_data = "Select * from public.\"Alici\""
@@ -526,13 +705,14 @@ def ogutme():
             db.session.execute(query)
             db.session.commit()
 
+
     query = "SELECT public.\"Ogutme\".giren_miktar, public.\"Ogutme\".bitti_mi  ,public.\"Ogutme\".id, public.\"Ogutme\".sorumlu_koordinator_tckn, public.\"Ogutme\".cikan_miktar, " \
             "public.\"Ogutme\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad FROM (public.\"Ogutme\" INNER JOIN public.\"Personel\" ON public.\"Ogutme\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) " \
             "WHERE public.\"Ogutme\".bitti_mi = False "
     all_data = db.session.execute(query)
     islem_list = all_data.fetchall()
 
-    query2 = "SELECT * from public.\"Personel\""
+    query2 = "SELECT * from public.\"Personel\" WHERE personel_tipi = 'koordinator'"
     data = db.session.execute(query2)
     son = data.fetchall()
 
@@ -560,7 +740,6 @@ def ogutme_delete(id):
 @app.route("/islem_sonu", methods=['GET', 'POST'])
 def islem_sonu():
     if request.method == 'GET':
-
         query = "SELECT * from public.\"Ogutme\" where bitti_mi = '" + str(True) + "'"
         all_data = db.engine.execute(query)
         ogutmeList = all_data.fetchall()
@@ -586,11 +765,17 @@ def islem_sonu():
                     tur_id) + "','" + str(ogutmeList[0].id) + "')"
                 db.engine.execute(insertquery)
 
-    q2 = "SELECT public.\"Ogutme\".sorumlu_koordinator_tckn, public.\"Ogutme\".tur_id, public.\"Ogutme\".giren_miktar, public.\"Ogutme\".cikan_miktar, public.\"Ogutme\".islem_suresi, " \
-         "public.\"Islem_Sonu\".tur_id from public.\"Ogutme\", public.\"Islem_Sonu\" where(public.\"Ogutme\".tur_id = public.\"Islem_Sonu\".tur_id and public.\"Ogutme\".bitti_mi = True)"
+    q2 = "SELECT public.\"Ogutme\".giren_miktar, public.\"Ogutme\".cikan_miktar, public.\"Ogutme\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad, public.\"Islem_Turu\".islem_ismi FROM(( public.\"Ogutme\" INNER JOIN public.\"Personel\" ON public.\"Ogutme\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) INNER JOIN public.\"Islem_Turu\" ON public.\"Ogutme\".tur_id = public.\"Islem_Turu\".tur_id)"
     data = db.session.execute(q2)
+
+
+    q3 = "SELECT public.\"Kavurma\".giren_miktar, public.\"Kavurma\".cikan_miktar, public.\"Kavurma\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad, public.\"Islem_Turu\".islem_ismi FROM(( public.\"Kavurma\" INNER JOIN public.\"Personel\" ON public.\"Kavurma\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) INNER JOIN public.\"Islem_Turu\" ON public.\"Kavurma\".tur_id = public.\"Islem_Turu\".tur_id)"
+    res = db.session.execute(q3)
+    list2 = res.fetchall()
     islem_sonu_list = data.fetchall()
-    return render_template("islem_sonu.html", data=islem_sonu_list)
+
+    listFinal = list2 + islem_sonu_list
+    return render_template("islem_sonu.html", data=listFinal)
 
 
 @app.route('/araclar', methods=['GET', 'POST'])

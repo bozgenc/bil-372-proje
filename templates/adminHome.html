@@ -3,6 +3,11 @@
 {% block content %}
 
 <div class="container">
+    <form class="example" action="/adminHome_search" method="POST">
+    <input type="text" id="search" name="search" placeholder="Search.." name="search">
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+
     <form action="/adminHome" method="POST">
         <br>
 

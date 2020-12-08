@@ -17,8 +17,13 @@
 {% endwith %}
 
 <div class="container">
-	<form action="/cekirdek" method="POST">
+	<form class="example" action="/cekirdek_search" method="POST">
+    <input type="text" id="search" name="search" placeholder="Search.." name="search">
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
 
+	<form action="/cekirdek" method="POST">
+		<br>
 		<label for="miktar">Miktar:</label>
 		<input type="text" id="miktar" name="miktar" placeholder="Miktar(Gram)" required="required" maxlength="11">
 
@@ -57,7 +62,6 @@
 		{% for cekirdek in cekirdekList %}
 		<div class="row border">
 
-
 			<div class="col-sm">
 				{{ cekirdek.koken }}
 			</div>
@@ -83,10 +87,6 @@
 		</tbody>
 		</table>
 	</div>
-
-
-
-
 
 	</form>
 
