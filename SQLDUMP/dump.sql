@@ -284,4 +284,15 @@ CREATE TABLE public."Login"(
 )
 
 
-CREATE INDEX tckn_fkey ON public."Personel" USING btree("tckn")
+CREATE INDEX tckn_fkey ON public."Personel" USING btree("tckn");
+
+
+CREATE TABLE public."Iletisim"
+(
+    "email" character varying(50) COLLATE pg_catalog."default",
+    "mesaj" character varying(999) COLLATE pg_catalog."default" NOT NULL,
+    "id" serial not null,
+    primary key(id)
+)
+
+select * from public."Personel";

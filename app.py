@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request,flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-app = Flask(__name__, template_folder="/Users/baranozgenc/Desktop/proje/Bil372Proje/templates")
+app = Flask(__name__, template_folder="/Users/Lenovo/Bil372Proje/templates")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:12345@localhost:5432/coffeeDB"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:1234@127.0.0.1:5432/postgres"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -529,7 +529,7 @@ def ogutme():
             db.session.execute(query)
             db.session.commit()
 
-    query = "SELECT * FROM public.\"Ogutme\""
+    query = "SELECT * FROM public.\"Ogutme\" WHERE public.\"Ogutme\".bitti_mi = False"
     all_data = db.session.execute(query)
     islem_list = all_data.fetchall()
 
@@ -577,12 +577,8 @@ def islem_sonu():
             quer = "Select * from public.\"Islem_Sonu\""
             comp = db.engine.execute(quer)
             comp = comp.fetchall()
-            print(comp)
 
             if len(comp) > 0:
-                print(ogutmeList)
-                print(ogutmeList[0].giren_miktar)
-                print(ogutmeList[0].id)
                 idmiz = comp[0].id2
 
                 if idmiz != id_meselesi:
