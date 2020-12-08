@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<h1>Paket</h1>
+
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<div class="container">
+	<form action="/paket" method="POST">
+
+		<label for="gramaj">Gramaj:</label>
+		<input type="text" id="gramaj" name="gramaj" placeholder="Gramaj" required="required" maxlength="11">
+
+		<label for="tur">Tur:</label>
+		<input type="text" id="tur" name="tur" placeholder="Tur" required="required" >
+
+		<label for="skt">SKT:</label>
+		<input type="datetime-local" id="skt" name="skt" placeholder="SKT" required="required">
+
+
+		<input type="submit" class="btn btn-success" value="Submit">
+		<input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
+		       value="Cancel">
+		<input type="hidden" id="isInsert" name="isInsert" value="0">
+
+
+		<h1>Mevcut Paketler</h1>
+	<div class="container" id="product_table">
+		<div class="row border">
+
+
+			<div class="col-sm">
+				Tür
+			</div>
+			<div class="col-sm">
+				Gramaj
+			</div>
+			<div class="col-sm">
+				SKT
+			</div>
+			<div class="col-sm">
+				Operations
+			</div>
+
+
+		</div>
+		{% for paket in paketList %}
+		<div class="row border">
+			<div class="col-sm">
+				{{ paket.id }}
+			</div>
+			<div class="col-sm">
+				{{ paket.tur }}
+			</div>
+			<div class="col-sm">
+				{{ paket.gramaj }}
+			</div>
+			<div class="col-sm">
+				{{ paket.skt }}
+			</div>
+
+			<div class="col-sm">
+				<a href="#"><span
+						class="fa fa-pencil"
+						style="color: black"
+						onClick="update('{{paket.id}}','{{paket.tur}}', '{{paket.gramaj}}', '{{paket.skt}}')"
+				></span></a>
+				<a href="/paket_delete/{{ paket.id }}"><span class="fa fa-trash" style="color: red"></span></a>
+			</div>
+		</div>
+		{% endfor %}
+
+		</tbody>
+		</table>
+	</div>
+
+
+
+
+
+
+
+	</form>
+
+</div>
+<script type="text/javascript" src="{{ url_for('static',filename='paket.js') }}"></script>
+{% endblock %}

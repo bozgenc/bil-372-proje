@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %} İşlem Türü {% endblock %}
+{% block content %}
+
+<div class="container">
+	<form action="/islemturu" method="POST">
+    <br>
+		<label for="tur_id">İşlem Türü ID</label>
+		<input type="number" id="tur_id" name="tur_id" placeholder="İşlem Türü ID" required="required" >
+
+		<label for="islem_ismi">İşlem İsmi</label>
+		<input type="text" id="islem_ismi" name="islem_ismi" placeholder="İşlem İsmi" required="required" >
+
+		<input type="submit" class="btn btn-success" value="Submit">
+		<input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
+		       value="Cancel">
+		<input type="hidden" id="isInsert" name="isInsert" value="0">
+
+		<br>
+
+	<h1>İşlemler</h1>
+	<div class="container" id="product_table">
+		<div class="row border">
+			<div class="col-sm">
+				İşlem Türü ID
+			</div>
+			<div class="col-sm">
+                İşlem İsmi
+			</div>
+			<div class="col-sm">
+				Operations
+			</div>
+		</div>
+		{% for row in islem_listesi %}
+		<div class="row border">
+			<div class="col-sm">
+				{{ row.tur_id}}
+			</div>
+			<div class="col-sm">
+				{{ row.islem_ismi}}
+			</div>
+			<div class="col-sm">
+				<a href="#"><span
+						class="fa fa-pencil"
+						style="color: black"
+						onClick="update('{{row.tur_id}}', '{{row.islem_ismi}}')"
+				></span></a>
+				<a href="/islem_turu_delete/{{row.tur_id}}"><span class="fa fa-trash" style="color: red"></span></a>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+
+	</form>
+
+</div>
+
+<script type="text/javascript" src="{{ url_for('static',filename='islemturu.js') }}"></script>
+{% endblock %}
