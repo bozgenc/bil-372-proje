@@ -2,9 +2,9 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
-app = Flask(__name__, template_folder="/Users/Lenovo/Bil372Proje/templates")
+app = Flask(__name__, template_folder="/Users/elifg/PycharmProjects/Bil372Proje/templates")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:1234@127.0.0.1:5432/postgres"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:1234@localhost:5432/ProjectDB"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -226,6 +226,77 @@ def adminHomeDelete(id):
 
     return render_template("adminHome.html", roleList=roleList, personelList=personelList)
 
+@app.route('/satis',  methods=['POST', 'GET'])
+def  satis():
+    if request.method == "POST":
+            ucret = request.form['ucret']
+            tarih = request.form['tarih']
+            miktar = request.form['miktar']
+            alici_sirket_id = request.form['alici_sirket_id']
+            id = request.form['isInsert']
+
+            if int(id) == 0:
+                query = "INSERT INTO public.\"Satis\"(alici_sirket_id,ucret,tarih,miktar) VALUES ('" + alici_sirket_id + "', '" + ucret + "','" + tarih + "','" + miktar + "')"
+                db.engine.execute(query)
+            else:
+                query = "UPDATE public.\"Satis\" SET  alici_sirket_id= '" + alici_sirket_id + "', tarih = '" + tarih + "', ucret = '" + ucret + "', miktar = '" + miktar + "' where alici_sirket_id = '" + alici_sirket_id + "'"
+                db.engine.execute(query)
+
+    all_data = "Select * from public.\"Satis\""
+    result = db.engine.execute(all_data)
+    sList = result.fetchall()
+    return render_template("satis.html", satisList=sList)
+
+
+
+@app.route("/satis_delete/<int:alici_sirket_id>", methods=['GET','POST'])
+def SatisDelete(alici_sirket_id):
+    if request.method == 'GET':
+        query = "DELETE FROM public.\"Satis\" WHERE alici_sirket_id =  alici_sirket_id"
+        db.engine.execute(query)
+
+        all_data = "Select * from public.\"Satis\""
+        result = db.engine.execute(all_data)
+        sList = result.fetchall()
+        return render_template("satis.html", satisList=sList)
+
+
+@app.route('/alici', methods=['POST', 'GET'])
+def alici():
+    if request.method == "POST":
+            sirket_adi = request.form['sirket_adi']
+            sirket_id = request.form['sirket_id']
+
+            id = request.form['isInsert']
+
+            if int(id) == 0:
+                query = "INSERT INTO \"Alici\"(sirket_adi,sirket_id) VALUES ('" + sirket_adi + "' , '" + sirket_id + "')"
+                db.engine.execute(query)
+            else:
+                query = "UPDATE public.\"Alici\" SET  sirket_id= '" + sirket_id + "', sirket_adi = '" + sirket_adi + "' where sirket_id = '" + sirket_id + "'"
+                db.engine.execute(query)
+
+    all_data = "Select * from public.\"Alici\""
+    result = db.engine.execute(all_data)
+    aList = result.fetchall()
+    return render_template("alici.html", aliciList=aList)
+
+
+
+
+@app.route('/alici_delete/<string:sirket_adi>', methods=['GET', 'POST'])
+def alici_delete(sirket_adi):
+    if request.method == 'GET':
+        query = "DELETE FROM public.\"Alici\" where sirket_adi = '" +  sirket_adi + "'"
+        db.engine.execute(query)
+
+    all_data = "Select * from public.\"Alici\""
+    result = db.engine.execute(all_data)
+    uList = result.fetchall()
+    return render_template("alici.html", aliciList= uList)
+
+
+
 
 @app.route("/nakliyeciHome", methods=['GET', 'POST'])
 def nakliyeciHome():
@@ -285,71 +356,6 @@ def nakliyeciHomeDelete(id):
     return render_template("nakliyeciHome.html", ureticiList=uList, aracList=aList, purchaseList=purchaseList)
 
 
-@app.route('/satis', methods=['POST', 'GET'])
-def satis():
-    if request.method == "POST":
-        ucret = request.form['ucret']
-        tarih = request.form['tarih']
-        miktar = request.form['miktar']
-        alici_sirket_id = request.form['alıcı_sirket_id']
-
-        query = "INSERT INTO \"Satis\"(ucret, tarih, miktar, alici_sirket_id) VALUES ('" + ucret + "' , '" + tarih + "', '" + miktar + "','" + alici_sirket_id + "')"
-        result = db.engine.execute(query)
-        db.session.add(result)
-        db.session.commit()
-        return render_template("satis.html")
-    else:
-        all_data = "Select * from public.\"Satis\""
-        result = db.engine.execute(all_data)
-        return render_template("satis.html", feat=result)
-
-
-@app.route("/Satis_delete/<int:id>", methods=['GET', 'POST'])
-def SatisDelete(id):
-    if request.method == 'GET':
-        query = "DELETE FROM public.\"Satis\" WHERE id = '" + str(id) + "'"
-        db.engine.execute(query)
-
-    queryAlici = "SELECT * FROM public.\"Alıcı\""
-    temp = db.session.execute(queryAlici)
-    # queryArac = "SELECT * FROM public.\"Arac\""
-    # temp2 = db.session.execute(queryArac)
-    queryAll = "SELECT public.\"Satis\".alici_sirket_id, public.\"Satis\".miktar, public.\"Satin_Alir\".tarih, public.\"Satin_Alir\".ucret,  FROM( public.\"Satis\" INNER JOIN public.\"Alici\" ON public.\"Satis\".alici_sirket_id = public.\"Alici\".sirket_id)"
-    temp3 = db.session.execute(queryAll)
-
-    uList = temp.fetchall()
-    # aList = temp2.fetchall()
-    purchaseList = temp3.fetchall()
-    return render_template("satis.html", aliciList=uList, satisList=purchaseList)
-
-
-@app.route('/alici', methods=['POST', 'GET'])
-def alici():
-    if request.method == "POST":
-        sirket_adi = request.form['sirket_adi']
-        sirket_id = request.form['sirket_id']
-
-        query = "INSERT INTO \"Alici\"(sirket_adi,sirket_id) VALUES ('" + sirket_adi + "' , '" + sirket_id + "')"
-        result = db.engine.execute(query)
-        db.session.add(result)
-        db.session.commit()
-        return render_template("alici.html")
-    else:
-        all_data = "Select * from public.\"Alici\""
-        result = db.engine.execute(all_data)
-        return render_template("alici.html", feat=result)
-
-
-@app.route('/alici_delete/<string:sirket_id>', methods=['GET', 'POST'])
-def alici_delete(sirket_id):
-    if request.method == 'GET':
-        query = "DELETE FROM public.\"Alici\" where sirket_id = '" + sirket_id + "'"
-        db.engine.execute(query)
-
-    all_data = "Select * from public.\"Alici\""
-    result = db.engine.execute(all_data)
-    uList = result.fetchall()
-    return render_template("alici.html", aliciList=uList)
 
 
 @app.route("/kavurma", methods=['GET', 'POST'])
