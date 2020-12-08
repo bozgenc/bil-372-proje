@@ -1,12 +1,13 @@
-from flask import Flask, render_template, request, flash, url_for
-from werkzeug.utils import redirect
+
+from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-import psycopg2
+from datetime import datetime
+
 
 app = Flask(__name__, template_folder="/Users/Lenovo/Bil372Proje/templates")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:1234@127.0.0.1:5432/postgres"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:12345@localhost:5432/coffeeDB"
+
 db = SQLAlchemy(app)
 
 
@@ -20,17 +21,23 @@ def register():
         password2 = request.form['password2']
 
         roleQuery = "SELECT * FROM public.\"Personel\" WHERE tckn =  '" + tckn + "' "
-        print(roleQuery)
         temp = db.session.execute(roleQuery)
-        userType = ""
-        for x in temp:
-            userType = x.personel_tipi
+        rows = temp.fetchall()
 
-        if password == password2:
-            query = "INSERT INTO \"Login\"(tckn, passcode, personel_tipi) VALUES ('" + tckn + "' , '" + password + "', '" + userType + "')"
-            result = db.engine.execute(query)
+        if len(rows) == 0:
+            flash("No personel found to be register with the TCKN: " + tckn, 'error')
+            return render_template("register.html")
+        else:
+            userType = rows[0].personel_tipi
+            if password == password2:
+                query = "INSERT INTO public.\"Login\"(tckn, passcode, personel_tipi) VALUES ('" + tckn + "' , '" + password + "', '" + userType + "')"
+                result = db.engine.execute(query)
+                if result:
+                    flash("Successfully registered, you can log in.")
+                    return render_template("login.html")
 
     return render_template("register.html")
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -48,26 +55,202 @@ def login():
             flash("No user found in the database with the TCKN " + tckn, 'error')
             return render_template("login.html")
         else:
-            personel_tipi = rows[0].personel_tipi
+
+            userrole = rows[0].personel_tipi
             if password == rows[0].passcode:
                 passwordFlag = True
             if passwordFlag:
-                if personel_tipi == "koordinator":
-                    return render_template("index.html")
-                elif personel_tipi == "nakliyeci":
-                    return render_template("nakliyeciHome.html")
+                if userrole == "koordinator":
+                    return redirect(url_for("kavurma"), code=303)
+                elif userrole == "nakliyeci":
+                    return redirect(url_for("nakliyeciHome"), code=303)
+                elif userrole == 'admin':
+                    return redirect(url_for("adminHome"), code=303)
             else:
                 flash("Password is incorrect, please try again!")
                 return render_template("login.html")
-                # else:
-                # return render_template("admin.html")
+
     else:
         return render_template("login.html")
 
 
+@app.route("/adminHome", methods=['GET', 'POST'])
+def adminHome():
+    if request.method == 'POST':
+        tckn = request.form['tckn']
+        ad = request.form['ad']
+        soyad = request.form['soyad']
+        tel_no = request.form['tel_no']
+        email = request.form['email']
+        personel_tipi = request.form['type']
+        id = request.form['isInsert']
+
+        if int(id) == 0:
+            insertQuery = "INSERT INTO public.\"Personel\"(tckn, ad, soyad, tel_no, email, personel_tipi) VALUES ('" + tckn + "','" + ad + "','" + soyad + "', '" + tel_no + "' , '" + email + "', '" + personel_tipi + "')"
+            db.engine.execute(insertQuery)
+        else:
+            update_query = "UPDATE public.\"Personel\" SET tckn = '" + tckn + "', ad = '" + ad + "', soyad = '" + soyad + "', tel_no = '" + tel_no + "', email = '" + email + "', personel_tipi = '" + personel_tipi + "'  WHERE tckn = '" + str(id) + "'"
+            db.engine.execute(update_query)
+
+
+
+    query = "SELECT * FROM usertypes"
+    temp = db.session.execute(query)
+    queryPersonel = "SELECT * FROM public.\"Personel\""
+    temp2 = db.session.execute(queryPersonel)
+
+    roleList = temp.fetchall()
+    personelList = temp2.fetchall()
+
+    return render_template("adminHome.html", roleList=roleList, personelList=personelList)
+
+@app.route("/adminHome_delete/<int:id>")
+def adminHomeDelete(id):
+    if request.method == 'GET':
+        query = "DELETE FROM public.\"Login\" WHERE tckn = '" + str(id) + "'"
+        db.engine.execute(query)
+        query2 = "DELETE FROM public.\"Personel\" WHERE tckn = '" + str(id) + "'"
+        db.engine.execute(query2)
+
+    query = "SELECT * FROM usertypes"
+    temp = db.session.execute(query)
+    queryPersonel = "SELECT * FROM public.\"Personel\""
+    temp2 = db.session.execute(queryPersonel)
+
+    roleList = temp.fetchall()
+    personelList = temp2.fetchall()
+
+    return render_template("adminHome.html", roleList=roleList, personelList=personelList)
+
+
+
+@app.route("/nakliyeciHome", methods=['GET','POST'])
+def nakliyeciHome():
+    if request.method == 'POST':
+        uretici = request.form['uretici']
+        aciklama = request.form['aciklama']
+        miktar = request.form['miktar']
+        arac = request.form['arac']
+        odeme = request.form['odeme']
+        id = request.form['isInsert']
+
+        query = "SELECT * FROM public.\"Uretici\" WHERE ad_soyad =  '" + uretici + "'"
+        res = db.session.execute(query)
+        res = res.fetchall()
+        uretici_tckn = res[0].tckn
+        today = datetime.today()
+
+        if int(id) == 0:
+            insertQuery = "INSERT INTO public.\"Satin_Alir\"(uretici_tckn, odeme_tarihi,aciklama, odeme_miktari ,urun_miktari, plaka) VALUES ('" + uretici_tckn + "' , '" + str(today) + "' ,'" + aciklama + "' , '" + odeme + "' ,'" + miktar + "', '" + arac + "')"
+            db.engine.execute(insertQuery)
+
+        else:
+            query_update = "UPDATE public.\"Satin_Alir\" SET uretici_tckn = '" + uretici_tckn + "', aciklama = '" + aciklama + "', odeme_miktari = '" + odeme + "', odeme_tarihi = '" + str(today) + "', urun_miktari = '" + str(miktar) + "', plaka = '" + arac + "'  WHERE id = '" + str(id) + "'"
+            db.engine.execute(query_update)
+
+
+    queryUretici = "SELECT * FROM public.\"Uretici\""
+    temp = db.session.execute(queryUretici)
+    queryArac = "SELECT * FROM public.\"Arac\""
+    temp2 = db.session.execute(queryArac)
+    queryAll = "SELECT public.\"Satin_Alir\".id, public.\"Satin_Alir\".odeme_miktari, public.\"Satin_Alir\".odeme_tarihi, public.\"Satin_Alir\".urun_miktari, public.\"Satin_Alir\".aciklama, public.\"Satin_Alir\".plaka, public.\"Uretici\".ad_soyad FROM( public.\"Satin_Alir\" INNER JOIN public.\"Uretici\" ON public.\"Satin_Alir\".uretici_tckn = public.\"Uretici\".tckn)"
+    temp3 = db.session.execute(queryAll)
+
+    uList = temp.fetchall()
+    aList = temp2.fetchall()
+    purchaseList = temp3.fetchall()
+    return render_template("nakliyeciHome.html", ureticiList=uList, aracList=aList, purchaseList=purchaseList)
+
+
+@app.route("/nakliyeciHome_delete/<int:id>", methods=['GET', 'POST'])
+def nakliyeciHomeDelete(id):
+    if request.method == 'GET':
+        query = "DELETE FROM public.\"Satin_Alir\" WHERE id = '" + str(id) + "'"
+        db.engine.execute(query)
+
+    queryUretici = "SELECT * FROM public.\"Uretici\""
+    temp = db.session.execute(queryUretici)
+    queryArac = "SELECT * FROM public.\"Arac\""
+    temp2 = db.session.execute(queryArac)
+    queryAll = "SELECT public.\"Satin_Alir\".id, public.\"Satin_Alir\".odeme_miktari, public.\"Satin_Alir\".odeme_tarihi, public.\"Satin_Alir\".urun_miktari, public.\"Satin_Alir\".aciklama, public.\"Satin_Alir\".plaka, public.\"Uretici\".ad_soyad FROM( public.\"Satin_Alir\" INNER JOIN public.\"Uretici\" ON public.\"Satin_Alir\".uretici_tckn = public.\"Uretici\".tckn)"
+    temp3 = db.session.execute(queryAll)
+
+    uList = temp.fetchall()
+    aList = temp2.fetchall()
+    purchaseList = temp3.fetchall()
+    return render_template("nakliyeciHome.html", ureticiList=uList, aracList=aList, purchaseList=purchaseList)
+
+
+@app.route("/kavurma", methods=['GET', 'POST'])
+def kavurma():
+    if request.method == 'POST':
+        tckn = request.form['sorumlu_koordinator_tckn']
+        giren_miktar = request.form['giren_miktar']
+        cikan_miktar = request.form['cikan_miktar']
+        islem_suresi = request.form['islem_suresi']
+        bitti_mi = request.form['bitti_mi']
+        tur_id = "2"
+        id = request.form['isInsert']
+        boolBittiMi = False;
+
+        if bitti_mi == "True":
+            boolBittiMi = True
+
+        if int(id) == 0:
+            insertQuery = "INSERT INTO public.\"Kavurma\"(sorumlu_koordinator_tckn, tur_id, giren_miktar, cikan_miktar ,islem_suresi, bitti_mi) VALUES ('" + tckn + "' , '" + tur_id + "' ,'" + giren_miktar + "' , '" + str(0) + "' ,'" +  str(0) + "', '" + bitti_mi + "')"
+            db.engine.execute(insertQuery)
+        else:
+            query_update = "UPDATE public.\"Kavurma\" SET sorumlu_koordinator_tckn = '" + tckn + "', tur_id = '" + tur_id + "', giren_miktar = '" + giren_miktar + "', cikan_miktar = '" + cikan_miktar + "', islem_suresi = '" + islem_suresi + "', bitti_mi = '" + bitti_mi + "'  WHERE id = '" + str(id) + "'"
+            db.engine.execute(query_update)
+
+            if boolBittiMi == True:
+                queryGet = "SELECT * FROM public.\"Islem_Sonu\""
+                resTemp = db.session.execute(queryGet)
+                resTemp = resTemp.fetchall()
+
+                flag = True
+                for x in resTemp:
+                    if x.id3 == id:
+                        flag = False
+                if flag:
+                    queryIslemSonu = "INSERT INTO public.\"Islem_Sonu\"(sorumlu_koordinator_tckn, tur_id, id3) VALUES ('" + tckn + "' , '" + tur_id + "' ,'" + str(id)+ "')"
+                    db.engine.execute(queryIslemSonu)
+
+
+    query = "SELECT * FROM public.\"Personel\" WHERE personel_tipi = 'koordinator'"
+    res = db.session.execute(query)
+
+    queryJoin = "SELECT public.\"Kavurma\".giren_miktar, public.\"Kavurma\".bitti_mi  ,public.\"Kavurma\".id, public.\"Kavurma\".sorumlu_koordinator_tckn, public.\"Kavurma\".cikan_miktar, public.\"Kavurma\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad FROM (public.\"Kavurma\" INNER JOIN public.\"Personel\" ON public.\"Kavurma\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) WHERE public.\"Kavurma\".bitti_mi = False "
+    result = db.session.execute(queryJoin)
+
+
+    personelList = res.fetchall()
+    kavurmaList = result.fetchall()
+
+    return render_template("kavurma.html", personelList=personelList, kavurmaList=kavurmaList)
+
+
+@app.route("/kavurma_delete/<int:id>", methods=['GET', 'POST'])
+def kavurma_delete(id):
+    if request.method == 'GET':
+        queryDel = "DELETE FROM public.\"Kavurma\" WHERE id = '" + str(id) + "'"
+        db.engine.execute(queryDel)
+
+    query = "SELECT * FROM public.\"Personel\" WHERE personel_tipi = 'koordinator'"
+    res = db.session.execute(query)
+
+    queryJoin = "SELECT public.\"Kavurma\".giren_miktar, public.\"Kavurma\".bitti_mi  ,public.\"Kavurma\".id, public.\"Kavurma\".sorumlu_koordinator_tckn, public.\"Kavurma\".cikan_miktar, public.\"Kavurma\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad FROM (public.\"Kavurma\" INNER JOIN public.\"Personel\" ON public.\"Kavurma\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) WHERE public.\"Kavurma\".bitti_mi = False "
+    result = db.session.execute(queryJoin)
+
+    personelList = res.fetchall()
+    kavurmaList = result.fetchall()
+
+    return render_template("kavurma.html", personelList=personelList, kavurmaList=kavurmaList)
+
+
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("homePage.html")
 
 
 @app.route('/uretici', methods=['POST', 'GET'])
