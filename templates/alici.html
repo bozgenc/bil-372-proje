@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %} Alici {% endblock %}
+{% block content %}
+
+<div class="container">
+	<form action="/alici" method="POST">
+		<br>
+		<label for="alici">Alici Şirket Adı Seçiniz:</label>
+        <select id="alici" name="alici">
+            {% for a in satisList %}
+			<option value="{{ alici.sirket_id }}">{{ alici.sirket_id }}</option>
+			{% endfor %}
+        </select>
+
+
+        <label for="sirketid">Alıcı Şirket ID:</label>
+        <input type="text" id="sirketid" name="sirketid" placeholder="Sirket ID" required="required" >
+
+		<input type="submit" class="btn btn-success" value="Submit">
+		<input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
+		       value="Cancel">
+		<input type="hidden" id="isInsert" name="isInsert" value="0">
+
+
+	<h1>Alici Listesi</h1>
+	<div class="container" id="alici_table">
+		<div class="row border">
+			<div class="col-sm">
+				Şirket Adı
+			</div>
+            <div class="col-sm">
+				Şirket ID
+			</div>
+		</div>
+		{% for row in aliciList %}
+		<div class="row border">
+			<div class="col-sm">
+				{{row.sirket_adi}}
+			</div>
+            <div class="col-sm">
+				{{row.sirket_id}}
+			</div>
+			<div class="col-sm">
+				<a href="#"><span
+						class="fa fa-pencil"
+						style="color: black"
+						onClick="update('{row.sirket_adi}, '{row.sirket_id}')"
+				></span></a>
+				<a href="/alici_delete/{{ row.sirket_id}}"><span class="fa fa-trash" style="color: red"></span></a>
+			</div>
+		</div>
+		{% endfor %}
+
+	</div>
+
+	</form>
+
+</div>
+
+<script type="text/javascript" src="{{ url_for('static',filename='alici.js') }}"></script>
+{% endblock %}
