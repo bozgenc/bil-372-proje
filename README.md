@@ -1,4 +1,4 @@
-# Bil372Proje
+# Bil372 Proje
 Tobb Etü Bil372 Proje #7.
 BİL 372/071 dersi kapsamında, Projeye ait olan bütün geliştirme faaliyetlerini içerir. Projede web uygulama 
 ihtiyaçlarını karşılamak için Flask kütüphanesinden yararlanılmıştır. Veritabanı kısmında PostgreSQL kullanılmıştır.
