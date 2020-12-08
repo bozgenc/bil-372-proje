@@ -4,13 +4,17 @@
 
 SET default_tablespace = pg_default;
 
-CREATE TABLE userTypes(
+CREATE TABLE public."userTypes"(
+    "id" serial not null,
+    primary key(id),
 	userrole character varying(20)
 )
 
-INSERT INTO userTypes VALUES ('admin');
-INSERT INTO userTypes VALUES ('koordinator');
-INSERT INTO userTypes VALUES ('nakliyeci');
+INSERT INTO public."userTypes"(userrole) VALUES ('admin');
+INSERT INTO public."userTypes"(userrole) VALUES ('koordinator');
+INSERT INTO public."userTypes"(userrole) VALUES ('nakliyeci');
+
+select * from public."userTypes";
 
 CREATE TABLE public."Personel"
 (
@@ -110,6 +114,7 @@ CREATE TABLE public."Satin_Alir"
     "aciklama" character varying(200) COLLATE pg_catalog."default",
     "uretici_tckn" character varying(20) COLLATE pg_catalog."default",
     "urun_miktari" integer,
+    "plaka" character varying(20),
     "id" serial not null,
     primary key(id),
     CONSTRAINT "satin_alir_uretici_tckn_fkey" FOREIGN KEY ("uretici_tckn")
@@ -179,30 +184,11 @@ CREATE TABLE public."Kavurma"
         REFERENCES public."Personel" ("tckn") MATCH SIMPLE ON DELETE CASCADE
         ON update cascade
 )
--- Table: public.IslemSonu
-
--- DROP TABLE public."Islem_Sonu";
-
-CREATE TABLE public."Islem_Sonu"(
-    "id" serial not null,
-    primary key(id),
-    "tur_id" integer,
-    CONSTRAINT "islemsonu_tur_id_fkey" FOREIGN KEY ("tur_id")
-        REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE
-)
--- Index: turid_fkey
-
--- DROP INDEX public.turid_fkey;
-
-CREATE INDEX turid_fkey2 ON public."Islem_Sonu" USING btree("tur_id");
 
 
 CREATE INDEX sorumlu_koordinator_tckn_fkey2 ON public."Kavurma"("sorumlu_koordinator_tckn")
-
 
 CREATE INDEX turid_fkey ON public."Kavurma" USING btree("tur_id");
-
-CREATE INDEX sorumlu_koordinator_tckn_fkey2 ON public."Kavurma"("sorumlu_koordinator_tckn")
 
 
 
@@ -294,5 +280,3 @@ CREATE TABLE public."Iletisim"
     "id" serial not null,
     primary key(id)
 )
-
-select * from public."Personel";

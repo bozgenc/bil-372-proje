@@ -38,7 +38,7 @@
 	<div class="container" id="ogutme_table">
 		<div class="row border">
 			<div class="col-sm">
-				TCKN
+				 Ad Soyad
 			</div>
             <div class="col-sm">
                 Giren Miktar
@@ -56,7 +56,8 @@
 		{% for row in ogutme %}
 		<div class="row border">
 			<div class="col-sm">
-				{{ row.sorumlu_koordinator_tckn}}
+				{{ row.ad}}
+				{{ row.soyad }}
 			</div>
             <div class="col-sm">
 				{{ row.giren_miktar}}

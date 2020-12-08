@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request,flash, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+
 app = Flask(__name__, template_folder="/Users/Lenovo/Bil372Proje/templates")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:1234@127.0.0.1:5432/postgres"
@@ -8,8 +9,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-
-# db = SQLAlchemy(app, engine_options={"pool_pre_ping": True})
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -34,9 +33,7 @@ def register():
                     flash("Successfully registered, you can log in.")
                     return render_template("login.html")
 
-    return render_template("register.html",)
-
-
+    return render_template("register.html", )
 
 
 @app.route("/iletisim", methods=['GET', 'POST'])
@@ -44,9 +41,9 @@ def iletisim():
     if request.method == 'POST':
         email = request.form['email']
         mesaj = request.form['mesaj']
-        if len(mesaj) >0 or  len(email) >0:
+        if len(mesaj) > 0 or len(email) > 0:
 
-            query = "INSERT INTO \"Iletisim\"(email, mesaj) VALUES ('" + email + "' , '" + mesaj +  "')"
+            query = "INSERT INTO \"Iletisim\"(email, mesaj) VALUES ('" + email + "' , '" + mesaj + "')"
 
             result = db.engine.execute(query)
 
@@ -55,9 +52,7 @@ def iletisim():
 
             return render_template("iletisim.html")
 
-
-    return render_template("iletisim.html",)
-
+    return render_template("iletisim.html", )
 
 
 @app.route('/cekirdek', methods=['GET', 'POST'])
@@ -89,13 +84,13 @@ def cekirdek():
 
             db.engine.execute(query_update)
 
-
     queryCekirdek = "SELECT * FROM public.\"Cekirdek\""
     temp = db.session.execute(queryCekirdek)
 
     cList = temp.fetchall()
 
     return render_template("cekirdek.html", cekirdekList=cList)
+
 
 @app.route('/paket', methods=['GET', 'POST'])
 def paket():
@@ -110,11 +105,9 @@ def paket():
             result = db.engine.execute(query)
 
         else:
-            query_update = "UPDATE public.\"Paket_Kahve\" SET tur = '" + tur + "', gramaj = '" + gramaj + "', skt = '"+ skt +"' WHERE id = '" + str(id) + "'"
+            query_update = "UPDATE public.\"Paket_Kahve\" SET tur = '" + tur + "', gramaj = '" + gramaj + "', skt = '" + skt + "' WHERE id = '" + str(
+                id) + "'"
             db.engine.execute(query_update)
-
-
-
 
     queryPaket = "SELECT * FROM public.\"Paket_Kahve\""
     temp = db.session.execute(queryPaket)
@@ -124,7 +117,7 @@ def paket():
     return render_template("paket.html", paketList=pList)
 
 
-@app.route("/cekirdek_delete/<int:id>", methods=['GET','POST'])
+@app.route("/cekirdek_delete/<int:id>", methods=['GET', 'POST'])
 def cekirdekDelete(id):
     if request.method == 'GET':
         query = "DELETE FROM public.\"Cekirdek\" WHERE id = '" + str(id) + "'"
@@ -138,8 +131,7 @@ def cekirdekDelete(id):
     return render_template("paket.html", cekirdekList=cList)
 
 
-
-@app.route("/paket_delete/<int:id>", methods=['GET','POST'])
+@app.route("/paket_delete/<int:id>", methods=['GET', 'POST'])
 def paketDelete(id):
     if request.method == 'GET':
         query = "DELETE FROM public.\"Paket_Kahve\" WHERE id = '" + str(id) + "'"
@@ -151,7 +143,6 @@ def paketDelete(id):
     pList = temp.fetchall()
 
     return render_template("paket.html", paketList=pList)
-
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -187,7 +178,6 @@ def login():
         return render_template("login.html")
 
 
-
 @app.route("/adminHome", methods=['GET', 'POST'])
 def adminHome():
     if request.method == 'POST':
@@ -203,12 +193,11 @@ def adminHome():
             insertQuery = "INSERT INTO public.\"Personel\"(tckn, ad, soyad, tel_no, email, personel_tipi) VALUES ('" + tckn + "','" + ad + "','" + soyad + "', '" + tel_no + "' , '" + email + "', '" + personel_tipi + "')"
             db.engine.execute(insertQuery)
         else:
-            update_query = "UPDATE public.\"Personel\" SET tckn = '" + tckn + "', ad = '" + ad + "', soyad = '" + soyad + "', tel_no = '" + tel_no + "', email = '" + email + "', personel_tipi = '" + personel_tipi + "'  WHERE tckn = '" + str(id) + "'"
+            update_query = "UPDATE public.\"Personel\" SET tckn = '" + tckn + "', ad = '" + ad + "', soyad = '" + soyad + "', tel_no = '" + tel_no + "', email = '" + email + "', personel_tipi = '" + personel_tipi + "'  WHERE tckn = '" + str(
+                id) + "'"
             db.engine.execute(update_query)
 
-
-
-    query = "SELECT * FROM usertypes"
+    query = "SELECT * FROM public.\"userTypes\""
     temp = db.session.execute(query)
     queryPersonel = "SELECT * FROM public.\"Personel\""
     temp2 = db.session.execute(queryPersonel)
@@ -217,6 +206,7 @@ def adminHome():
     personelList = temp2.fetchall()
 
     return render_template("adminHome.html", roleList=roleList, personelList=personelList)
+
 
 @app.route("/adminHome_delete/<int:id>")
 def adminHomeDelete(id):
@@ -226,7 +216,7 @@ def adminHomeDelete(id):
         query2 = "DELETE FROM public.\"Personel\" WHERE tckn = '" + str(id) + "'"
         db.engine.execute(query2)
 
-    query = "SELECT * FROM usertypes"
+    query = "SELECT * FROM public.\"userTypes\""
     temp = db.session.execute(query)
     queryPersonel = "SELECT * FROM public.\"Personel\""
     temp2 = db.session.execute(queryPersonel)
@@ -237,8 +227,7 @@ def adminHomeDelete(id):
     return render_template("adminHome.html", roleList=roleList, personelList=personelList)
 
 
-
-@app.route("/nakliyeciHome", methods=['GET','POST'])
+@app.route("/nakliyeciHome", methods=['GET', 'POST'])
 def nakliyeciHome():
     if request.method == 'POST':
         uretici = request.form['uretici']
@@ -255,13 +244,14 @@ def nakliyeciHome():
         today = datetime.today()
 
         if int(id) == 0:
-            insertQuery = "INSERT INTO public.\"Satin_Alir\"(uretici_tckn, odeme_tarihi,aciklama, odeme_miktari ,urun_miktari, plaka) VALUES ('" + uretici_tckn + "' , '" + str(today) + "' ,'" + aciklama + "' , '" + odeme + "' ,'" + miktar + "', '" + arac + "')"
+            insertQuery = "INSERT INTO public.\"Satin_Alir\"(uretici_tckn, odeme_tarihi,aciklama, odeme_miktari ,urun_miktari, plaka) VALUES ('" + uretici_tckn + "' , '" + str(
+                today) + "' ,'" + aciklama + "' , '" + odeme + "' ,'" + miktar + "', '" + arac + "')"
             db.engine.execute(insertQuery)
 
         else:
-            query_update = "UPDATE public.\"Satin_Alir\" SET uretici_tckn = '" + uretici_tckn + "', aciklama = '" + aciklama + "', odeme_miktari = '" + odeme + "', odeme_tarihi = '" + str(today) + "', urun_miktari = '" + str(miktar) + "', plaka = '" + arac + "'  WHERE id = '" + str(id) + "'"
+            query_update = "UPDATE public.\"Satin_Alir\" SET uretici_tckn = '" + uretici_tckn + "', aciklama = '" + aciklama + "', odeme_miktari = '" + odeme + "', odeme_tarihi = '" + str(
+                today) + "', urun_miktari = '" + str(miktar) + "', plaka = '" + arac + "'  WHERE id = '" + str(id) + "'"
             db.engine.execute(query_update)
-
 
     queryUretici = "SELECT * FROM public.\"Uretici\""
     temp = db.session.execute(queryUretici)
@@ -274,7 +264,6 @@ def nakliyeciHome():
     aList = temp2.fetchall()
     purchaseList = temp3.fetchall()
     return render_template("nakliyeciHome.html", ureticiList=uList, aracList=aList, purchaseList=purchaseList)
-
 
 
 @app.route("/nakliyeciHome_delete/<int:id>", methods=['GET', 'POST'])
@@ -295,27 +284,27 @@ def nakliyeciHomeDelete(id):
     purchaseList = temp3.fetchall()
     return render_template("nakliyeciHome.html", ureticiList=uList, aracList=aList, purchaseList=purchaseList)
 
-@app.route('/satis',  methods=['POST', 'GET'])
+
+@app.route('/satis', methods=['POST', 'GET'])
 def satis():
     if request.method == "POST":
-            ucret = request.form['ucret']
-            tarih = request.form['tarih']
-            miktar = request.form['miktar']
-            alici_sirket_id = request.form['alıcı_sirket_id']
+        ucret = request.form['ucret']
+        tarih = request.form['tarih']
+        miktar = request.form['miktar']
+        alici_sirket_id = request.form['alıcı_sirket_id']
 
-            query = "INSERT INTO \"Satis\"(ucret, tarih, miktar, alici_sirket_id) VALUES ('" + ucret + "' , '" + tarih + "', '" + miktar + "','" + alici_sirket_id + "')"
-            result = db.engine.execute(query)
-            db.session.add(result)
-            db.session.commit()
-            return render_template("satis.html")
+        query = "INSERT INTO \"Satis\"(ucret, tarih, miktar, alici_sirket_id) VALUES ('" + ucret + "' , '" + tarih + "', '" + miktar + "','" + alici_sirket_id + "')"
+        result = db.engine.execute(query)
+        db.session.add(result)
+        db.session.commit()
+        return render_template("satis.html")
     else:
-            all_data = "Select * from public.\"Satis\""
-            result = db.engine.execute(all_data)
-            return render_template("satis.html", feat=result)
+        all_data = "Select * from public.\"Satis\""
+        result = db.engine.execute(all_data)
+        return render_template("satis.html", feat=result)
 
 
-
-@app.route("/Satis_delete/<int:id>", methods=['GET','POST'])
+@app.route("/Satis_delete/<int:id>", methods=['GET', 'POST'])
 def SatisDelete(id):
     if request.method == 'GET':
         query = "DELETE FROM public.\"Satis\" WHERE id = '" + str(id) + "'"
@@ -323,13 +312,13 @@ def SatisDelete(id):
 
     queryAlici = "SELECT * FROM public.\"Alıcı\""
     temp = db.session.execute(queryAlici)
-    #queryArac = "SELECT * FROM public.\"Arac\""
-    #temp2 = db.session.execute(queryArac)
+    # queryArac = "SELECT * FROM public.\"Arac\""
+    # temp2 = db.session.execute(queryArac)
     queryAll = "SELECT public.\"Satis\".alici_sirket_id, public.\"Satis\".miktar, public.\"Satin_Alir\".tarih, public.\"Satin_Alir\".ucret,  FROM( public.\"Satis\" INNER JOIN public.\"Alici\" ON public.\"Satis\".alici_sirket_id = public.\"Alici\".sirket_id)"
     temp3 = db.session.execute(queryAll)
 
     uList = temp.fetchall()
-    #aList = temp2.fetchall()
+    # aList = temp2.fetchall()
     purchaseList = temp3.fetchall()
     return render_template("satis.html", aliciList=uList, satisList=purchaseList)
 
@@ -337,25 +326,24 @@ def SatisDelete(id):
 @app.route('/alici', methods=['POST', 'GET'])
 def alici():
     if request.method == "POST":
-            sirket_adi = request.form['sirket_adi']
-            sirket_id = request.form['sirket_id']
+        sirket_adi = request.form['sirket_adi']
+        sirket_id = request.form['sirket_id']
 
-            query = "INSERT INTO \"Alici\"(sirket_adi,sirket_id) VALUES ('" + sirket_adi + "' , '" + sirket_id + "')"
-            result = db.engine.execute(query)
-            db.session.add(result)
-            db.session.commit()
-            return render_template("alici.html")
+        query = "INSERT INTO \"Alici\"(sirket_adi,sirket_id) VALUES ('" + sirket_adi + "' , '" + sirket_id + "')"
+        result = db.engine.execute(query)
+        db.session.add(result)
+        db.session.commit()
+        return render_template("alici.html")
     else:
-            all_data = "Select * from public.\"Alici\""
-            result = db.engine.execute(all_data)
-            return render_template("alici.html", feat=result)
-
+        all_data = "Select * from public.\"Alici\""
+        result = db.engine.execute(all_data)
+        return render_template("alici.html", feat=result)
 
 
 @app.route('/alici_delete/<string:sirket_id>', methods=['GET', 'POST'])
 def alici_delete(sirket_id):
     if request.method == 'GET':
-        query = "DELETE FROM public.\"Alici\" where sirket_id = '" +  sirket_id + "'"
+        query = "DELETE FROM public.\"Alici\" where sirket_id = '" + sirket_id + "'"
         db.engine.execute(query)
 
     all_data = "Select * from public.\"Alici\""
@@ -380,10 +368,12 @@ def kavurma():
             boolBittiMi = True
 
         if int(id) == 0:
-            insertQuery = "INSERT INTO public.\"Kavurma\"(sorumlu_koordinator_tckn, tur_id, giren_miktar, cikan_miktar ,islem_suresi, bitti_mi) VALUES ('" + tckn + "' , '" + tur_id + "' ,'" + giren_miktar + "' , '" + str(0) + "' ,'" +  str(0) + "', '" + bitti_mi + "')"
+            insertQuery = "INSERT INTO public.\"Kavurma\"(sorumlu_koordinator_tckn, tur_id, giren_miktar, cikan_miktar ,islem_suresi, bitti_mi) VALUES ('" + tckn + "' , '" + tur_id + "' ,'" + giren_miktar + "' , '" + str(
+                0) + "' ,'" + str(0) + "', '" + bitti_mi + "')"
             db.engine.execute(insertQuery)
         else:
-            query_update = "UPDATE public.\"Kavurma\" SET sorumlu_koordinator_tckn = '" + tckn + "', tur_id = '" + tur_id + "', giren_miktar = '" + giren_miktar + "', cikan_miktar = '" + cikan_miktar + "', islem_suresi = '" + islem_suresi + "', bitti_mi = '" + bitti_mi + "'  WHERE id = '" + str(id) + "'"
+            query_update = "UPDATE public.\"Kavurma\" SET sorumlu_koordinator_tckn = '" + tckn + "', tur_id = '" + tur_id + "', giren_miktar = '" + giren_miktar + "', cikan_miktar = '" + cikan_miktar + "', islem_suresi = '" + islem_suresi + "', bitti_mi = '" + bitti_mi + "'  WHERE id = '" + str(
+                id) + "'"
             db.engine.execute(query_update)
 
             if boolBittiMi == True:
@@ -396,16 +386,15 @@ def kavurma():
                     if x.id3 == id:
                         flag = False
                 if flag:
-                    queryIslemSonu = "INSERT INTO public.\"Islem_Sonu\"(sorumlu_koordinator_tckn, tur_id, id3) VALUES ('" + tckn + "' , '" + tur_id + "' ,'" + str(id)+ "')"
+                    queryIslemSonu = "INSERT INTO public.\"Islem_Sonu\"(sorumlu_koordinator_tckn, tur_id, id3) VALUES ('" + tckn + "' , '" + tur_id + "' ,'" + str(
+                        id) + "')"
                     db.engine.execute(queryIslemSonu)
-
 
     query = "SELECT * FROM public.\"Personel\" WHERE personel_tipi = 'koordinator'"
     res = db.session.execute(query)
 
     queryJoin = "SELECT public.\"Kavurma\".giren_miktar, public.\"Kavurma\".bitti_mi  ,public.\"Kavurma\".id, public.\"Kavurma\".sorumlu_koordinator_tckn, public.\"Kavurma\".cikan_miktar, public.\"Kavurma\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad FROM (public.\"Kavurma\" INNER JOIN public.\"Personel\" ON public.\"Kavurma\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) WHERE public.\"Kavurma\".bitti_mi = False "
     result = db.session.execute(queryJoin)
-
 
     personelList = res.fetchall()
     kavurmaList = result.fetchall()
@@ -444,7 +433,7 @@ def uretici():
             query = "INSERT INTO public.\"Uretici\"(ad_soyad, tckn, koy, tel_no) VALUES ('" + ad_soyad + "', '" + tckn + "','" + koy + "','" + tel_no + "')"
             db.engine.execute(query)
         else:
-            query = "UPDATE public.\"Uretici\" SET ad_soyad '" + ad_soyad + "', tckn = '" + tckn + "', koy = '" + koy + "', tel_no = '" + tel_no + "' where tckn = '" + tckn + "'"
+            query = "UPDATE public.\"Uretici\" SET ad_soyad ='" + ad_soyad + "', tckn = '" + tckn + "', koy = '" + koy + "', tel_no = '" + tel_no + "' where tckn = '" + tckn + "'"
             db.engine.execute(query)
 
     all_data = "Select * from public.\"Uretici\""
@@ -512,7 +501,7 @@ def ogutme():
         bitti_mi = request.form['bitti_mi']
         id = request.form['isInsert']
         tur_id = "1"
-        print(giren_miktar)
+
         query = "SELECT * from public.\"Personel\" where tckn = '" + sorumlu_koordinator_tckn + "'"
         result = db.session.execute(query)
         result = result.fetchall()
@@ -520,16 +509,20 @@ def ogutme():
 
         if int(id) == 0:
             query = "INSERT INTO public.\"Ogutme\"(sorumlu_koordinator_tckn, tur_id, giren_miktar, cikan_miktar, islem_suresi," \
-                    "bitti_mi) VALUES ('" + sorumlu_koordinator_tckn + "','" + str(1) + "','" + str(giren_miktar) + "','" + \
+                    "bitti_mi) VALUES ('" + sorumlu_koordinator_tckn + "','" + str(1) + "','" + str(
+                giren_miktar) + "','" + \
                     str(0) + "','" + str(0) + "','" + str(bitti_mi) + "')"
             db.session.execute(query)
             db.session.commit()
         else:
-            query = "UPDATE public.\"Ogutme\" SET sorumlu_koordinator_tckn = '" + sorumlu_koordinator_tckn + "', tur_id = '" + tur_id + "', giren_miktar = '" + giren_miktar + "', cikan_miktar = '" + cikan_miktar + "', islem_suresi = '" + islem_suresi + "', bitti_mi = '" + bitti_mi + "'  WHERE id = '" + str(id) + "'"
+            query = "UPDATE public.\"Ogutme\" SET sorumlu_koordinator_tckn = '" + sorumlu_koordinator_tckn + "', tur_id = '" + tur_id + "', giren_miktar = '" + giren_miktar + "', cikan_miktar = '" + cikan_miktar + "', islem_suresi = '" + islem_suresi + "', bitti_mi = '" + bitti_mi + "'  WHERE id = '" + str(
+                id) + "'"
             db.session.execute(query)
             db.session.commit()
 
-    query = "SELECT * FROM public.\"Ogutme\" WHERE public.\"Ogutme\".bitti_mi = False"
+    query = "SELECT public.\"Ogutme\".giren_miktar, public.\"Ogutme\".bitti_mi  ,public.\"Ogutme\".id, public.\"Ogutme\".sorumlu_koordinator_tckn, public.\"Ogutme\".cikan_miktar, " \
+            "public.\"Ogutme\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad FROM (public.\"Ogutme\" INNER JOIN public.\"Personel\" ON public.\"Ogutme\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) " \
+            "WHERE public.\"Ogutme\".bitti_mi = False "
     all_data = db.session.execute(query)
     islem_list = all_data.fetchall()
 
@@ -554,11 +547,8 @@ def ogutme_delete(id):
     data = db.session.execute(query2)
     son = data.fetchall()
 
-    query3 = "SELECT * FROM public.\"Islem_Turu\""
-    all_data2 = db.session.execute(query3)
-    islemlist = all_data2.fetchall()
 
-    return render_template("ogutme.html", ogutme=islem_list, personelList=son, islemList=islemlist)
+    return render_template("ogutme.html", ogutme=islem_list, personelList=son)
 
 
 @app.route("/islem_sonu", methods=['GET', 'POST'])
@@ -580,13 +570,14 @@ def islem_sonu():
 
             if len(comp) > 0:
                 idmiz = comp[0].id2
-
                 if idmiz != id_meselesi:
-                    insertquery = "INSERT INTO public.\"Islem_Sonu\"(sorumlu_koordinator_tckn, tur_id, id2) VALUES ('" + sorumlu_koordinator_tckn + "',' " + str(tur_id) + "','" + str(ogutmeList[0].id) + "')"
+                    insertquery = "INSERT INTO public.\"Islem_Sonu\"(sorumlu_koordinator_tckn, tur_id, id2) VALUES ('" + sorumlu_koordinator_tckn + "',' " + str(
+                        tur_id) + "','" + str(ogutmeList[0].id) + "')"
                     db.engine.execute(insertquery)
 
             if len(comp) == 0:
-                insertquery = "INSERT INTO public.\"Islem_Sonu\"(sorumlu_koordinator_tckn, tur_id, id2) VALUES ('" + sorumlu_koordinator_tckn + "','" + str(tur_id) + "','" + str(ogutmeList[0].id) + "')"
+                insertquery = "INSERT INTO public.\"Islem_Sonu\"(sorumlu_koordinator_tckn, tur_id, id2) VALUES ('" + sorumlu_koordinator_tckn + "','" + str(
+                    tur_id) + "','" + str(ogutmeList[0].id) + "')"
                 db.engine.execute(insertquery)
 
     q2 = "SELECT public.\"Ogutme\".sorumlu_koordinator_tckn, public.\"Ogutme\".tur_id, public.\"Ogutme\".giren_miktar, public.\"Ogutme\".cikan_miktar, public.\"Ogutme\".islem_suresi, " \
@@ -609,7 +600,6 @@ def araclar():
         else:
             queryUpdate = "UPDATE public.\"Arac\" SET kapasite = '" + kapasite + "'" + " WHERE id = '" + str(id) + "'"
             db.engine.execute(queryUpdate)
-
 
     queryAraclar = "SELECT * FROM public.\"Arac\""
     res = db.session.execute(queryAraclar)
@@ -634,7 +624,6 @@ def araclar_delete(id):
 @app.route("/")
 def home():
     return render_template("homePage.html")
-
 
 
 if __name__ == "__main__":
