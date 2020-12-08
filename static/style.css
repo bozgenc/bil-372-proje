@@ -58,6 +58,16 @@ input[type=submit]:hover {
   background-color: #45a049;
 }
 
+form.example button:hover {
+  background: #0b7dda;
+}
+
+/* Clear floats */
+form.example::after {
+  content: "";
+  clear: both;
+  display: table;
+}
 /* Add a background color and some padding around the form */
 .container {
   border-radius: 5px;

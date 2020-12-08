@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %} Alici {% endblock %}
+{% block content %}
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class=flashes>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+<div class="container">
+	<form class="example" action="/alici_search" method="POST">
+        <input type="text" id="search" name="search" placeholder="Search.." name="search">
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+
+	<form action="/alici" method="POST">
+
+
+       <label for="sirket_adi">Alıcı Şirket Adı:</label>
+        <input type="text" id="sirket_adi" name="sirket_adi" placeholder="Sirket ADI" required="required" >
+
+
+        <label for="sirket_id">Alıcı Şirket ID:</label>
+        <input type="text" id="sirket_id" name="sirket_id" placeholder="Sirket ID" required="required" >
+
+		<input type="submit" class="btn btn-success" value="Submit">
+		<input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
+		       value="Cancel">
+		<input type="hidden" id="isInsert" name="isInsert" value="0">
+
+
+	<h1>Alici Listesi</h1>
+	<div class="container" id="alici_table">
+		<div class="row border">
+			<div class="col-sm">
+				Şirket Adı
+			</div>
+            <div class="col-sm">
+				Şirket ID
+			</div>
+			<div class="col-sm">
+				Operations
+			</div>
+		</div>
+		{% for row in aliciList %}
+		<div class="row border">
+			<div class="col-sm">
+				{{row.sirket_adi}}
+			</div>
+            <div class="col-sm">
+				{{row.sirket_id}}
+			</div>
+			<div class="col-sm">
+				<a href="#"><span
+						class="fa fa-pencil"
+						style="color: black"
+						onClick="update('{row.sirket_adi}, '{row.sirket_id}')"
+				></span></a>
+				<a href="/alici_delete/{{ row.sirket_id}}"><span class="fa fa-trash" style="color: red"></span></a>
+			</div>
+		</div>
+		{% endfor %}
+
+	</div>
+
+	</form>
+
+</div>
+
+<script type="text/javascript" src="{{ url_for('static',filename='alici.js') }}"></script>
+{% endblock %}

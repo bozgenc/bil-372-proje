@@ -1,10 +1,14 @@
-{% extends "base.html" %}
+{% extends "baseForNakliyeci.html" %}
 {% block title %} Satın Alım {% endblock %}
 {% block content %}
-
+<h1>Satın Al</h1>
 <div class="container">
+	<form class="example" action="/nakliyeci_home_search" method="POST">
+    	<input type="text" id="search" name="search" placeholder="Search.." name="search">
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
 	<form action="/nakliyeciHome" method="POST">
-    <br>
+		<br>
 		<label for="uretici">Üretici:</label>
         <select id="uretici" name="uretici">
             {% for uretici in ureticiList %}
@@ -34,9 +38,10 @@
 		<input type="hidden" id="isInsert" name="isInsert" value="0">
 
 		<br>
+	</form>
 
 	<h1>Satın Alımlar</h1>
-	<div class="container" id="product_table">
+	<div class="container" id="nakliyeci_table">
 		<div class="row border">
 			<div class="col-sm">
 				(ID)
@@ -97,11 +102,7 @@
 		</div>
 		{% endfor %}
 
-		</tbody>
-		</table>
 	</div>
-
-	</form>
 
 </div>
 

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %} İşlem Sonu {% endblock %}
+{% block content %}
+<div class="container">
+	<form class="example" action="/islem_sonu_search" method="POST">
+    <input type="text" id="search" name="search" placeholder="Search.." name="search">
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+    <h1>Biten İşlemler Listesi</h1>
+	<div class="container" id="islem_sonu_table">
+		<div class="row border">
+			<div class="col-sm">
+				Ad Soyad
+			</div>
+			<div class="col-sm">
+                İşlem Türü
+			</div>
+            <div class="col-sm">
+                Giren Miktar(KG)
+			</div>
+            <div class="col-sm">
+                Çıkan Miktar(KG)
+			</div>
+            <div class="col-sm">
+                İşlem Süresi(Saat)
+			</div>
+		</div>
+		{% for row in data %}
+		<div class="row border">
+			<div class="col-sm">
+				{{ row.ad}} {{ row.soyad}}
+			</div>
+			<div class="col-sm">
+				{{ row.islem_ismi}}
+			</div>
+            <div class="col-sm">
+				{{ row.giren_miktar}}
+			</div>
+			<div class="col-sm">
+				{{row.cikan_miktar}}
+			</div>
+			<div class="col-sm">
+				{{row.islem_suresi}}
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+    </form>
+
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "baseForAdmin.html" %}
+{% block title %} Araçlar {% endblock %}
+{% block content %}
+<h1>Araçlar</h1>
+
+
+<div class="container">
+    <form class="example" action="/araclar_search" method="POST">
+    <input type="text" id="search" name="search" placeholder="Search.." name="search">
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+	<form action="/araclar" method="POST">
+
+		<label for="plaka">Plaka: </label>
+		<input type="text" id="plaka" name="plaka" placeholder="Plaka.." required="required" maxlength="10">
+
+		<label for="kapasite">Araç Kapasitesi (KG): </label>
+		<input type="text" id="kapasite" name="kapasite" placeholder="Kapasite.." required="required" >
+
+		<input type="submit" class="btn btn-success" value="Submit">
+		<input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
+		       value="Cancel">
+		<input type="hidden" id="isInsert" name="isInsert" value="0">
+
+	</form>
+
+	<h1>Filo</h1>
+	<div class="container" id="araclar_table">
+            <div class="row border">
+                <div class="col-sm">
+                   Plaka
+                </div>
+                <div class="col-sm">
+                    Kapasite
+                </div>
+                <div class="col-sm">
+                    Operations
+                </div>
+            </div>
+            {% for row in aracList %}
+            <div class="row border">
+                <div class="col-sm">
+                    {{row.plaka }}
+                </div>
+                <div class="col-sm">
+                    {{ row.kapasite }}
+                </div>
+                <div class="col-sm">
+                    <a href="#"><span
+                            class="fa fa-pencil"
+                            style="color: black"
+                            onClick="update('{{row.plaka}}', '{{row.kapasite}}', '{{row.id}}')"
+                    ></span></a>
+                    <a href="/araclar_delete/{{row.id}}"><span class="fa fa-trash" style="color: red"></span></a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+</div>
+
+<script type="text/javascript" src="{{ url_for('static',filename='araclar.js') }}"></script>
+
+{% endblock %}
