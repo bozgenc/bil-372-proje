@@ -50,17 +50,8 @@ CREATE TABLE public."Arac"
     "kapasite" integer,
     "plaka" character varying(20) COLLATE pg_catalog."default" NOT NULL,
     "sofor_tckn" character varying(20) COLLATE pg_catalog."default",
-    CONSTRAINT "arac_pkey" PRIMARY KEY ("plaka"),
-    CONSTRAINT "arac_sofor_tckn_fkey" FOREIGN KEY ("sofor_tckn")
-        REFERENCES public."Personel" ("tckn") MATCH SIMPLE ON DELETE CASCADE
-        ON update cascade
+    CONSTRAINT "arac_pkey" PRIMARY KEY ("plaka")
 )
-
--- Index: sofor_tckn_fkey
-
--- DROP INDEX public.sofor_tckn_fkey;
-
-CREATE INDEX sofor_tckn_fkey ON public."Arac"("sofor_tckn");
 
 
 -- Table: public.Paket_Kahve
