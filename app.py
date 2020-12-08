@@ -295,27 +295,6 @@ def nakliyeciHomeDelete(id):
     purchaseList = temp3.fetchall()
     return render_template("nakliyeciHome.html", ureticiList=uList, aracList=aList, purchaseList=purchaseList)
 
-
-#@app.route('/uretici',  methods=['POST', 'GET'])
-def uretici():
-    if request.method == "POST":
-        ad = request.form['ad']
-        soyad = request.form['soyad']
-        tckn = request.form['tckn']
-        koy = request.form['koy']
-        tel_no = request.form['tel_no']
-
-        query = "INSERT INTO \"Uretici\"(ad, soyad, tckn, koy, tel_no) VALUES ('" + ad + "' , '" + soyad + "', '" + tckn + "','" + koy + "','" + tel_no + "')"
-        result = db.engine.execute(query)
-        db.session.add(result)
-        db.session.commit()
-        return render_template("uretici.html")
-    else:
-        all_data = "Select * from public.\"Uretici\""
-        result = db.engine.execute(all_data)
-        return render_template("uretici.html", feat=result)
-
-
 @app.route('/satis',  methods=['POST', 'GET'])
 def satis():
     if request.method == "POST":

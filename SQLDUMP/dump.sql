@@ -257,7 +257,7 @@ CREATE TABLE public."Alici"
 
 -- DROP TABLE public."Satis";
 
-CREATE TABLE (
+CREATE TABLE public."Satis"(
     "ucret" integer,
     "tarih" date,
     "miktar" integer,
