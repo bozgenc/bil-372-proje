@@ -1,8 +1,21 @@
 {% extends "base.html" %}
 {% block title %} Alici {% endblock %}
 {% block content %}
-
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class=flashes>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
 <div class="container">
+	<form class="example" action="/alici_search" method="POST">
+        <input type="text" id="search" name="search" placeholder="Search.." name="search">
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+
 	<form action="/alici" method="POST">
 
 

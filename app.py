@@ -2,9 +2,9 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
-app = Flask(__name__, template_folder="/Users/baranozgenc/Desktop/proje/Bil372Proje/templates")
+app = Flask(__name__, template_folder="/Users/elifg/PycharmProjects/Bil372Proje/templates")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:12345@localhost:5432/coffeeDB"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:1234@localhost:5432/db2"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -439,6 +439,21 @@ def SatisDelete(alici_sirket_id):
         sList = result.fetchall()
         return render_template("satis.html", satisList=sList)
 
+@app.route("/satis_search", methods=['GET', 'POST'])
+def satis_search():
+    if request.method == 'POST':
+        search = request.form['search']
+        querySatis = "SELECT * FROM public.\"Satis\""
+        res = db.session.execute(querySatis)
+        list = res.fetchall()
+
+        finalList = []
+        for row in list:
+            if row.alici_sirket_id == search:
+                finalList.append(row)
+
+
+        return render_template("satis.html", satisList=finalList)
 
 @app.route('/alici', methods=['POST', 'GET'])
 def alici():
@@ -474,7 +489,21 @@ def alici_delete(sirket_id):
     uList = result.fetchall()
     return render_template("alici.html", aliciList= uList)
 
+@app.route("/alici_search", methods=['GET', 'POST'])
+def alici_search():
+    if request.method == 'POST':
+        search = request.form['search']
+        queryAlici= "SELECT * FROM public.\"Alici\""
+        res = db.session.execute(queryAlici)
+        list = res.fetchall()
 
+        finalList = []
+        for row in list:
+            if row.sirket_adi == search:
+                finalList.append(row)
+
+
+        return render_template("alici.html", aliciList=finalList)
 
 @app.route("/nakliyeciHome", methods=['GET', 'POST'])
 def nakliyeciHome():
