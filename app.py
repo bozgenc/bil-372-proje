@@ -1,13 +1,17 @@
+
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 
-app = Flask(__name__, template_folder="/Users/baranozgenc/Desktop/proje/Bil372Proje/templates")
+app = Flask(__name__, template_folder="/Users/Lenovo/Bil372Proje/templates")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:12345@localhost:5432/coffeeDB"
+
 db = SQLAlchemy(app)
 
+
+# db = SQLAlchemy(app, engine_options={"pool_pre_ping": True})
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -32,7 +36,8 @@ def register():
                     flash("Successfully registered, you can log in.")
                     return render_template("login.html")
 
-    return render_template("register.html",)
+    return render_template("register.html")
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -50,6 +55,7 @@ def login():
             flash("No user found in the database with the TCKN " + tckn, 'error')
             return render_template("login.html")
         else:
+
             userrole = rows[0].personel_tipi
             if password == rows[0].passcode:
                 passwordFlag = True
@@ -245,6 +251,40 @@ def kavurma_delete(id):
 @app.route("/")
 def home():
     return render_template("homePage.html")
+
+
+@app.route('/uretici', methods=['POST', 'GET'])
+def uretici():
+    if request.method == "POST":
+        ad_soyad = request.form['ad_soyad']
+        tckn = request.form['tckn']
+        koy = request.form['koy']
+        tel_no = request.form['tel_no']
+        id = request.form['isInsert']
+
+        if int(id) == 0:
+            query = "INSERT INTO public.\"Uretici\"(ad_soyad, tckn, koy, tel_no) VALUES ('" + ad_soyad + "', '" + tckn + "','" + koy + "','" + tel_no + "')"
+            db.engine.execute(query)
+        else:
+            query = "UPDATE public.\"Uretici\" SET ad_soyad '" + ad_soyad + "', tckn = '" + tckn + "', koy = '" + koy + "', tel_no = '" + tel_no + "' where tckn = '" + tckn + "'"
+            db.engine.execute(query)
+
+    all_data = "Select * from public.\"Uretici\""
+    result = db.engine.execute(all_data)
+    uList = result.fetchall()
+    return render_template("uretici.html", ureticiList=uList)
+
+
+@app.route('/uretici_delete/<string:tckn>', methods=['GET', 'POST'])
+def uretici_delete(tckn):
+    if request.method == 'GET':
+        query = "DELETE FROM public.\"Uretici\" where tckn = '" + tckn + "'"
+        db.engine.execute(query)
+
+    all_data = "Select * from public.\"Uretici\""
+    result = db.engine.execute(all_data)
+    uList = result.fetchall()
+    return render_template("uretici.html", ureticiList=uList)
 
 
 if __name__ == "__main__":

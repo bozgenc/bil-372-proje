@@ -16,7 +16,6 @@ CREATE TABLE public."Personel"
     CONSTRAINT "personel_tckn_key" UNIQUE ("tckn")
 )
 
-
  -- Table: public.Cekirdek
 
 -- DROP TABLE public."Cekirdek";
@@ -82,8 +81,7 @@ CREATE INDEX "tur" ON public."Paket_Kahve"("tur");
 
 CREATE TABLE public."Uretici"
 (
-    "ad" character varying(50) COLLATE pg_catalog."default",
-    "soyad" character varying(50) COLLATE pg_catalog."default",
+    "ad_soyad" character varying(100) COLLATE pg_catalog."default",
     "tckn" character varying(11) COLLATE pg_catalog."default" NOT NULL,
     "koy" character varying(50) COLLATE pg_catalog."default",
     "tel_no" character varying(20) COLLATE pg_catalog."default",
@@ -174,6 +172,22 @@ CREATE TABLE public."Kavurma"
     CONSTRAINT "kavurma_tur_id_fkey" FOREIGN KEY ("tur_id")
         REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE
 )
+-- Table: public.IslemSonu
+
+-- DROP TABLE public."Islem_Sonu";
+
+CREATE TABLE public."Islem_Sonu"(
+    "id" serial not null,
+    primary key(id),
+    "tur_id" integer,
+    CONSTRAINT "islemsonu_tur_id_fkey" FOREIGN KEY ("tur_id")
+        REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE
+)
+-- Index: turid_fkey
+
+-- DROP INDEX public.turid_fkey;
+
+CREATE INDEX turid_fkey2 ON public."Islem_Sonu" USING btree("tur_id");
 
 -- Index: turid_fkey
 
@@ -236,12 +250,13 @@ CREATE TABLE public."Login"(
     "tckn" character varying(11) COLLATE pg_catalog."default" NOT NULL,
     "passcode" character varying(25),
     "personel_tipi" character varying(25),
-     unique("passcode"),
-     CONSTRAINT "tckn_fkey" FOREIGN KEY ("tckn")
-        REFERENCES public."Personel" ("tckn") MATCH SIMPLE
+    unique("passcode"),
+    primary key(tckn)
 )
 
+
 CREATE INDEX tckn_fkey ON public."Personel" USING btree("tckn")
+
 
 
 
