@@ -638,6 +638,19 @@ def araclar():
     return render_template("araclar.html", aracList=aracList)
 
 
+@app.route('/araclar_delete/<int:id>', methods=['GET', 'POST'])
+def araclar_delete(id):
+    if request.method == 'GET':
+        queryDel = "DELETE FROM public.\"Arac\" WHERE id = '" + str(id) + "'"
+        db.engine.execute(queryDel)
+
+    queryAraclar = "SELECT * FROM public.\"Arac\""
+    res = db.session.execute(queryAraclar)
+    aracList = res.fetchall()
+
+    return render_template("araclar.html", aracList=aracList)
+
+
 @app.route("/")
 def home():
     return render_template("homePage.html")
