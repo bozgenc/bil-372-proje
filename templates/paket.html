@@ -3,6 +3,17 @@
 {% block content %}
 <h1>Paket</h1>
 
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
 <div class="container">
 	<form action="/paket" method="POST">
 

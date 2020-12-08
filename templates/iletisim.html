@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<h1>Bize Ulaşın</h1>
+
+<div class="container">
+	<form action="/iletisim" method="POST">
+
+		<label for="email">E-mail adresiniz:</label>
+		<input type="email" id="email" name="email" placeholder="E-mail" required="required" maxlength="30">
+
+
+		<input type="text" id="mesaj" name="mesaj" placeholder="Mesajınızı buraya girin" required="required" >
+
+
+
+
+		<input type="submit" class="btn btn-success" value="Submit">
+		<input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
+		       value="Cancel">
+		<input type="hidden" id="isInsert" name="isInsert" value="0">
+
+	</form>
+
+</div>
+
+{% endblock %}
