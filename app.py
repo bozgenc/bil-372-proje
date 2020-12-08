@@ -185,6 +185,10 @@ def kavurma():
         bitti_mi = request.form['bitti_mi']
         tur_id = "2"
         id = request.form['isInsert']
+        boolBittiMi = False;
+
+        if bitti_mi == "True":
+            boolBittiMi = True
 
         if int(id) == 0:
             insertQuery = "INSERT INTO public.\"Kavurma\"(sorumlu_koordinator_tckn, tur_id, giren_miktar, cikan_miktar ,islem_suresi, bitti_mi) VALUES ('" + tckn + "' , '" + tur_id + "' ,'" + giren_miktar + "' , '" + str(0) + "' ,'" +  str(0) + "', '" + bitti_mi + "')"
@@ -192,24 +196,27 @@ def kavurma():
         else:
             query_update = "UPDATE public.\"Kavurma\" SET sorumlu_koordinator_tckn = '" + tckn + "', tur_id = '" + tur_id + "', giren_miktar = '" + giren_miktar + "', cikan_miktar = '" + cikan_miktar + "', islem_suresi = '" + islem_suresi + "', bitti_mi = '" + bitti_mi + "'  WHERE id = '" + str(id) + "'"
             db.engine.execute(query_update)
-            if bitti_mi:
+
+            if boolBittiMi == True:
                 queryGet = "SELECT * FROM public.\"Islem_Sonu\""
                 resTemp = db.session.execute(queryGet)
+                resTemp = resTemp.fetchall()
 
                 flag = True
                 for x in resTemp:
                     if x.id3 == id:
                         flag = False
-
                 if flag:
                     queryIslemSonu = "INSERT INTO public.\"Islem_Sonu\"(sorumlu_koordinator_tckn, tur_id, id3) VALUES ('" + tckn + "' , '" + tur_id + "' ,'" + str(id)+ "')"
                     db.engine.execute(queryIslemSonu)
 
+
     query = "SELECT * FROM public.\"Personel\" WHERE personel_tipi = 'koordinator'"
     res = db.session.execute(query)
 
-    queryKavurma = "SELECT * FROM public.\"Kavurma\" WHERE bitti_mi = 'False'"
-    result = db.session.execute(queryKavurma)
+    queryJoin = "SELECT public.\"Kavurma\".giren_miktar, public.\"Kavurma\".bitti_mi  ,public.\"Kavurma\".id, public.\"Kavurma\".sorumlu_koordinator_tckn, public.\"Kavurma\".cikan_miktar, public.\"Kavurma\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad FROM (public.\"Kavurma\" INNER JOIN public.\"Personel\" ON public.\"Kavurma\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) WHERE public.\"Kavurma\".bitti_mi = False "
+    result = db.session.execute(queryJoin)
+
 
     personelList = res.fetchall()
     kavurmaList = result.fetchall()
@@ -226,8 +233,8 @@ def kavurma_delete(id):
     query = "SELECT * FROM public.\"Personel\" WHERE personel_tipi = 'koordinator'"
     res = db.session.execute(query)
 
-    queryKavurma = "SELECT * FROM public.\"Kavurma\""
-    result = db.session.execute(queryKavurma)
+    queryJoin = "SELECT public.\"Kavurma\".giren_miktar, public.\"Kavurma\".bitti_mi  ,public.\"Kavurma\".id, public.\"Kavurma\".sorumlu_koordinator_tckn, public.\"Kavurma\".cikan_miktar, public.\"Kavurma\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad FROM (public.\"Kavurma\" INNER JOIN public.\"Personel\" ON public.\"Kavurma\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) WHERE public.\"Kavurma\".bitti_mi = False "
+    result = db.session.execute(queryJoin)
 
     personelList = res.fetchall()
     kavurmaList = result.fetchall()
