@@ -2,9 +2,9 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
-app = Flask(__name__, template_folder="/Users/Lenovo/Bil372Proje/templates")
+app = Flask(__name__, template_folder="/Users/baranozgenc/Desktop/proje/Bil372Proje/templates")
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:1234@localhost:5432/postgres"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:12345@localhost:5432/coffeeDB"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -241,12 +241,12 @@ def admin_search():
             temp2 = db.session.execute(queryPersonel)
 
             roleList = temp.fetchall()
-            personelList = temp2.fetchall()
-            return render_template("adminHome.html", roleList=roleList, personelList=personelList, son=list)
+            return render_template("adminHome.html", roleList=roleList, personelList=list, son=list)
+
 
 
 @app.route('/satis',  methods=['POST', 'GET'])
-def  satis():
+def satis():
     if request.method == "POST":
             ucret = request.form['ucret']
             tarih = request.form['tarih']
@@ -545,6 +545,7 @@ def ogutme():
             db.session.execute(query)
             db.session.commit()
 
+
     query = "SELECT public.\"Ogutme\".giren_miktar, public.\"Ogutme\".bitti_mi  ,public.\"Ogutme\".id, public.\"Ogutme\".sorumlu_koordinator_tckn, public.\"Ogutme\".cikan_miktar, " \
             "public.\"Ogutme\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad FROM (public.\"Ogutme\" INNER JOIN public.\"Personel\" ON public.\"Ogutme\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) " \
             "WHERE public.\"Ogutme\".bitti_mi = False "
@@ -579,7 +580,6 @@ def ogutme_delete(id):
 @app.route("/islem_sonu", methods=['GET', 'POST'])
 def islem_sonu():
     if request.method == 'GET':
-
         query = "SELECT * from public.\"Ogutme\" where bitti_mi = '" + str(True) + "'"
         all_data = db.engine.execute(query)
         ogutmeList = all_data.fetchall()
@@ -605,11 +605,17 @@ def islem_sonu():
                     tur_id) + "','" + str(ogutmeList[0].id) + "')"
                 db.engine.execute(insertquery)
 
-    q2 = "SELECT public.\"Ogutme\".sorumlu_koordinator_tckn, public.\"Ogutme\".tur_id, public.\"Ogutme\".giren_miktar, public.\"Ogutme\".cikan_miktar, public.\"Ogutme\".islem_suresi, " \
-         "public.\"Islem_Sonu\".tur_id from public.\"Ogutme\", public.\"Islem_Sonu\" where(public.\"Ogutme\".tur_id = public.\"Islem_Sonu\".tur_id and public.\"Ogutme\".bitti_mi = True)"
+    q2 = "SELECT public.\"Ogutme\".giren_miktar, public.\"Ogutme\".cikan_miktar, public.\"Ogutme\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad, public.\"Islem_Turu\".islem_ismi FROM(( public.\"Ogutme\" INNER JOIN public.\"Personel\" ON public.\"Ogutme\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) INNER JOIN public.\"Islem_Turu\" ON public.\"Ogutme\".tur_id = public.\"Islem_Turu\".tur_id)"
     data = db.session.execute(q2)
+
+
+    q3 = "SELECT public.\"Kavurma\".giren_miktar, public.\"Kavurma\".cikan_miktar, public.\"Kavurma\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad, public.\"Islem_Turu\".islem_ismi FROM(( public.\"Kavurma\" INNER JOIN public.\"Personel\" ON public.\"Kavurma\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) INNER JOIN public.\"Islem_Turu\" ON public.\"Kavurma\".tur_id = public.\"Islem_Turu\".tur_id)"
+    res = db.session.execute(q3)
+    list2 = res.fetchall()
     islem_sonu_list = data.fetchall()
-    return render_template("islem_sonu.html", data=islem_sonu_list)
+
+    listFinal = list2 + islem_sonu_list
+    return render_template("islem_sonu.html", data=listFinal)
 
 
 @app.route('/araclar', methods=['GET', 'POST'])
