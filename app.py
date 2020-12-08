@@ -193,9 +193,17 @@ def kavurma():
             query_update = "UPDATE public.\"Kavurma\" SET sorumlu_koordinator_tckn = '" + tckn + "', tur_id = '" + tur_id + "', giren_miktar = '" + giren_miktar + "', cikan_miktar = '" + cikan_miktar + "', islem_suresi = '" + islem_suresi + "', bitti_mi = '" + bitti_mi + "'  WHERE id = '" + str(id) + "'"
             db.engine.execute(query_update)
             if bitti_mi:
-                print("biten işlemlere geçiş yapılacak")
+                queryGet = "SELECT * FROM public.\"Islem_Sonu\""
+                resTemp = db.session.execute(queryGet)
 
+                flag = True
+                for x in resTemp:
+                    if x.id3 == id:
+                        flag = False
 
+                if flag:
+                    queryIslemSonu = "INSERT INTO public.\"Islem_Sonu\"(sorumlu_koordinator_tckn, tur_id, id3) VALUES ('" + tckn + "' , '" + tur_id + "' ,'" + str(id)+ "')"
+                    db.engine.execute(queryIslemSonu)
 
     query = "SELECT * FROM public.\"Personel\" WHERE personel_tipi = 'koordinator'"
     res = db.session.execute(query)
