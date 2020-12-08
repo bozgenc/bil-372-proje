@@ -30,6 +30,6 @@ Remember never to commit secrets saved in .env files to Github.
 * Baran ÖZGENÇ
 * Elçin DUMAN
 * Arda Ege İSKER
-* Elif Gül
+* Elif GÜL
 
 
