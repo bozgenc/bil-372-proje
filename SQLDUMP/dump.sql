@@ -72,9 +72,6 @@ CREATE TABLE public."Paket_Kahve"
     primary key(id)
 )
 
--- Index: Tur
-
--- DROP INDEX public."Tur";
 
 CREATE INDEX "tur" ON public."Paket_Kahve"("tur");
 
@@ -205,6 +202,9 @@ CREATE INDEX sorumlu_koordinator_tckn_fkey2 ON public."Kavurma"("sorumlu_koordin
 
 CREATE INDEX turid_fkey ON public."Kavurma" USING btree("tur_id");
 
+CREATE INDEX sorumlu_koordinator_tckn_fkey2 ON public."Kavurma"("sorumlu_koordinator_tckn")
+
+
 
 -- Table: public.IslemSonu
 
@@ -233,6 +233,7 @@ CREATE TABLE public."Islem_Sonu"(
 
 
 CREATE INDEX sorumlu_koordinator_tckn_fkey3 ON public."Islem_Sonu"("sorumlu_koordinator_tckn")
+
 
 CREATE INDEX tur_id_islemsonu2 ON public."Islem_Sonu"("tur_id")
 
@@ -285,4 +286,3 @@ CREATE TABLE public."Login"(
 
 
 CREATE INDEX tckn_fkey ON public."Personel" USING btree("tckn")
-

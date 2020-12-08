@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -36,6 +35,128 @@ def register():
                     return render_template("login.html")
 
     return render_template("register.html")
+
+
+
+@app.route('/cekirdek', methods=['GET', 'POST'])
+def cekirdek():
+    if request.method == 'POST':
+        miktar = request.form['miktar']
+        tur = request.form['tur']
+        koken = request.form['koken']
+        id = request.form['isInsert']
+
+        intMiktar = int(miktar)
+        print("id:")
+        print(id)
+
+        if int(id) == 0:
+            if intMiktar > 0:
+                query = "INSERT INTO \"Cekirdek\"(koken, miktar, tur) VALUES ('" + koken + "' , '" + miktar + "', '" + tur + "')"
+                result = db.engine.execute(query)
+
+
+            else:
+
+                flash("Miktar sıfırdan fazla olmalı., lütfen tekrar deneyin!")
+
+                return render_template("cekirdek.html")
+
+
+
+        else:
+
+            query_update = "UPDATE public.\"Cekirdek\" SET koken = '" + koken + "', miktar = '" + miktar + "', tur = '" + tur + "' WHERE id = '" + str(
+
+                id) + "'"
+
+            db.engine.execute(query_update)
+
+
+
+
+    queryCekirdek = "SELECT * FROM public.\"Cekirdek\""
+    temp = db.session.execute(queryCekirdek)
+
+    cList = temp.fetchall()
+
+    return render_template("cekirdek.html", cekirdekList=cList)
+
+
+
+@app.route('/paket', methods=['GET', 'POST'])
+def paket():
+    if request.method == 'POST':
+        gramaj = request.form['gramaj']
+        tur = request.form['tur']
+        skt = request.form['skt']
+        id = request.form['isInsert']
+
+        if int(id) == 0:
+            query = "INSERT INTO \"Paket_Kahve\"(gramaj, skt, tur) VALUES ('" + gramaj + "' , '" + skt + "', '" + tur + "')"
+            result = db.engine.execute(query)
+
+        else:
+            query_update = "UPDATE public.\"Paket_Kahve\" SET tur = '" + tur + "', gramaj = '" + gramaj + "', skt = '"+ skt +"' WHERE id = '" + str(id) + "'"
+            db.engine.execute(query_update)
+
+
+
+
+    queryPaket = "SELECT * FROM public.\"Paket_Kahve\""
+    temp = db.session.execute(queryPaket)
+
+    pList = temp.fetchall()
+
+    return render_template("paket.html", paketList=pList)
+
+
+
+
+
+
+@app.route("/cekirdek_delete/<int:id>", methods=['GET','POST'])
+def cekirdekDelete(id):
+    if request.method == 'GET':
+        query = "DELETE FROM public.\"Cekirdek\" WHERE id = '" + str(id) + "'"
+        db.engine.execute(query)
+
+    queryPaket = "SELECT * FROM public.\"Cekirdek\""
+    temp = db.session.execute(queryPaket)
+
+    cList = temp.fetchall()
+
+    return render_template("paket.html", cekirdekList=cList)
+
+
+
+
+
+
+
+
+
+
+@app.route("/paket_delete/<int:id>", methods=['GET','POST'])
+def paketDelete(id):
+    if request.method == 'GET':
+        query = "DELETE FROM public.\"Paket_Kahve\" WHERE id = '" + str(id) + "'"
+        db.engine.execute(query)
+
+    queryPaket = "SELECT * FROM public.\"Paket_Kahve\""
+    temp = db.session.execute(queryPaket)
+
+    pList = temp.fetchall()
+
+    return render_template("paket.html", paketList=pList)
+
+
+
+
+
+
+
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -417,6 +538,15 @@ def islem_sonu():
     data = db.session.execute(q2)
     islem_sonu_list = data.fetchall()
     return render_template("islem_sonu.html", data=islem_sonu_list)
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
