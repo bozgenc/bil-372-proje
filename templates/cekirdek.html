@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+
+
+
+<h1>Çekirdek</h1>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+<div class="container">
+	<form action="/cekirdek" method="POST">
+
+		<label for="miktar">Miktar:</label>
+		<input type="text" id="miktar" name="miktar" placeholder="Miktar(Gram)" required="required" maxlength="11">
+
+		<label for="tur">Tur:</label>
+		<input type="text" id="tur" name="tur" placeholder="Tur" required="required" >
+
+		<label for="koken">Koken:</label>
+		<input type="text" id="koken" name="koken" placeholder="Koken" required="required">
+
+
+		<input type="submit" class="btn btn-success" value="Submit">
+		<input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
+		       value="Cancel">
+		<input type="hidden" id="isInsert" name="isInsert" value="0">
+
+<h1>Mevcut Çekirdekler</h1>
+	<div class="container" id="product_table">
+		<div class="row border">
+
+
+			<div class="col-sm">
+				Köken
+			</div>
+			<div class="col-sm">
+				Miktar
+			</div>
+			<div class="col-sm">
+				Tür
+			</div>
+			<div class="col-sm">
+				Operations
+			</div>
+
+
+		</div>
+		{% for cekirdek in cekirdekList %}
+		<div class="row border">
+
+
+			<div class="col-sm">
+				{{ cekirdek.koken }}
+			</div>
+			<div class="col-sm">
+				{{ cekirdek.miktar }}
+			</div>
+			<div class="col-sm">
+				{{ cekirdek.tur }}
+			</div>
+
+			<div class="col-sm">
+				<a href="#"><span
+						class="fa fa-pencil"
+						style="color: black"
+						onClick="update('{{cekirdek.id}}','{{cekirdek.koken}}', '{{cekirdek.miktar}}', '{{cekirdek.tur}}')"
+				></span></a>
+				<a href="/cekirdek_delete/{{ cekirdek.id }}"><span class="fa fa-trash" style="color: red"></span></a>
+
+			</div>
+		</div>
+		{% endfor %}
+
+		</tbody>
+		</table>
+	</div>
+
+
+
+
+
+	</form>
+
+</div>
+<script type="text/javascript" src="{{ url_for('static',filename='cekirdek.js') }}"></script>
+
+{% endblock %}

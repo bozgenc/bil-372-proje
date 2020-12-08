@@ -4,17 +4,25 @@
 
 SET default_tablespace = pg_default;
 
+CREATE TABLE userTypes(
+	userrole character varying(20)
+)
+
+INSERT INTO userTypes VALUES ('admin');
+INSERT INTO userTypes VALUES ('koordinator');
+INSERT INTO userTypes VALUES ('nakliyeci');
+
 CREATE TABLE public."Personel"
 (
-    "personal_tipi" character varying(25),
+    "personel_tipi" character varying(25),
     "tckn" character varying(11) COLLATE pg_catalog."default" NOT NULL,
     "soyad" character varying(50) COLLATE pg_catalog."default",
     "ad" character varying(50) COLLATE pg_catalog."default",
     "tel_no" character varying(20) COLLATE pg_catalog."default",
+    "email" character varying(20) COLLATE pg_catalog."default",
     CONSTRAINT "personel_pkey" PRIMARY KEY ("tckn"),
     CONSTRAINT "personel_tckn_key" UNIQUE ("tckn")
 )
-
 
  -- Table: public.Cekirdek
 
@@ -25,10 +33,9 @@ CREATE TABLE public."Cekirdek"
     "koken" character varying(50) COLLATE pg_catalog."default",
     "miktar" integer,
     "tur" character varying(50) COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT "cekirdek_pkey" PRIMARY KEY ("tur")
+    "id" serial not null,
+    primary key(id)
 )
-
-
 
 -- Table: public.Arac
 
@@ -41,7 +48,8 @@ CREATE TABLE public."Arac"
     "sofor_tckn" character varying(20) COLLATE pg_catalog."default",
     CONSTRAINT "arac_pkey" PRIMARY KEY ("plaka"),
     CONSTRAINT "arac_sofor_tckn_fkey" FOREIGN KEY ("sofor_tckn")
-        REFERENCES public."Personel" ("tckn") MATCH SIMPLE
+        REFERENCES public."Personel" ("tckn") MATCH SIMPLE ON DELETE CASCADE
+        ON update cascade
 )
 
 -- Index: sofor_tckn_fkey
@@ -49,8 +57,6 @@ CREATE TABLE public."Arac"
 -- DROP INDEX public.sofor_tckn_fkey;
 
 CREATE INDEX sofor_tckn_fkey ON public."Arac"("sofor_tckn");
-
-
 
 
 -- Table: public.Paket_Kahve
@@ -62,16 +68,12 @@ CREATE TABLE public."Paket_Kahve"
     "gramaj" integer,
     "skt" date,
     "tur" character varying(50) COLLATE pg_catalog."default",
-    CONSTRAINT "paket_kahve_tur_fkey" FOREIGN KEY ("tur")
-        REFERENCES public."Cekirdek" ("tur") MATCH SIMPLE
+    "id" serial not null,
+    primary key(id)
 )
 
--- Index: Tur
-
--- DROP INDEX public."Tur";
 
 CREATE INDEX "tur" ON public."Paket_Kahve"("tur");
-
 
 -- Table: public.Uretici
 
@@ -79,8 +81,7 @@ CREATE INDEX "tur" ON public."Paket_Kahve"("tur");
 
 CREATE TABLE public."Uretici"
 (
-    "ad" character varying(50) COLLATE pg_catalog."default",
-    "soyad" character varying(50) COLLATE pg_catalog."default",
+    "ad_soyad" character varying(100) COLLATE pg_catalog."default",
     "tckn" character varying(11) COLLATE pg_catalog."default" NOT NULL,
     "koy" character varying(50) COLLATE pg_catalog."default",
     "tel_no" character varying(20) COLLATE pg_catalog."default",
@@ -91,22 +92,12 @@ CREATE TABLE public."Uretici"
 
 -- Table: public.Islem_Turu
 
--- DROP TABLE public."Islem_Turu";
-
 CREATE TABLE public."Islem_Turu"
 (
-    "sorumlu_koordinator_tckn" character varying(20) COLLATE pg_catalog."default",
     "tur_id" integer NOT NULL,
-    CONSTRAINT "islem_turu_pkey" PRIMARY KEY ("tur_id"),
-    CONSTRAINT "islem_turu_sorumlu_koordinator_tckn_fkey" FOREIGN KEY ("sorumlu_koordinator_tckn")
-        REFERENCES public."Personel" ("tckn") MATCH SIMPLE
+    "islem_ismi" character varying(50),
+    primary key ("tur_id")
 )
-
--- Index: sorumlu_koordinator_tckn_fkey
-
--- DROP INDEX public.sorumlu_koordinator_tckn_fkey;
-
-CREATE INDEX sorumlu_koordinator_tckn_fkey ON public."Islem_Turu"("sorumlu_koordinator_tckn")
 
 -- Table: public.Satin_Alir
 
@@ -119,8 +110,11 @@ CREATE TABLE public."Satin_Alir"
     "aciklama" character varying(200) COLLATE pg_catalog."default",
     "uretici_tckn" character varying(20) COLLATE pg_catalog."default",
     "urun_miktari" integer,
+    "id" serial not null,
+    primary key(id),
     CONSTRAINT "satin_alir_uretici_tckn_fkey" FOREIGN KEY ("uretici_tckn")
-        REFERENCES public."Uretici" ("tckn") MATCH SIMPLE
+        REFERENCES public."Uretici" ("tckn") MATCH SIMPLE ON DELETE CASCADE
+        ON update cascade
 )
 
 -- Index: uretici_tckn_fkey
@@ -135,12 +129,20 @@ CREATE INDEX uretici_tckn_fkey ON public."Satin_Alir" USING btree("uretici_tckn"
 
 CREATE TABLE public."Ogutme"
 (
+    "sorumlu_koordinator_tckn" character varying(11) COLLATE pg_catalog."default",
     "tur_id" integer,
     "giren_miktar" integer,
     "cikan_miktar" integer,
     "islem_suresi" integer,
+    "bitti_mi" boolean,
+    "id" serial not null,
+    primary key(id),
     CONSTRAINT "ogutme_tur_id_fkey" FOREIGN KEY ("tur_id")
-        REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE
+        REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE ON DELETE CASCADE
+        On update cascade,
+    CONSTRAINT "islem_turu_sorumlu_koordinator_tckn_fkey" FOREIGN KEY ("sorumlu_koordinator_tckn")
+        REFERENCES public."Personel"("tckn") MATCH SIMPLE ON DELETE CASCADE
+        ON update cascade
 )
 
 -- Index: islem_turu_fkey
@@ -149,6 +151,12 @@ CREATE TABLE public."Ogutme"
 
 CREATE INDEX islem_turu_fkey ON public."Ogutme" USING btree("tur_id");
 
+-- Index: sorumlu_koordinator_tckn_fkey
+
+-- DROP INDEX public.sorumlu_koordinator_tckn_fkey;
+
+CREATE INDEX sorumlu_koordinator_tckn_fkey ON public."Ogutme"("sorumlu_koordinator_tckn")
+
 
 -- Table: public.Kavurma
 
@@ -156,22 +164,82 @@ CREATE INDEX islem_turu_fkey ON public."Ogutme" USING btree("tur_id");
 
 CREATE TABLE public."Kavurma"
 (
+    "sorumlu_koordinator_tckn" character varying(20) COLLATE pg_catalog."default",
     "tur_id" integer,
     "giren_miktar" integer,
     "cikan_miktar" integer,
     "islem_suresi" integer,
+    bitti_mi boolean,
+    "id" serial not null,
+    primary key(id),
     CONSTRAINT "kavurma_tur_id_fkey" FOREIGN KEY ("tur_id")
+        REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE ON DELETE CASCADE
+        On update cascade,
+    CONSTRAINT "islem_turu_sorumlu_koordinator_tckn_fkey" FOREIGN KEY ("sorumlu_koordinator_tckn")
+        REFERENCES public."Personel" ("tckn") MATCH SIMPLE ON DELETE CASCADE
+        ON update cascade
+)
+-- Table: public.IslemSonu
+
+-- DROP TABLE public."Islem_Sonu";
+
+CREATE TABLE public."Islem_Sonu"(
+    "id" serial not null,
+    primary key(id),
+    "tur_id" integer,
+    CONSTRAINT "islemsonu_tur_id_fkey" FOREIGN KEY ("tur_id")
         REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE
 )
-
 -- Index: turid_fkey
 
 -- DROP INDEX public.turid_fkey;
 
+CREATE INDEX turid_fkey2 ON public."Islem_Sonu" USING btree("tur_id");
+
+
+CREATE INDEX sorumlu_koordinator_tckn_fkey2 ON public."Kavurma"("sorumlu_koordinator_tckn")
+
+
 CREATE INDEX turid_fkey ON public."Kavurma" USING btree("tur_id");
 
+CREATE INDEX sorumlu_koordinator_tckn_fkey2 ON public."Kavurma"("sorumlu_koordinator_tckn")
 
 
+
+-- Table: public.IslemSonu
+
+-- DROP TABLE public."Islem_Sonu";
+
+CREATE TABLE public."Islem_Sonu"(
+    "sorumlu_koordinator_tckn" character varying(20) COLLATE pg_catalog."default",
+    "tur_id" integer,
+    "id" serial not null,
+    primary key(id),
+    "id2" integer,
+    "id3" integer,
+    CONSTRAINT "id2_fkey" FOREIGN KEY ("id2")
+        REFERENCES public."Ogutme" ("id") MATCH SIMPLE ON DELETE CASCADE
+        On update cascade,
+    CONSTRAINT "id23_fkey" FOREIGN KEY ("id3")
+        REFERENCES public."Kavurma" ("id") MATCH SIMPLE ON DELETE CASCADE
+        On update cascade,
+     CONSTRAINT "son_tur_id_fkey" FOREIGN KEY ("tur_id")
+        REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE ON DELETE CASCADE
+        On update cascade,
+    CONSTRAINT "islem_turu_sorumlu_koordinator_tckn_fkey" FOREIGN KEY ("sorumlu_koordinator_tckn")
+        REFERENCES public."Personel" ("tckn") MATCH SIMPLE ON DELETE CASCADE
+        ON update cascade
+)
+
+
+CREATE INDEX sorumlu_koordinator_tckn_fkey3 ON public."Islem_Sonu"("sorumlu_koordinator_tckn")
+
+
+CREATE INDEX tur_id_islemsonu2 ON public."Islem_Sonu"("tur_id")
+
+CREATE INDEX id_seri ON public."Islem_Sonu"(id2)
+
+CREATE INDEX id_seri_2 ON public."Islem_Sonu"(id3)
 
 -- Table: public.Alici
 
@@ -195,8 +263,11 @@ CREATE TABLE public."Satis"
     "tarih" date,
     "miktar" integer,
     "alici_sirket_id" character varying(50) COLLATE pg_catalog."default",
+    "id" serial not null,
+    primary key(id),
     CONSTRAINT "satis_alici_sirket_id_fkey" FOREIGN KEY ("alici_sirket_id")
-        REFERENCES public."Alici" ("sirket_id") MATCH SIMPLE
+        REFERENCES public."Alici" ("sirket_id") MATCH SIMPLE ON DELETE CASCADE
+        ON update cascade
 )
 
 -- Index: sirket_id_fk
@@ -209,21 +280,9 @@ CREATE TABLE public."Login"(
     "tckn" character varying(11) COLLATE pg_catalog."default" NOT NULL,
     "passcode" character varying(25),
     "personel_tipi" character varying(25),
-     unique("passcode"),
-     CONSTRAINT "tckn_fkey" FOREIGN KEY ("tckn")
-        REFERENCES public."Personel" ("tckn") MATCH SIMPLE
+    unique("passcode"),
+    primary key(tckn)
 )
 
+
 CREATE INDEX tckn_fkey ON public."Personel" USING btree("tckn")
-
-
-
-
-
-
-
-
-
-
-
-
