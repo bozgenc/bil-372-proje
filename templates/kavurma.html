@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %} Kavurma {% endblock %}
+{% block content %}
+<div class="container">
+    <form action="/kavurma" method="POST">
+        <br>
+
+        <label for="sorumlu_koordinator_tckn" >Sorumlu Koordinator:</label>
+        <select id="sorumlu_koordinator_tckn" name="sorumlu_koordinator_tckn">
+            {% for row in personelList %}
+            <option value="{{ row.tckn }}">{{ row.ad}} {{row.soyad}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="giren_miktar">Giren Miktar </label>
+        <input type="number" id="giren_miktar" name="giren_miktar" placeholder="Giren Miktar" required="required">
+
+        <label id = "label1" for="cikan_miktar" style="visibility: hidden">Çıkan Miktar</label>
+        <input type="number" id="cikan_miktar" name="cikan_miktar" placeholder="Çıkan Miktar" style="visibility: hidden">
+
+        <label id= "label2" for="islem_suresi" style="visibility: hidden">İşlem Süresi(Saat)</label>
+        <input type="number" id="islem_suresi" name="islem_suresi" placeholder="İşlem Süresi" style="visibility: hidden">
+
+        <label for="bitti" >Kavrulma İşlemi Bitti Mi?</label>
+        <br>
+        <input type="radio" id="bitti" name="bitti_mi" value="True"> Evet
+        <input type="radio" id="bitmedi" name="bitti_mi" value="False" checked> Hayır
+        <br>
+        <br>
+        <input type="submit" class="btn btn-success" value="Submit">
+        <input type="button" class="btn btn-danger" style="visibility: hidden" id="cancel_button" onclick="cancel()"
+               value="Cancel">
+        <input type="hidden" id="isInsert" name="isInsert" value="0">
+
+        <br>
+
+        <h1>Kavurma Listesi</h1>
+        <div class="container" id="product_table">
+            <div class="row border">
+                <div class="col-sm">
+                    Ad Soyad
+                </div>
+                <div class="col-sm">
+                    Giren Miktar
+                </div>
+                <div class="col-sm">
+                    Çıkan Miktar
+                </div>
+                <div class="col-sm">
+                    İşlem Süresi
+                </div>
+                <div class="col-sm">
+                    Operations
+                </div>
+            </div>
+            {% for row in kavurmaList %}
+            <div class="row border">
+                <div class="col-sm">
+                    {{ row.ad}}
+                    {{ row.soyad}}
+                </div>
+                <div class="col-sm">
+                    {{ row.giren_miktar}}
+                </div>
+                <div class="col-sm">
+                    {{row.cikan_miktar}}
+                </div>
+                <div class="col-sm">
+                    {{row.islem_suresi}}
+                </div>
+                <div class="col-sm">
+                    <a href="#"><span
+                            class="fa fa-pencil"
+                            style="color: black"
+                            onClick="update('{{row.sorumlu_koordinator_tckn}}', '{{row.giren_miktar}}', '{{row.cikan_miktar}}', '{{row.islem_suresi}}','{{row.id}}')"
+                    ></span></a>
+                    <a href="#"><span
+                            class="fa fa-pencil"
+                            style="color: blue"
+                            onClick="update2('{{row.sorumlu_koordinator_tckn}}', '{{row.giren_miktar}}', '{{row.cikan_miktar}}', '{{row.islem_suresi}}','{{row.id}}')"
+                    ></span></a>
+                    <a href="/kavurma_delete/{{row.id}}"><span class="fa fa-trash" style="color: red"></span></a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </form>
+
+</div>
+<script type="text/javascript" src="{{ url_for('static',filename='kavurma.js') }}"></script>
+{% endblock %}
