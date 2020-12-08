@@ -1,39 +1,79 @@
-function update(sorumlu_koordinator_tckn, tur_id, giren_miktar, cikan_miktar, islem_suresi, bitti_mi) {
+function update(sorumlu_koordinator_tckn, giren_miktar, cikan_miktar, islem_suresi, id) {
+
     var input = document.getElementById("sorumlu_koordinator_tckn");
-    var input2 = document.getElementById("tur_id");
-    var input3 = document.getElementById("giren_miktar");
-    var input4 = document.getElementById("cikan_miktar");
-    var input5 = document.getElementById("islem_suresi");
-    var input6 = document.getElementById("bitti_mi");
+    var input2 = document.getElementById("giren_miktar");
+    var input3 = document.getElementById("cikan_miktar");
+    var input4 = document.getElementById("islem_suresi");
 
     var cancel_button = document.getElementById("cancel_button");
     var isInsert = document.getElementById("isInsert");
-    isInsert.value = tur_id;
+    isInsert.value = id;
     cancel_button.style.visibility = "visible"
     input.value = sorumlu_koordinator_tckn;
-    input2.value = tur_id;
-    input3.value = giren_miktar;
-    input4.value = cikan_miktar;
-    input5.value = islem_suresi;
-    input6.value = bitti_mi;
+    input2.value = giren_miktar;
+    input3.value = cikan_miktar;
+    input4.value = islem_suresi;
+
+    document.getElementById("islem_suresi").setAttribute("readonly", true)
+    document.getElementById("cikan_miktar").setAttribute("readonly", true)
+    document.getElementById("bitti_mi").setAttribute("readonly", true)
+
+}
+
+function update2(sorumlu_koordinator_tckn, giren_miktar, cikan_miktar, islem_suresi, id) {
+
+    var input = document.getElementById("sorumlu_koordinator_tckn");
+    var input2 = document.getElementById("giren_miktar");
+    var input3 = document.getElementById("cikan_miktar");
+    var input4 = document.getElementById("islem_suresi");
+
+    var label1 = document.getElementById("label1");
+    var label2 = document.getElementById("label2");
+
+    input3.style.visibility = "visible"
+    input4.style.visibility = "visible"
+    label1.style.visibility = "visible"
+    label2.style.visibility = "visible"
+
+    var cancel_button = document.getElementById("cancel_button");
+    var isInsert = document.getElementById("isInsert");
+    isInsert.value = id;
+    cancel_button.style.visibility = "visible"
+    input.value = sorumlu_koordinator_tckn;
+    input2.value = giren_miktar;
+    input3.value = cikan_miktar;
+    input4.value = islem_suresi;
+    document.getElementById("sorumlu_koordinator_tckn").setAttribute("readonly", true)
+    document.getElementById("giren_miktar").setAttribute("readonly", true)
 }
 
 function cancel() {
     var input = document.getElementById("sorumlu_koordinator_tckn");
-    var input2 = document.getElementById("tur_id");
     var input3 = document.getElementById("giren_miktar");
     var input4 = document.getElementById("cikan_miktar");
     var input5 = document.getElementById("islem_suresi");
-    var input6 = document.getElementById("bitti_mi");
-
+    var label1 = document.getElementById("label1");
+    var label2 = document.getElementById("label2");
     var cancel_button = document.getElementById("cancel_button");
     var isInsert = document.getElementById("isInsert");
+
     isInsert.value = '0';
     cancel_button.style.visibility = "hidden"
+    input3.style.visibility = "hidden"
+    input4.style.visibility = "hidden"
+    label1.style.visibility = "hidden"
+    label2.style.visibility = "hidden"
+
     input.value = '';
     input2.value = '';
     input3.value = '';
     input4.value = '';
     input5.value = '';
     input6.value = '';
+
+    document.getElementById("sorumlu_koordinator_tckn").removeAttribute("readOnly");
+    document.getElementById("giren_miktar").removeAttribute("readOnly");
+    document.getElementById("islem_suresi").removeAttribute("readOnly");
+    document.getElementById("cikan_miktar").removeAttribute("readOnly");
+    document.getElementById("bitti_mi").removeAttribute("readOnly");
 }

@@ -111,7 +111,8 @@ def ogutme():
         islem_suresi = request.form['islem_suresi']
         bitti_mi = request.form['bitti_mi']
         id = request.form['isInsert']
-
+        tur_id = "1"
+        print(giren_miktar)
         query = "SELECT * from public.\"Personel\" where tckn = '" + sorumlu_koordinator_tckn + "'"
         result = db.session.execute(query)
         result = result.fetchall()
@@ -119,16 +120,12 @@ def ogutme():
 
         if int(id) == 0:
             query = "INSERT INTO public.\"Ogutme\"(sorumlu_koordinator_tckn, tur_id, giren_miktar, cikan_miktar, islem_suresi," \
-                    "bitti_mi) VALUES ('" + sorumlu_koordinator_tckn + "','" + str(1) + "','" + str(
-                giren_miktar) + "','" + \
-                    str(cikan_miktar) + "','" + str(islem_suresi) + "','" + str(bitti_mi) + "')"
+                    "bitti_mi) VALUES ('" + sorumlu_koordinator_tckn + "','" + str(1) + "','" + str(giren_miktar) + "','" + \
+                    str(0) + "','" + str(0) + "','" + str(bitti_mi) + "')"
             db.session.execute(query)
             db.session.commit()
         else:
-            query = "UPDATE public.\"Ogutme\" SET sorumlu_koordinator_tckn ='" + sorumlu_koordinator_tckn + "', tur_id = '" + \
-                    "1" + "', giren_miktar = '" + str(giren_miktar) + "', cikan_miktar = '" + \
-                    str(cikan_miktar) + "', islem_suresi = '" + str(
-                islem_suresi) + "', bitti_mi = '" + bitti_mi + "' WHERE id = '" + str(id) + "'"
+            query = "UPDATE public.\"Ogutme\" SET sorumlu_koordinator_tckn = '" + sorumlu_koordinator_tckn + "', tur_id = '" + tur_id + "', giren_miktar = '" + giren_miktar + "', cikan_miktar = '" + cikan_miktar + "', islem_suresi = '" + islem_suresi + "', bitti_mi = '" + bitti_mi + "'  WHERE id = '" + str(id) + "'"
             db.session.execute(query)
             db.session.commit()
 
@@ -140,11 +137,7 @@ def ogutme():
     data = db.session.execute(query2)
     son = data.fetchall()
 
-    query3 = "SELECT * FROM public.\"Islem_Turu\""
-    all_data2 = db.session.execute(query3)
-    islemlist = all_data2.fetchall()
-
-    return render_template("ogutme.html", ogutme=islem_list, personelList=son, islemList=islemlist)
+    return render_template("ogutme.html", ogutme=islem_list, personelList=son)
 
 
 @app.route("/ogutme_delete/<int:id>", methods=['GET', 'POST'])
@@ -171,32 +164,34 @@ def ogutme_delete(id):
 @app.route("/islem_sonu", methods=['GET', 'POST'])
 def islem_sonu():
     if request.method == 'GET':
+
         query = "SELECT * from public.\"Ogutme\" where bitti_mi = '" + str(True) + "'"
         all_data = db.engine.execute(query)
         ogutmeList = all_data.fetchall()
 
-        sorumlu_koordinator_tckn = ogutmeList[0].sorumlu_koordinator_tckn
-        tur_id = ogutmeList[0].tur_id
-        id_meselesi = ogutmeList[0].id
+        if len(ogutmeList) > 0:
+            sorumlu_koordinator_tckn = ogutmeList[0].sorumlu_koordinator_tckn
+            tur_id = ogutmeList[0].tur_id
+            id_meselesi = ogutmeList[0].id
 
-        quer = "Select * from public.\"Islem_Sonu\""
-        comp = db.engine.execute(quer)
-        comp = comp.fetchall()
+            quer = "Select * from public.\"Islem_Sonu\""
+            comp = db.engine.execute(quer)
+            comp = comp.fetchall()
+            print(comp)
 
-        if len(comp) != 0:
-            idmiz = comp[0].id
-            print(idmiz)
-            if idmiz != id_meselesi:
-                insertquery = "INSERT INTO public.\"Islem_Sonu\"(sorumlu_koordinator_tckn, tur_id, id2) VALUES ('" + sorumlu_koordinator_tckn + "',' " + str(
-                    tur_id) + "','" + str(ogutmeList[0].id) + "')"
+            if len(comp) > 0:
+                print(ogutmeList)
+                print(ogutmeList[0].giren_miktar)
+                print(ogutmeList[0].id)
+                idmiz = comp[0].id2
+
+                if idmiz != id_meselesi:
+                    insertquery = "INSERT INTO public.\"Islem_Sonu\"(sorumlu_koordinator_tckn, tur_id, id2) VALUES ('" + sorumlu_koordinator_tckn + "',' " + str(tur_id) + "','" + str(ogutmeList[0].id) + "')"
+                    db.engine.execute(insertquery)
+
+            if len(comp) == 0:
+                insertquery = "INSERT INTO public.\"Islem_Sonu\"(sorumlu_koordinator_tckn, tur_id, id2) VALUES ('" + sorumlu_koordinator_tckn + "','" + str(tur_id) + "','" + str(ogutmeList[0].id) + "')"
                 db.engine.execute(insertquery)
-
-        if len(comp) == 0:
-            print("noluo")
-            print(id_meselesi)
-            insertquery = "INSERT INTO public.\"Islem_Sonu\"(sorumlu_koordinator_tckn, tur_id, id2) VALUES ('" + sorumlu_koordinator_tckn + "','" + str(
-                tur_id) + "','" + str(ogutmeList[0].id) + "')"
-            db.engine.execute(insertquery)
 
     q2 = "SELECT public.\"Ogutme\".sorumlu_koordinator_tckn, public.\"Ogutme\".tur_id, public.\"Ogutme\".giren_miktar, public.\"Ogutme\".cikan_miktar, public.\"Ogutme\".islem_suresi, " \
          "public.\"Islem_Sonu\".tur_id from public.\"Ogutme\", public.\"Islem_Sonu\" where(public.\"Ogutme\".tur_id = public.\"Islem_Sonu\".tur_id and public.\"Ogutme\".bitti_mi = True)"

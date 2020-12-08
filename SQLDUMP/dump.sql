@@ -207,8 +207,12 @@ CREATE TABLE public."Islem_Sonu"(
     "id" serial not null,
     primary key(id),
     "id2" integer,
+    "id3" integer,
     CONSTRAINT "id2_fkey" FOREIGN KEY ("id2")
         REFERENCES public."Ogutme" ("id") MATCH SIMPLE ON DELETE CASCADE
+        On update cascade,
+    CONSTRAINT "id23_fkey" FOREIGN KEY ("id3")
+        REFERENCES public."Kavurma" ("id") MATCH SIMPLE ON DELETE CASCADE
         On update cascade,
      CONSTRAINT "son_tur_id_fkey" FOREIGN KEY ("tur_id")
         REFERENCES public."Islem_Turu" ("tur_id") MATCH SIMPLE ON DELETE CASCADE
@@ -224,6 +228,9 @@ CREATE INDEX sorumlu_koordinator_tckn_fkey3 ON public."Islem_Sonu"("sorumlu_koor
 CREATE INDEX tur_id_islemsonu2 ON public."Islem_Sonu"("tur_id")
 
 CREATE INDEX id_seri ON public."Islem_Sonu"(id2)
+
+CREATE INDEX id_seri_2 ON public."Islem_Sonu"(id3)
+
 -- Table: public.Alici
 
 -- DROP TABLE public."Alici";
