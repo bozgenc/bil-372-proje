@@ -255,6 +255,103 @@ def araclar_search():
             return render_template("araclar.html", aracList=list)
 
 
+@app.route("/kavurma_search", methods=['GET', 'POST'])
+def kavurma_search():
+    if request.method == 'POST':
+        search = request.form['search']
+        queryJoin = "SELECT public.\"Kavurma\".giren_miktar, public.\"Kavurma\".bitti_mi  ,public.\"Kavurma\".id, public.\"Kavurma\".sorumlu_koordinator_tckn, public.\"Kavurma\".cikan_miktar, public.\"Kavurma\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad FROM (public.\"Kavurma\" INNER JOIN public.\"Personel\" ON public.\"Kavurma\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) WHERE public.\"Kavurma\".bitti_mi = False "
+        result = db.session.execute(queryJoin)
+        resList = result.fetchall()
+
+        finalList = []
+        for row in resList:
+            if (row.ad + " " + row.soyad) == search:
+                finalList.append(row)
+            elif row.ad == search :
+                finalList.append(row)
+            elif row.soyad == search :
+                finalList.append(row)
+
+        return render_template("kavurma.html", kavurmaList=finalList)
+
+@app.route("/ogutme_search", methods=['GET', 'POST'])
+def ogutme_search():
+    if request.method == 'POST':
+        search = request.form['search']
+        queryJoin = "SELECT public.\"Ogutme\".giren_miktar, public.\"Ogutme\".bitti_mi  ,public.\"Ogutme\".id, public.\"Ogutme\".sorumlu_koordinator_tckn, public.\"Ogutme\".cikan_miktar, public.\"Ogutme\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad FROM (public.\"Ogutme\" INNER JOIN public.\"Personel\" ON public.\"Ogutme\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) WHERE public.\"Ogutme\".bitti_mi = False "
+        result = db.session.execute(queryJoin)
+        resList = result.fetchall()
+
+        finalList = []
+        for row in resList:
+            if (row.ad + " " + row.soyad) == search:
+                finalList.append(row)
+            elif row.ad == search :
+                finalList.append(row)
+            elif row.soyad == search :
+                finalList.append(row)
+
+        return render_template("ogutme.html", ogutme=finalList)
+
+@app.route("/islem_sonu_search", methods=['GET', 'POST'])
+def islem_sonu_search():
+    if request.method == 'POST':
+        search = request.form['search']
+        q2 = "SELECT public.\"Ogutme\".giren_miktar, public.\"Ogutme\".cikan_miktar, public.\"Ogutme\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad, public.\"Islem_Turu\".islem_ismi FROM(( public.\"Ogutme\" INNER JOIN public.\"Personel\" ON public.\"Ogutme\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) INNER JOIN public.\"Islem_Turu\" ON public.\"Ogutme\".tur_id = public.\"Islem_Turu\".tur_id)"
+        data = db.session.execute(q2)
+
+        q3 = "SELECT public.\"Kavurma\".giren_miktar, public.\"Kavurma\".cikan_miktar, public.\"Kavurma\".islem_suresi, public.\"Personel\".ad, public.\"Personel\".soyad, public.\"Islem_Turu\".islem_ismi FROM(( public.\"Kavurma\" INNER JOIN public.\"Personel\" ON public.\"Kavurma\".sorumlu_koordinator_tckn = public.\"Personel\".tckn) INNER JOIN public.\"Islem_Turu\" ON public.\"Kavurma\".tur_id = public.\"Islem_Turu\".tur_id)"
+        res = db.session.execute(q3)
+        list2 = res.fetchall()
+        islem_sonu_list = data.fetchall()
+
+        listMerged = list2 + islem_sonu_list
+
+        finalList = []
+        for row in listMerged:
+            if (row.ad + " " + row.soyad) == search:
+                finalList.append(row)
+            elif row.ad == search:
+                finalList.append(row)
+            elif row.soyad == search:
+                finalList.append(row)
+
+        return render_template("islem_sonu.html", data=finalList)
+
+@app.route("/cekirdek_search", methods=['GET', 'POST'])
+def cekirdek_search():
+    if request.method == 'POST':
+        search = request.form['search']
+        queryCekirdek = "SELECT * FROM public.\"Cekirdek\""
+        res = db.session.execute(queryCekirdek)
+        list = res.fetchall()
+
+        finalList = []
+        for row in list:
+            if row.koken == search:
+                finalList.append(row)
+            elif row.tur == search:
+                finalList.append(row)
+
+
+        return render_template("cekirdek.html", cekirdekList=finalList)
+
+
+@app.route("/paket_search", methods=['GET', 'POST'])
+def paket_search():
+    if request.method == 'POST':
+        search = request.form['search']
+        queryCekirdek = "SELECT * FROM public.\"Paket_Kahve\""
+        res = db.session.execute(queryCekirdek)
+        list = res.fetchall()
+
+        finalList = []
+        for row in list:
+            if row.tur == search:
+                finalList.append(row)
+
+
+        return render_template("paket.html", paketList=finalList)
 
 
 @app.route('/satis',  methods=['POST', 'GET'])

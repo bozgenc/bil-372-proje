@@ -2,10 +2,15 @@
 {% block title %} Öğütme {% endblock %}
 {% block content %}
 <div class="container">
+
+	<form class="example" action="/ogutme_search" method="POST">
+    <input type="text" id="search" name="search" placeholder="Search.." name="search">
+        <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+
     <form action="/ogutme" method="POST">
     <br>
-
-    <label for="sorumlu_koordinator_tckn">Sorumlu Koordinator TCKN:</label>
+    <label for="sorumlu_koordinator_tckn">Sorumlu Koordinator:</label>
         <select id="sorumlu_koordinator_tckn" name="sorumlu_koordinator_tckn">
             {% for row in personelList %}
 			<option value="{{ row.tckn }}">{{ row.ad}} {{row.soyad}}</option>
