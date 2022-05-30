@@ -1,6 +1,6 @@
 # Bil372 Proje
 Tobb Etü Bil372 Proje #7.
-BİL 372/071 dersi kapsamında, Projeye ait olan bütün geliştirme faaliyetlerini içerir. 
+BİL 372/071 dersi kapsamında, Projeye ait olan bütün geliştirme faaliyetlerini içerir. </br>
 Projede ön yüz geliştirme ihtiyaçlarını karşılamak için Python- Flask kütüphanesinden yararlanılmıştır. </br>
 Veritabanı olarak PostgreSQL kullanılmıştır.</br>
 Yazılım geliştirme dili olarak Python seçilmiştir. </br> 
