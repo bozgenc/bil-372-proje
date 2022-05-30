@@ -1,9 +1,18 @@
 # Bil372 Proje
 Tobb Etü Bil372 Proje #7.
-BİL 372/071 dersi kapsamında, Projeye ait olan bütün geliştirme faaliyetlerini içerir. Projede web uygulama 
-ihtiyaçlarını karşılamak için Flask kütüphanesinden yararlanılmıştır. Veritabanı kısmında PostgreSQL kullanılmıştır.
-Yazılım geliştirme dili olarak Python seçilmiştir. Geliştirme ortamı olarak JetBrains PyCharm kullanılmıştır. Herhangi 
-bir lisans tipi seçilmemiştir.
+BİL 372/071 dersi kapsamında, Projeye ait olan bütün geliştirme faaliyetlerini içerir. 
+Projede ön yüz geliştirme ihtiyaçlarını karşılamak için Python- Flask kütüphanesinden yararlanılmıştır. </br>
+Veritabanı olarak PostgreSQL kullanılmıştır.</br>
+Yazılım geliştirme dili olarak Python seçilmiştir. </br> 
+Geliştirme ortamı olarak JetBrains PyCharm kullanılmıştır. </br>
+Herhangi bir lisans tipi seçilmemiştir.
+
+## Geliştiriciler
+
+* Baran ÖZGENÇ
+* Elçin DUMAN
+* Arda Ege İSKER
+* Elif GÜL
 
 ## Proje Raporu
 ![Image](https://github.com/bozgenc/Bil372Proje/blob/main/Images/Proje%20Raporu_page-0001.jpg?raw=true)
@@ -44,12 +53,4 @@ The environment in which to run your application; either development or producti
 SQLAlchemy connection URI to a SQL database.
 
 Remember never to commit secrets saved in .env files to Github.
-
-## Geliştiriciler
-
-* Baran ÖZGENÇ
-* Elçin DUMAN
-* Arda Ege İSKER
-* Elif GÜL
-
 
